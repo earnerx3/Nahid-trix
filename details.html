@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>App Details | NAHID TRIX</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* === iOS LIGHT THEME === */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bg-main: #f2f2f7;          
+            --bg-card: #ffffff;          
+            --text-main: #1c1c1e;        
+            --text-muted: #8e8e93;       
+            --color-pink: #ff2d55;       
+            --ios-blue: #007aff;         
+            --ios-green: #34c759;
+            --ios-orange: #ff9500;
+            --ios-purple: #af52de;
+            --border-color: rgba(0,0,0,0.08);     
+            --shadow-soft: 0 4px 14px rgba(0,0,0,0.05);
+            --shadow-strong: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-card); 
+            color: var(--text-main);
+            padding-bottom: 90px; 
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased; 
+        }
+
+        /* ====== HEADER ====== */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 18px; 
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 0.5px solid var(--border-color);
+            height: 45px;
+            transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .back-btn {
+            color: var(--ios-blue);
+            font-size: 16px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        .back-btn:active { opacity: 0.5; }
+
+        .share-btn { color: var(--ios-blue); font-size: 18px; cursor: pointer; transition: 0.2s; }
+        .share-btn:active { transform: scale(0.9); }
+
+        /* ====== APP INFO HEADER ====== */
+        .app-header {
+            display: flex;
+            padding: 18px;
+            gap: 15px;
+            border-bottom: 0.5px solid var(--border-color);
+            align-items: flex-start;
+        }
+
+        .app-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 18px;
+            object-fit: cover;
+            box-shadow: var(--shadow-soft);
+            border: 0.5px solid var(--border-color);
+            background: var(--bg-main);
+            transition: 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .app-title-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex-grow: 1;
+            overflow: hidden; 
+        }
+
+        .app-title { 
+            font-size: 18px; 
+            font-weight: 700; 
+            margin: 0 0 4px 0; 
+            line-height: 1.2; 
+            transition: 0.3s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; 
+        }
+        .app-developer { font-size: 12px; color: var(--ios-blue); font-weight: 500; margin-bottom: 8px; }
+        
+        .badge-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+        .badge {
+            background: var(--bg-main);
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: 0.3s ease;
+            white-space: nowrap;
+        }
+
+        /* ====== SCREENSHOT SLIDER (iPhone 14 Pro Max Design) ====== */
+        .slider-section {
+            padding: 30px 0;
+            background: var(--bg-main);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slider-container {
+            width: 245px; 
+            aspect-ratio: 9 / 19.5; 
+            margin: 0 auto;
+            position: relative;
+            border-radius: 44px; 
+            background: #000;
+            box-shadow: 0 0 0 2px #d1d1d6, 0 0 0 7px #1c1c1e, 0 25px 45px rgba(0,0,0,0.15); 
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        .dynamic-island {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90px;
+            height: 28px;
+            background: #000;
+            border-radius: 20px;
+            z-index: 30;
+            display: flex;
+            align-items: center;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: inset 0 -1px 3px rgba(255,255,255,0.1);
+        }
+
+        .dynamic-island.expanded {
+            width: 155px;
+            height: 34px;
+        }
+
+        .island-hardware {
+            position: absolute;
+            left: 50%;
+            margin-left: 15px; 
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0; 
+        }
+
+        .island-camera {
+            width: 12px; height: 12px; min-width: 12px; min-height: 12px; 
+            background: #0a0a0c; border-radius: 50%; border: 1px solid #1a1a1c; 
+            box-shadow: inset 1px 1px 2px rgba(255,255,255,0.15);
+        }
+
+        .island-indicator {
+            width: 4px; height: 4px; min-width: 4px; min-height: 4px; 
+            background: var(--ios-green); border-radius: 50%; opacity: 0; 
+            animation: blink 5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 85% { opacity: 0; }
+            87%, 95% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        .island-content {
+            position: absolute; left: 10px; display: flex; align-items: center; gap: 6px; 
+            opacity: 0; transform: scale(0.8) translateX(-5px); 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: none; white-space: nowrap;
+        }
+
+        .dynamic-island.expanded .island-content {
+            opacity: 1; transform: scale(1) translateX(0);
+        }
+
+        .island-text { 
+            font-size: 13px; font-weight: 800; 
+            background: linear-gradient(90deg, #ff2d55, #ff9500);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 0.5px;
+        }
+        
+        .island-icon { 
+            font-size: 14px; background: linear-gradient(90deg, #ff2d55, #ff9500);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .slider-track {
+            display: flex; height: 100%; transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .slider-track img {
+            width: 100%; height: 100%; object-fit: cover; flex-shrink: 0; transition: 0.3s ease; cursor: pointer; 
+        }
+
+        .glass-arrow {
+            position: absolute; top: 50%; transform: translateY(-50%); width: 36px; height: 36px;
+            border-radius: 50%; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 0, 0, 0.05); color: var(--text-main); font-size: 14px;
+            display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 20;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: 0.2s;
+        }
+
+        .glass-arrow:active { background: #fff; transform: translateY(-50%) scale(0.9); }
+        .arrow-left { left: 20px; }
+        .arrow-right { right: 20px; }
+
+        /* ====== FULLSCREEN VIEWER MODAL ====== */
+        .fullscreen-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            z-index: 99999; display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: 0.3s ease;
+        }
+        .fullscreen-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .fs-close-btn {
+            position: absolute; top: 30px; right: 25px; width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);
+            display: flex; justify-content: center; align-items: center;
+            color: #fff; font-size: 20px; cursor: pointer; z-index: 100000;
+            transition: 0.2s; border: 1px solid rgba(255,255,255,0.4);
+        }
+        .fs-close-btn:active { transform: scale(0.9); background: rgba(255,255,255,0.4); }
+
+        .fs-phone-frame {
+            width: 85vw; max-width: 420px; aspect-ratio: 9 / 19.5; border-radius: 48px; background: #000;
+            box-shadow: 0 0 0 2px #d1d1d6, 0 0 0 8px #1c1c1e, 0 25px 50px rgba(0,0,0,0.5);
+            position: relative; overflow: hidden;
+        }
+
+        .fs-slider {
+            display: flex; height: 100%; width: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; 
+        }
+        .fs-slider::-webkit-scrollbar { display: none; } 
+        .fs-slider img { width: 100%; height: 100%; object-fit: cover; flex-shrink: 0; scroll-snap-align: start; }
+
+        .swipe-hint {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            color: rgba(255,255,255,0.7); font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px;
+            z-index: 100000; background: rgba(0,0,0,0.5); padding: 8px 16px; border-radius: 20px;
+        }
+
+        /* ====== CONTENT SECTION ====== */
+        .content-section { padding: 18px; max-width: 800px; margin: 0 auto; }
+        .section-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; color: var(--text-main); }
+        
+        .networks-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 25px; }
+        .network-tag { background: rgba(0, 122, 255, 0.1); color: var(--ios-blue); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; }
+
+        /* ACTION BUTTONS */
+        .action-buttons { display: flex; gap: 8px; margin-bottom: 25px; }
+        .btn { 
+            flex: 1; padding: 12px 5px; border-radius: 12px; font-size: 13px; font-weight: 600; text-align: center; 
+            cursor: pointer; text-decoration: none; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 6px; 
+        }
+        .btn-demo { background: var(--ios-blue); color: #fff; box-shadow: 0 4px 10px rgba(0, 122, 255, 0.2); }
+        .btn-demo:active { transform: scale(0.96); }
+        .btn-contact { background: var(--bg-main); color: var(--ios-blue); }
+        .btn-contact:active { transform: scale(0.96); background: #e5e5ea; }
+
+        /* ====== BEAUTIFUL DESCRIPTION BOX ====== */
+        .desc-wrapper { 
+            background: var(--bg-main); 
+            padding: 16px; 
+            border-radius: 16px; 
+            margin-bottom: 25px; 
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+        .description { font-size: 13.5px; line-height: 1.6; color: #3a3a3c; white-space: pre-wrap; transition: all 0.3s; }
+        
+        /* 8 lines for description as requested */
+        .desc-clamped { display: -webkit-box; -webkit-line-clamp: 8; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        .see-more-desc { color: var(--ios-blue); font-size: 13.5px; font-weight: 600; cursor: pointer; display: inline-block; margin-top: 8px; }
+
+        /* ====== DYNAMIC PRICING PACKAGES ====== */
+        .pricing-section { background: var(--bg-main); padding: 18px; border-radius: 20px; margin-bottom: 30px; }
+        .packages-container { display: flex; flex-direction: column; gap: 12px; }
+        
+        .package-card { 
+            background: var(--bg-card); border-radius: 16px; padding: 16px; border: 1.5px solid var(--border-color); 
+            transition: 0.3s; position: relative; overflow: hidden; cursor: pointer; display: flex; flex-direction: column; gap: 6px;
+        }
+        .package-card:active { transform: scale(0.98); }
+        .package-card.active { border-color: var(--ios-blue); background: rgba(0, 122, 255, 0.02); }
+        
+        .pkg-top { display: flex; justify-content: space-between; align-items: center; }
+        .pkg-title { font-size: 15px; font-weight: 700; color: var(--text-main); }
+        .pkg-radio { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #c7c7cc; display: flex; justify-content: center; align-items: center; transition: 0.3s; }
+        .package-card.active .pkg-radio { border-color: var(--ios-blue); }
+        .package-card.active .pkg-radio::after { content: ''; width: 10px; height: 10px; background: var(--ios-blue); border-radius: 50%; }
+
+        .pkg-price { font-size: 16px; font-weight: 800; color: var(--ios-blue); }
+        .pkg-desc { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+        
+        .pkg-features { list-style: none; padding: 0; margin: 5px 0 0 0; font-size: 12px; color: #3a3a3c; }
+        .pkg-features li { margin-bottom: 6px; display: flex; align-items: center; gap: 8px; font-weight: 500;}
+        .pkg-features li i { color: var(--ios-green); font-size: 14px; }
+
+        .ribbon { 
+            position: absolute; top: 12px; right: -25px; background: var(--ios-orange); color: #fff; font-size: 9px; font-weight: 800; padding: 4px 25px; 
+            transform: rotate(45deg); box-shadow: 0 2px 4px rgba(255, 149, 0, 0.3); letter-spacing: 1px;
+        }
+
+        /* ====== SUGGESTED APPS GRID ====== */
+        .related-title { font-size: 18px; font-weight: 800; margin-bottom: 15px; display: flex; align-items: center; gap: 6px; color: var(--text-main); }
+        .dynamic-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
+        .app-card { background: var(--bg-card); border-radius: 18px; padding: 10px; text-decoration: none; color: inherit; display: flex; flex-direction: column; box-shadow: var(--shadow-soft); transition: transform 0.2s; cursor: pointer; border: 0.5px solid var(--border-color);}
+        .app-card:active { transform: scale(0.96); }
+        .frame-img { width: 100%; aspect-ratio: 9 / 13; border-radius: 12px; object-fit: cover; margin-bottom: 10px; background: #e5e5ea; }
+        .app-info { display: flex; flex-direction: column; gap: 4px; }
+        .app-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); }
+        .app-network { font-size: 10px; color: var(--ios-blue); background: rgba(0, 122, 255, 0.1); padding: 3px 6px; border-radius: 6px; width: max-content; font-weight: 600; }
+        .bottom-row { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; }
+        .price-tag { font-size: 13px; font-weight: 800; color: var(--text-main); }
+        .buy-btn { font-size: 11px; padding: 5px 12px; border-radius: 15px; background: var(--ios-blue); color: #fff; font-weight: 700; }
+
+        /* ====== CLASSIC STICKY BOTTOM BUY BAR (LEFT PRICE, RIGHT BUTTON) ====== */
+        .bottom-buy-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border-top: 0.5px solid var(--border-color); padding: 12px 18px 25px 18px; 
+            display: flex; justify-content: space-between; align-items: center; z-index: 1000;
+        }
+
+        .price-section-left {
+            display: flex; flex-direction: column;
+            overflow: hidden; padding-right: 10px;
+        }
+
+        .selected-pkg-label { 
+            font-size: 11px; color: var(--text-muted); font-weight: 600; margin-bottom: 2px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+
+        .price-row {
+            display: flex; align-items: center; gap: 6px;
+        }
+
+        .old-price {
+            text-decoration: line-through; font-size: 13px; color: var(--text-muted); font-weight: 600;
+        }
+
+        .new-price {
+            font-size: 18px; font-weight: 800; color: var(--text-main); transition: 0.3s ease;
+        }
+
+        .btn-order-right { 
+            background: var(--ios-blue); color: #fff; border: none; padding: 12px 24px; border-radius: 20px; 
+            font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.2s; white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3); display: flex; align-items: center; gap: 6px;
+        }
+        .btn-order-right:active { transform: scale(0.95); opacity: 0.9; }
+
+        /* Loading Overlay */
+        #loadingOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; font-family: 'Poppins', sans-serif; color: var(--ios-blue); transition: opacity 0.3s; }
+    </style>
+</head>
+<body>
+
+    <div id="loadingOverlay">
+        <i class="fas fa-spinner fa-spin" style="font-size: 30px; margin-bottom: 12px;"></i>
+        <div style="font-weight: 700; font-size: 15px; color: var(--text-main);">Loading Details...</div>
+    </div>
+
+    <div class="fullscreen-overlay" id="fsOverlay">
+        <div class="fs-close-btn" onclick="closeFullscreen()"><i class="fas fa-times"></i></div>
+        <div class="swipe-hint"><i class="fas fa-exchange-alt"></i> Swipe Left / Right</div>
+        <div class="fs-phone-frame">
+            <div class="dynamic-island" style="top: 15px;">
+                <div class="island-hardware"><div class="island-indicator"></div><div class="island-camera"></div></div>
+            </div>
+            <div class="fs-slider" id="fsSliderTrack"></div>
+        </div>
+    </div>
+
+    <header>
+        <div class="back-btn" onclick="goBackOrHome()"><i class="fas fa-chevron-left"></i> Back</div>
+        <i class="fas fa-share-square share-btn" onclick="copyShareLink()"></i>
+    </header>
+
+    <div class="app-header">
+        <img src="https://ui-avatars.com/api/?name=App&background=f2f2f7" class="app-icon" id="detailIcon" alt="Icon">
+        <div class="app-title-section">
+            <h1 class="app-title" id="detailTitle">Loading...</h1>
+            <div class="app-developer">NAHID TRIX Store</div>
+            <div class="badge-row">
+                <span class="badge" style="background: rgba(0,122,255,0.1); color: var(--ios-blue);" id="detailNetwork">Network</span>
+                <span class="badge">★ 4.9</span>
+                <span class="badge" style="color: var(--ios-green);"><i class="fas fa-shield-check"></i> Verified</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="slider-section">
+        <div class="glass-arrow arrow-left" id="prevBtn"><i class="fas fa-chevron-left"></i></div>
+        <div class="glass-arrow arrow-right" id="nextBtn"><i class="fas fa-chevron-right"></i></div>
+        
+        <div class="slider-container">
+            <div class="dynamic-island" id="dynamicIsland">
+                <div class="island-content">
+                    <i class="fas fa-bolt island-icon"></i>
+                    <span class="island-text">Fast Setup</span>
+                </div>
+                <div class="island-hardware"><div class="island-indicator"></div><div class="island-camera"></div></div>
+            </div>
+            <div class="slider-track" id="sliderTrack"></div>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <div class="action-buttons">
+            <a href="#" id="btnDemo" target="_blank" class="btn btn-demo" style="display:none;" onclick="triggerHaptic()"><i class="fas fa-play"></i> Live Demo</a>
+            <a href="#" id="btnSupport" target="_blank" class="btn btn-contact" style="display:none;" onclick="triggerHaptic()"><i class="fas fa-headset"></i> Support</a>
+        </div>
+
+        <h2 class="section-title">Supported Ad Networks</h2>
+        <div class="networks-container" id="networksContainer">
+            <div class="network-tag"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+        </div>
+
+        <h2 class="section-title">Description</h2>
+        <div class="desc-wrapper">
+            <p class="description desc-clamped" id="detailDescription">Loading details...</p>
+            <span class="see-more-desc" id="seeMoreDescBtn" onclick="expandDescription()">See more</span>
+        </div>
+
+        <div class="pricing-section">
+            <h2 class="section-title" style="margin-bottom: 12px;">Select License / Package</h2>
+            <div class="packages-container" id="packagesContainer">
+                </div>
+        </div>
+
+        <div class="related-title">You Might Also Like <i class="fas fa-fire" style="color: var(--ios-orange);"></i></div>
+        <div class="dynamic-grid" id="relatedAppsGrid">
+            </div>
+    </div>
+
+    <div class="bottom-buy-bar">
+        <div class="price-section-left">
+            <div class="selected-pkg-label" id="selectedPkgName">Loading...</div>
+            <div class="price-row">
+                <span class="old-price" id="oldPriceDisplay" style="display:none;">--</span>
+                <span class="new-price" id="displayPrice">--</span>
+            </div>
+        </div>
+        <button class="btn-order-right" onclick="proceedToOrder()">
+            Order Now <i class="fas fa-arrow-right" style="font-size: 13px;"></i>
+        </button>
+    </div>
+
+    <script>
+        const tg = window.Telegram?.WebApp;
+        if(tg) tg.expand();
+        
+        function triggerHaptic() {
+            if (navigator.vibrate) navigator.vibrate(40);
+            if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+        }
+
+        // ==========================================
+        // 💥 PERFECT SHARE LINK SYSTEM 💥
+        // ==========================================
+        window.copyShareLink = function() {
+            triggerHaptic();
+            const urlParams = new URLSearchParams(window.location.search);
+            const appId = urlParams.get('id');
+            
+            // টেলিগ্রামের বট লিংক জেনারেট হচ্ছে
+            let tgLink = "https://t.me/nahid_trix_bot/app"; 
+            if(appId) {
+                tgLink += `?startapp=${appId}`; 
+            }
+
+            navigator.clipboard.writeText(tgLink).then(() => {
+                if (tg && tg.showAlert) tg.showAlert("Link copied to clipboard! Share it anywhere.");
+                else alert("Link copied to clipboard!");
+            });
+        }
+
+        // === লিংকের মাধ্যমে আসলে যেন লুপে না পড়ে সেই লজিক ===
+        const startParam = tg?.initDataUnsafe?.start_param;
+        if (startParam && !sessionStorage.getItem('hasRedirected')) {
+            sessionStorage.setItem('hasRedirected', 'true');
+            // Index handle the routing mostly, but safeguard here
+            window.location.href = `details.html?id=${startParam}`;
+        }
+        // ==============================================================
+
+        window.goBackOrHome = function() {
+            triggerHaptic();
+            if(window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = "index.html";
+            }
+        }
+
+        window.expandDescription = function() {
+            triggerHaptic();
+            const descEl = document.getElementById('detailDescription');
+            const btnEl = document.getElementById('seeMoreDescBtn');
+            descEl.classList.remove('desc-clamped');
+            btnEl.style.display = 'none';
+        }
+
+        // Dynamic Island
+        function popDynamicIsland() {
+            const di = document.getElementById('dynamicIsland');
+            di.classList.add('expanded');
+            setTimeout(() => { di.classList.remove('expanded'); }, 3500);
+        }
+        setTimeout(popDynamicIsland, 1500);
+        setInterval(popDynamicIsland, Math.floor(Math.random() * 8000) + 12000);
+
+        // Fullscreen
+        window.openFullscreen = function(index) {
+            triggerHaptic();
+            document.getElementById('fsOverlay').classList.add('active');
+            const fsSlider = document.getElementById('fsSliderTrack');
+            fsSlider.scrollLeft = index * fsSlider.getBoundingClientRect().width;
+        }
+        window.closeFullscreen = function() {
+            triggerHaptic(); 
+            document.getElementById('fsOverlay').classList.remove('active');
+        }
+
+        // Slider
+        window.sliderTrack = document.getElementById('sliderTrack');
+        window.fsSliderTrack = document.getElementById('fsSliderTrack');
+        window.totalSlides = 0; window.currentIndex = 0; window.autoSlideInterval = null;
+
+        window.updateSlider = function() {
+            if(window.sliderTrack) window.sliderTrack.style.transform = `translateX(-${window.currentIndex * 100}%)`;
+        }
+        
+        window.resetAutoSlide = function() {
+            clearInterval(window.autoSlideInterval);
+            if(window.totalSlides > 1) {
+                window.autoSlideInterval = setInterval(() => {
+                    window.currentIndex = (window.currentIndex + 1) % window.totalSlides;
+                    window.updateSlider();
+                }, 3500);
+            }
+        }
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            triggerHaptic();
+            if(window.totalSlides > 0) { 
+                window.currentIndex = (window.currentIndex + 1) % window.totalSlides; 
+                window.updateSlider(); 
+                window.resetAutoSlide(); 
+            }
+        });
+
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            triggerHaptic();
+            if(window.totalSlides > 0) { 
+                window.currentIndex = (window.currentIndex - 1 + window.totalSlides) % window.totalSlides; 
+                window.updateSlider(); 
+                window.resetAutoSlide(); 
+            }
+        });
+
+        window.setDynamicScreenshots = function(urls) {
+            window.sliderTrack.innerHTML = ''; 
+            window.fsSliderTrack.innerHTML = ''; 
+            if(urls && urls.length > 0) {
+                urls.forEach((url, index) => {
+                    const img = document.createElement('img'); img.src = url; img.onclick = () => window.openFullscreen(index); 
+                    window.sliderTrack.appendChild(img);
+                    const fsImg = document.createElement('img'); fsImg.src = url; window.fsSliderTrack.appendChild(fsImg);
+                });
+                window.totalSlides = urls.length;
+            } else {
+                const fallbackUrl = "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80";
+                window.sliderTrack.innerHTML = `<img src="${fallbackUrl}" onclick="window.openFullscreen(0)">`;
+                window.fsSliderTrack.innerHTML = `<img src="${fallbackUrl}">`;
+                window.totalSlides = 1;
+            }
+            window.currentIndex = 0; window.updateSlider(); window.resetAutoSlide();
+        }
+
+        // ==========================================
+        // 💥 SMART COUPON & DISCOUNT CALCULATOR 💥
+        // ==========================================
+        let appliedCouponCode = "";
+        let originalSelectedPrice = "";
+        let discountedSelectedPrice = "";
+
+        function extractNumber(priceStr) {
+            const num = parseFloat(priceStr.replace(/[^0-9.]/g, ''));
+            return isNaN(num) ? 0 : num;
+        }
+
+        function calculateDiscount(basePriceStr) {
+            let activeCoupon = null;
+            
+            // LocalStorage থেকে অ্যাক্টিভ কুপন চেক করা হচ্ছে (Welcome Bonus)
+            for(let i=0; i<localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if(key.startsWith('nahid_welcome_')) {
+                    const data = JSON.parse(localStorage.getItem(key));
+                    const now = new Date().getTime();
+                    if(data && data.claimed && now < data.expiry) {
+                        activeCoupon = data.code;
+                        break;
+                    }
+                }
+            }
+
+            if(activeCoupon) {
+                const numVal = extractNumber(basePriceStr);
+                if(numVal > 0) {
+                    let discountAmount = numVal * 0.10; // 10% Discount
+                    
+                    // Smart Max Cap Logic: ডলারে ($) হলে সর্বোচ্চ ১০ ডলার, টাকায় (BDT) হলে সর্বোচ্চ ১০০০ টাকা।
+                    const maxCap = basePriceStr.includes('$') ? 10 : (basePriceStr.toLowerCase().includes('bdt') || basePriceStr.includes('৳') ? 1000 : 10);
+                    
+                    if(discountAmount > maxCap) discountAmount = maxCap;
+                    
+                    const finalVal = numVal - discountAmount;
+                    
+                    // ফরম্যাট ঠিক রেখে স্ট্রিং বানানো
+                    const newPriceStr = basePriceStr.replace(numVal.toString(), finalVal.toFixed(2).replace(/\.00$/, '')); 
+                    
+                    return { oldPrice: basePriceStr, newPrice: newPriceStr, coupon: activeCoupon };
+                }
+            }
+            return { oldPrice: null, newPrice: basePriceStr, coupon: "" };
+        }
+
+        let currentAppName = "";
+        window.selectPackage = function(element, pkgName, price) {
+            triggerHaptic();
+            document.querySelectorAll('.package-card').forEach(card => card.classList.remove('active'));
+            if(element) element.classList.add('active');
+            
+            document.getElementById('selectedPkgName').innerText = pkgName;
+            
+            // ডিসকাউন্ট ক্যালকুলেশন
+            const discountData = calculateDiscount(price);
+            
+            originalSelectedPrice = price;
+            discountedSelectedPrice = discountData.newPrice;
+            appliedCouponCode = discountData.coupon;
+
+            const oldPriceEl = document.getElementById('oldPriceDisplay');
+            const displayPriceEl = document.getElementById('displayPrice');
+
+            if(discountData.oldPrice) {
+                oldPriceEl.innerText = discountData.oldPrice;
+                oldPriceEl.style.display = 'inline-block';
+                displayPriceEl.innerText = discountData.newPrice;
+                displayPriceEl.style.color = 'var(--ios-blue)'; // Highlight color for discounted price
+            } else {
+                oldPriceEl.style.display = 'none';
+                displayPriceEl.innerText = price;
+                displayPriceEl.style.color = 'var(--text-main)'; // Normal color
+            }
+        }
+
+        window.proceedToOrder = function() {
+            triggerHaptic();
+            const selectedPkg = document.getElementById('selectedPkgName').innerText;
+            // অর্ডারের পেজে অরিজিনাল প্রাইস, ডিসকাউন্ট প্রাইস এবং কুপন কোড সব ডাটা একসাথে পাঠানো হচ্ছে
+            window.location.href = `orders.html?app=${encodeURIComponent(currentAppName)}&pkg=${encodeURIComponent(selectedPkg)}&price=${encodeURIComponent(discountedSelectedPrice)}&oldPrice=${encodeURIComponent(originalSelectedPrice)}&coupon=${encodeURIComponent(appliedCouponCode)}`;
+        }
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, doc, onSnapshot, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAsP3AubiZpmvCRPngDePdvvQMiDTELCII",
+            authDomain: "apple-bot-sell.firebaseapp.com",
+            projectId: "apple-bot-sell",
+            storageBucket: "apple-bot-sell.firebasestorage.app",
+            messagingSenderId: "84956813839",
+            appId: "1:84956813839:web:5c2451f102a2291eafe17a"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        let currentAppUnsubscribe = null;
+        let allStoreApps = [];
+
+        function renderDynamicPackages(packagesArr, fallbackPrice) {
+            const container = document.getElementById('packagesContainer');
+            container.innerHTML = '';
+            
+            let pkgsToRender = packagesArr;
+            if (!pkgsToRender || pkgsToRender.length === 0) {
+                pkgsToRender = [{ 
+                    name: "Standard License", 
+                    price: fallbackPrice || "Free", 
+                    desc: "Full access to the core features and basic setup.", 
+                    features: ["Complete Bot Setup", "Standard Admin Panel", "Lifetime Access"], 
+                    isHot: true 
+                }];
+            }
+
+            pkgsToRender.forEach((pkg, index) => {
+                const isActive = index === 0 ? 'active' : '';
+                const badge = pkg.isHot ? `<div class="ribbon">HOT</div>` : '';
+                let features = '';
+                if(pkg.features && pkg.features.length > 0) {
+                    features = `<ul class="pkg-features">` + pkg.features.map(f => `<li><i class="fas fa-check-circle"></i> ${f}</li>`).join('') + `</ul>`;
+                }
+
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="package-card ${isActive}" onclick="selectPackage(this, '${pkg.name}', '${pkg.price}')">
+                        ${badge}
+                        <div class="pkg-top"><div class="pkg-title">${pkg.name}</div><div class="pkg-radio"></div></div>
+                        <div class="pkg-price">${pkg.price}</div>
+                        <div class="pkg-desc">${pkg.desc || ''}</div>
+                        ${features}
+                    </div>
+                `);
+            });
+
+            if(pkgsToRender.length > 0) {
+                // Auto Select First Package and Calculate Discount
+                selectPackage(document.querySelector('.package-card.active'), pkgsToRender[0].name, pkgsToRender[0].price);
+            }
+        }
+
+        function renderRelatedApps(excludeId) {
+            const grid = document.getElementById('relatedAppsGrid');
+            grid.innerHTML = '';
+            
+            let filtered = allStoreApps.filter(app => app.id !== excludeId).sort(() => Math.random() - 0.5);
+            let toShow = filtered.slice(0, 4);
+
+            toShow.forEach(data => {
+                const btnText = data.btnText || 'GET';
+                grid.insertAdjacentHTML('beforeend', `
+                    <div class="app-card" onclick="loadRelatedApp('${data.id}')">
+                        <img src="${data.image || 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80'}" class="frame-img">
+                        <div class="app-info">
+                            <div class="app-network">${data.network || 'Bot'}</div>
+                            <div class="app-name">${data.name || 'Unnamed App'}</div>
+                            <div class="bottom-row">
+                                <span class="price-tag">${data.price || 'Free'}</span>
+                                <span class="buy-btn">${btnText}</span>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            });
+        }
+
+        // --- SPA ENGINE ---
+        window.loadRelatedApp = function(appId) {
+            triggerHaptic();
+            const loader = document.getElementById('loadingOverlay');
+            loader.style.display = 'flex';
+            setTimeout(() => { loader.style.opacity = '1'; }, 10);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            window.history.pushState({ id: appId }, '', '?id=' + appId);
+            fetchAppDetails(appId);
+        }
+
+        window.addEventListener('popstate', (event) => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const appId = urlParams.get('id');
+            if(appId) {
+                document.getElementById('loadingOverlay').style.display = 'flex';
+                document.getElementById('loadingOverlay').style.opacity = '1';
+                fetchAppDetails(appId);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                window.location.href = "index.html";
+            }
+        });
+
+        function fetchAppDetails(appId) {
+            if (!appId) return;
+
+            if (currentAppUnsubscribe) {
+                currentAppUnsubscribe();
+            }
+
+            try {
+                const docRef = doc(db, "apps", appId);
+                
+                currentAppUnsubscribe = onSnapshot(docRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        currentAppName = data.name || "Unnamed App";
+                        
+                        document.getElementById('detailTitle').innerText = currentAppName;
+                        document.getElementById('detailNetwork').innerText = data.network || "Telegram";
+                        
+                        // Update Description
+                        const descEl = document.getElementById('detailDescription');
+                        const btnEl = document.getElementById('seeMoreDescBtn');
+                        if (data.description) {
+                            descEl.innerText = data.description;
+                            descEl.classList.add('desc-clamped'); 
+                            btnEl.style.display = 'inline-block';
+                        }
+
+                        // Update Networks
+                        if(data.network) {
+                            const netArr = data.network.split(',').map(n => n.trim()).filter(n => n);
+                            const netContainer = document.getElementById('networksContainer');
+                            netContainer.innerHTML = '';
+                            netArr.forEach(net => netContainer.innerHTML += `<div class="network-tag"><i class="fas fa-satellite-dish"></i> ${net}</div>`);
+                        }
+                        
+                        // Demo & Support Links
+                        const btnDemo = document.getElementById('btnDemo');
+                        if(data.demoLink) { btnDemo.href = data.demoLink; btnDemo.style.display = 'flex'; } 
+                        else btnDemo.style.display = 'none';
+
+                        const btnSupport = document.getElementById('btnSupport');
+                        if(data.supportLink) { btnSupport.href = data.supportLink; btnSupport.style.display = 'flex'; } 
+                        else { btnSupport.href = "https://t.me/nahid_trix_bot"; btnSupport.style.display = 'flex'; }
+
+                        // Packages (Discount is calculated inside)
+                        renderDynamicPackages(data.packages, data.price);
+
+                        // Images Update
+                        if(data.image) document.getElementById('detailIcon').src = data.image;
+                        if(data.screenshots && data.screenshots.length > 0) window.setDynamicScreenshots(data.screenshots);
+                        else if (data.image) window.setDynamicScreenshots([data.image]); 
+
+                        // Related Apps 
+                        renderRelatedApps(appId);
+
+                    } else {
+                        document.getElementById('detailTitle').innerText = "App Not Found";
+                    }
+                    
+                    setTimeout(() => {
+                        document.getElementById('loadingOverlay').style.opacity = '0';
+                        setTimeout(() => document.getElementById('loadingOverlay').style.display = 'none', 300);
+                    }, 500);
+                    
+                }, (error) => {
+                    console.error("Error:", error);
+                    document.getElementById('loadingOverlay').style.opacity = '0';
+                    setTimeout(() => document.getElementById('loadingOverlay').style.display = 'none', 300);
+                });
+
+            } catch (error) {
+                console.error("Error setting snapshot:", error);
+                document.getElementById('loadingOverlay').style.display = 'none';
+            }
+        }
+
+        async function init() {
+            try {
+                const snap = await getDocs(collection(db, "apps"));
+                snap.forEach(doc => allStoreApps.push({ id: doc.id, ...doc.data() }));
+            } catch(e) { console.error("Could not fetch related apps"); }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const appId = urlParams.get('id');
+            
+            if(appId) {
+                fetchAppDetails(appId);
+            } else {
+                document.getElementById('loadingOverlay').style.opacity = '0';
+                setTimeout(() => document.getElementById('loadingOverlay').style.display = 'none', 300);
+                document.getElementById('detailTitle').innerText = "Demo Project";
+                renderDynamicPackages(null, "$15.00");
+                window.setDynamicScreenshots([]); 
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>

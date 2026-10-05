@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Secure Auth | NAHID TRIX</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* === iOS UI/UX RESET === */
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+        :root {
+            --bg-main: #f2f2f7;          
+            --bg-card: #ffffff;          
+            --text-main: #1c1c1e;        
+            --text-muted: #8e8e93;       
+            --ios-blue: #007aff;         
+            --ios-red: #ff3b30;
+            --ios-green: #34c759;
+            --shadow-soft: 0 8px 30px rgba(0,0,0,0.08);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* === CUSTOM ALERT SYSTEM === */
+        #customAlert {
+            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 350px; background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            padding: 15px 20px; border-radius: 18px; display: flex; align-items: center; gap: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1); z-index: 9999;
+            transition: 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            border: 0.5px solid rgba(0,0,0,0.05);
+        }
+        #customAlert.show { top: 20px; }
+        #alertIcon { font-size: 20px; }
+        #alertMsg { font-size: 13px; font-weight: 500; line-height: 1.4; }
+        .alert-error { border-left: 5px solid var(--ios-red) !important; color: var(--ios-red); }
+        .alert-success { border-left: 5px solid var(--ios-green) !important; color: var(--ios-green); }
+
+        /* === AUTH UI === */
+        .auth-card {
+            width: 100%; max-width: 400px; background: var(--bg-card);
+            padding: 30px 25px; border-radius: 28px; box-shadow: var(--shadow-soft);
+            animation: slideUp 0.6s ease;
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .header { text-align: center; margin-bottom: 25px; }
+        .logo-box { 
+            width: 60px; height: 60px; background: var(--ios-blue); color: #fff;
+            border-radius: 18px; display: flex; align-items: center; justify-content: center;
+            font-size: 28px; margin: 0 auto 15px auto; box-shadow: 0 8px 20px rgba(0, 122, 255, 0.2);
+        }
+        .header h2 { font-family: 'Orbitron'; font-size: 22px; letter-spacing: 1px; }
+
+        .segment-tab {
+            background: #f1f1f6; padding: 4px; border-radius: 12px;
+            display: flex; margin-bottom: 25px;
+        }
+        .tab-btn {
+            flex: 1; padding: 10px; border: none; background: transparent;
+            font-size: 13px; font-weight: 600; color: var(--text-muted);
+            cursor: pointer; border-radius: 10px; transition: 0.3s;
+        }
+        .tab-btn.active { background: #fff; color: var(--ios-blue); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+
+        .input-group { margin-bottom: 18px; }
+        .input-group label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; padding-left: 5px; }
+        .input-group input {
+            width: 100%; padding: 14px 18px; border-radius: 14px; border: 1px solid #eee;
+            background: #f9f9fb; font-family: 'Poppins'; font-size: 14px; outline: none; transition: 0.3s;
+        }
+        .input-group input:focus { border-color: var(--ios-blue); background: #fff; box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.05); }
+
+        .main-btn {
+            width: 100%; padding: 16px; background: var(--ios-blue); color: #fff;
+            border: none; border-radius: 16px; font-size: 15px; font-weight: 700;
+            cursor: pointer; transition: 0.3s; margin-top: 10px;
+        }
+        .main-btn:active { transform: scale(0.97); }
+        .main-btn:disabled { opacity: 0.6; cursor: not-allowed; background: var(--text-muted); }
+
+        .tg-sync-bar {
+            margin-top: 25px; text-align: center; font-size: 11px; color: var(--text-muted);
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .tg-sync-bar i { color: #0088cc; font-size: 15px; }
+
+        #registerSection { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="customAlert">
+        <i id="alertIcon" class="fas"></i>
+        <div id="alertMsg"></div>
+    </div>
+
+    <div class="auth-card">
+        <div class="header">
+            <div class="logo-box"><i class="fas fa-shield-alt"></i></div>
+            <h2>NAHID <span>TRIX</span></h2>
+        </div>
+
+        <div class="segment-tab">
+            <button class="tab-btn active" id="btnLogin" onclick="toggleAuth('login')">LOGIN</button>
+            <button class="tab-btn" id="btnRegister" onclick="toggleAuth('register')">REGISTER</button>
+        </div>
+
+        <div id="loginSection">
+            <div class="input-group">
+                <label>Email Address</label>
+                <input type="email" id="lEmail" placeholder="name@email.com">
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="lPass" placeholder="••••••••">
+            </div>
+            <button class="main-btn" id="lSubmit" onclick="doLogin()">Sign In</button>
+        </div>
+
+        <div id="registerSection">
+            <div class="input-group">
+                <label>Create Email</label>
+                <input type="email" id="rEmail" placeholder="your@email.com">
+            </div>
+            <div class="input-group">
+                <label>Set Password</label>
+                <input type="password" id="rPass" placeholder="Min. 6 characters">
+            </div>
+            <button class="main-btn" id="rSubmit" onclick="doRegister()">Create Account</button>
+        </div>
+
+        <div class="tg-sync-bar" id="tgSyncContainer">
+            <i class="fab fa-telegram"></i>
+            <span id="tgStatus">Checking Telegram Data...</span>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAsP3AubiZpmvCRPngDePdvvQMiDTELCII",
+            authDomain: "apple-bot-sell.firebaseapp.com",
+            projectId: "apple-bot-sell",
+            storageBucket: "apple-bot-sell.firebasestorage.app",
+            messagingSenderId: "84956813839",
+            appId: "1:84956813839:web:5c2451f102a2291eafe17a"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        // --- TELEGRAM INIT ---
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        const tgUser = tg.initDataUnsafe?.user;
+
+        // --- DOM Elements ---
+        const loginBtn = document.getElementById('lSubmit');
+        const registerBtn = document.getElementById('rSubmit');
+        const tgStatusEl = document.getElementById('tgStatus');
+
+        // --- CUSTOM ALERT LOGIC ---
+        function showAlert(msg, type = 'error') {
+            const alertBox = document.getElementById('customAlert');
+            const icon = document.getElementById('alertIcon');
+            const msgEl = document.getElementById('alertMsg');
+
+            alertBox.className = type === 'error' ? 'alert-error' : 'alert-success';
+            icon.className = type === 'error' ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
+            msgEl.innerText = msg;
+
+            alertBox.classList.add('show');
+            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred(type === 'error' ? 'error' : 'success');
+
+            setTimeout(() => { alertBox.classList.remove('show'); }, 3500);
+        }
+
+        // --- SUPER ALGORITHM: STRICT TELEGRAM CHECK ---
+        function checkTelegramLink() {
+            if (!tgUser) {
+                // টেলিগ্রাম ডেটা না পেলে বাটন অফ এবং ওয়ার্নিং
+                tgStatusEl.innerHTML = `<span style="color:var(--ios-red); font-weight:600;">❌ Data Not Found! <a href="https://t.me/nahid_trix_bot/app" style="color:var(--ios-blue); text-decoration: underline;">Open via Telegram App</a></span>`;
+                loginBtn.disabled = true;
+                registerBtn.disabled = true;
+                return false;
+            } else {
+                // ডেটা পেলে বাটন অন
+                const fullName = `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim();
+                tgStatusEl.innerHTML = `<i class="fas fa-check-circle" style="color:var(--ios-green)"></i> Linked: <b>${fullName}</b> (@${tgUser.username || 'n/a'})`;
+                loginBtn.disabled = false;
+                registerBtn.disabled = false;
+                return true;
+            }
+        }
+        
+        // কল করে চেকিং শুরু করা
+        checkTelegramLink();
+
+        // --- TOGGLE FLOW ---
+        window.toggleAuth = function(type) {
+            if (navigator.vibrate) navigator.vibrate(30);
+            document.getElementById('btnLogin').classList.toggle('active', type === 'login');
+            document.getElementById('btnRegister').classList.toggle('active', type === 'register');
+            document.getElementById('loginSection').style.display = type === 'login' ? 'block' : 'none';
+            document.getElementById('registerSection').style.display = type === 'register' ? 'block' : 'none';
+        }
+
+        // --- LOGIN PROCESS ---
+        window.doLogin = async function() {
+            if(!checkTelegramLink()) return showAlert("Please open the app from Telegram first!");
+
+            const email = document.getElementById('lEmail').value.trim();
+            const pass = document.getElementById('lPass').value;
+
+            if(!email || !pass) return showAlert("Please enter your email and password.");
+
+            loginBtn.disabled = true;
+            loginBtn.innerText = "Checking...";
+
+            try {
+                const cred = await signInWithEmailAndPassword(auth, email, pass);
+                
+                // লগইন করার সময়ও ইউজারের লেটেস্ট টেলিগ্রাম ডেটা আপডেট করে দেওয়া
+                const fullName = `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim();
+                await setDoc(doc(db, "users", cred.user.uid), {
+                    tgId: tgUser.id,
+                    tgUsername: tgUser.username || "n/a",
+                    name: fullName,
+                    photo_url: tgUser.photo_url || "",
+                    lastLogin: serverTimestamp()
+                }, { merge: true });
+
+                localStorage.setItem('nahidStore_isLoggedIn', 'true');
+                localStorage.setItem('nahidStore_uid', cred.user.uid);
+                
+                showAlert("Welcome back! Loading your profile...", "success");
+                setTimeout(() => window.location.replace('index.html'), 1500);
+            } catch (err) {
+                loginBtn.disabled = false;
+                loginBtn.innerText = "Sign In";
+                let errorMsg = "Login failed. Please check your info.";
+                if(err.code === "auth/invalid-credential") errorMsg = "Wrong password or email. Try again!";
+                showAlert(errorMsg);
+            }
+        }
+
+        // --- REGISTER PROCESS ---
+        window.doRegister = async function() {
+            if(!checkTelegramLink()) return showAlert("Please open the app from Telegram first!");
+
+            const email = document.getElementById('rEmail').value.trim();
+            const pass = document.getElementById('rPass').value;
+
+            if(!email || !pass) return showAlert("Fill all fields to create an account.");
+            if(pass.length < 6) return showAlert("Password must be at least 6 characters.");
+
+            registerBtn.disabled = true;
+            registerBtn.innerText = "Creating...";
+
+            try {
+                const cred = await createUserWithEmailAndPassword(auth, email, pass);
+                
+                // Save FULL Telegram Data to Firestore
+                const fullName = `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim();
+                
+                await setDoc(doc(db, "users", cred.user.uid), {
+                    email: email,
+                    uid: cred.user.uid,
+                    tgId: tgUser.id,
+                    tgUsername: tgUser.username || "n/a",
+                    name: fullName,
+                    photo_url: tgUser.photo_url || "",
+                    joined: serverTimestamp(),
+                    balance: 0
+                }, { merge: true });
+
+                localStorage.setItem('nahidStore_isLoggedIn', 'true');
+                localStorage.setItem('nahidStore_uid', cred.user.uid);
+                
+                showAlert("Account created successfully! ✨", "success");
+                setTimeout(() => window.location.replace('index.html'), 2000);
+            } catch (err) {
+                registerBtn.disabled = false;
+                registerBtn.innerText = "Create Account";
+                if(err.code === "auth/email-already-in-use") {
+                    showAlert("This email is already registered. Please Login instead!");
+                    setTimeout(() => toggleAuth('login'), 2000); 
+                } else {
+                    showAlert("Registration error. Try a different email.");
+                }
+            }
+        }
+    </script>
+</body>
+</html>

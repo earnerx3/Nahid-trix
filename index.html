@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAHID TRIX | Premium Mini App Store</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <style>
+        /* === iOS LIGHT THEME === */
+        :root {
+            --bg-main: #f2f2f7;          
+            --bg-card: #ffffff;          
+            --text-main: #1c1c1e;        
+            --text-muted: #8e8e93;       
+            
+            --color-nahid-1: #ffb300;    
+            --color-nahid-2: #ff9800;    
+            --color-trix: #00bcd4;       
+            --color-pink: #ff2d55;       
+            --ios-blue: #007aff;         
+            
+            --border-color: #e5e5ea;     
+            --shadow-soft: 0 4px 14px rgba(0,0,0,0.06);
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            padding-bottom: 85px; 
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased; 
+        }
+
+        /* ====== HEADER ====== */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 18px; 
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 0.5px solid var(--border-color);
+            height: 40px; 
+            transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 17px; 
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px; 
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .logo-img {
+            width: 26px; 
+            height: 26px; 
+            border-radius: 8px; 
+            object-fit: cover;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .logo .nahid {
+            background: linear-gradient(to right, #ff9800, #ff5722);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .logo .trix { color: var(--text-main); }
+        .logo .trix span { color: var(--color-trix); }
+
+        /* ====== SMART SEARCH CONTAINER ====== */
+        .search-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            position: relative;
+            flex-grow: 1; 
+        }
+
+        .search-input-wrapper {
+            width: 0; 
+            opacity: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            background: #e3e3e8; 
+            border-radius: 10px;
+            height: 34px;
+            transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+            position: absolute;
+            right: 35px; 
+        }
+
+        .search-input-wrapper.active {
+            width: calc(100vw - 80px); 
+            max-width: 400px;
+            opacity: 1;
+            padding: 0 10px;
+        }
+
+        .search-input-wrapper input {
+            width: 100%;
+            padding: 0 8px;
+            border: none;
+            background: transparent;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            outline: none;
+            color: var(--text-main);
+        }
+
+        .search-input-wrapper input::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .search-toggle-btn {
+            font-size: 16px;
+            color: var(--ios-blue);
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 1001;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+        
+        .search-toggle-btn:active {
+            transform: scale(0.85); 
+        }
+
+        .search-toggle-btn.active {
+            color: var(--ios-red, #ff3b30); 
+            transform: rotate(90deg); 
+        }
+
+        header.search-active .logo {
+            opacity: 0;
+            transform: translateX(-20px);
+            pointer-events: none;
+        }
+
+        /* Suggestions Box */
+        .suggestions-list {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 18px;
+            width: calc(100vw - 36px);
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            list-style: none;
+            padding: 10px 0;
+            margin: 0;
+            max-height: 300px;
+            overflow-y: auto;
+            border-radius: 16px;
+            border: 0.5px solid var(--border-color);
+            z-index: 1000;
+            animation: fadeInDrop 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        @keyframes fadeInDrop {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .suggestions-list .ai-header {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--ios-blue);
+            padding: 5px 20px 10px 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .suggestions-list li {
+            padding: 12px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-main);
+            transition: background 0.2s;
+        }
+        
+        .suggestions-list li:hover { background: rgba(0,0,0,0.03); }
+        .suggestions-list li i { color: var(--text-muted); font-size: 12px; }
+        .suggestions-list li .highlight { font-weight: 700; color: var(--ios-blue); }
+
+        /* ====== MAIN CONTENT & GRID ====== */
+        .main-content {
+            padding: 15px 18px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Auto-Sliding Banner */
+        .slider-wrapper {
+            width: 100%;
+            border-radius: 20px; 
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .slider-track {
+            display: flex;
+            width: 300%;
+            animation: slideAuto 15s infinite cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .slide {
+            width: 33.333%;
+            position: relative;
+            background: #000; 
+        }
+
+        .slide img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            opacity: 0.7;
+        }
+
+        .slide-content {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            z-index: 2;
+            color: #fff; 
+        }
+
+        .slide-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+        .slide-btn {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #fff;
+            border: 0.5px solid rgba(255,255,255,0.4);
+            padding: 8px 18px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        @keyframes slideAuto {
+            0%, 25% { transform: translateX(0); }
+            33%, 58% { transform: translateX(-33.333%); }
+            66%, 91% { transform: translateX(-66.666%); }
+            100% { transform: translateX(0); }
+        }
+
+        /* Mixed Grid Layout */
+        .dynamic-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .full-width { grid-column: span 2; }
+
+        .app-card {
+            background: var(--bg-card);
+            border-radius: 18px;
+            padding: 10px;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-soft);
+            transition: transform 0.2s;
+        }
+        
+        .app-card:active { transform: scale(0.96); }
+
+        .frame-img {
+            width: 100%;
+            aspect-ratio: 9 / 13;
+            border-radius: 12px;
+            object-fit: cover;
+            margin-bottom: 10px;
+            background: #e5e5ea;
+        }
+
+        .full-width .frame-img { aspect-ratio: 16 / 7; }
+
+        .app-info { display: flex; flex-direction: column; gap: 4px; }
+
+        .app-name { 
+            font-size: 13px; 
+            font-weight: 600; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            color: var(--text-main);
+        }
+        
+        .app-network { 
+            font-size: 10px; 
+            color: var(--ios-blue); 
+            background: rgba(0, 122, 255, 0.1);
+            padding: 3px 6px;
+            border-radius: 6px;
+            width: max-content;
+            font-weight: 500;
+        }
+
+        .bottom-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .price-tag {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .buy-btn {
+            font-size: 11px;
+            padding: 5px 12px;
+            border-radius: 15px;
+            background: var(--ios-blue);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .loading-text {
+            grid-column: span 2;
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        #scrollLoader {
+            text-align: center;
+            padding: 15px;
+            color: var(--text-muted);
+            font-size: 13px;
+            display: none;
+        }
+
+        /* ====== BOTTOM NAVIGATION ====== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-top: 0.5px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 20px 0; 
+            z-index: 1000;
+        }
+
+        .nav-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 9.5px; 
+            font-weight: 500;
+            gap: 4px; 
+        }
+
+        .nav-link i { font-size: 18px; } 
+        .nav-link.active { color: var(--ios-blue); }
+
+        /* ====== AUTH POPUP MODAL ====== */
+        .auth-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.4); backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 9999; display: none; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .auth-overlay.show { display: flex; opacity: 1; }
+        
+        .auth-modal {
+            background: var(--bg-card); width: 85%; max-width: 340px;
+            border-radius: 24px; padding: 30px 20px 20px; text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .auth-overlay.show .auth-modal { transform: scale(1); }
+        
+        .auth-icon {
+            width: 60px; height: 60px; background: rgba(0, 122, 255, 0.1);
+            color: var(--ios-blue); border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-size: 28px;
+            margin: 0 auto 15px;
+        }
+        
+        .auth-title { font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
+        .auth-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 25px; line-height: 1.4; }
+        .auth-btn-group { display: flex; gap: 10px; }
+        
+        .auth-btn {
+            flex: 1; padding: 12px; border-radius: 14px; font-size: 14px; font-weight: 600;
+            cursor: pointer; border: none; transition: 0.2s;
+        }
+        .btn-cancel { background: #f2f2f7; color: var(--text-main); }
+        .btn-cancel:active { background: #e5e5ea; }
+        .btn-login { background: var(--ios-blue); color: #fff; }
+        .btn-login:active { transform: scale(0.96); }
+    </style>
+</head>
+<body>
+
+    <header id="mainHeader">
+        <a href="index.html" class="logo">
+            <img src="https://ui-avatars.com/api/?name=NT&background=ff9800&color=fff" alt="Logo" class="logo-img">
+            <span class="nahid">NAHID</span> <span class="trix">TRIX</span>
+        </a>
+        
+        <div class="search-container">
+            <div class="search-input-wrapper" id="searchInputWrapper">
+                <input type="text" id="searchInput" placeholder="Ask me about apps..." autocomplete="off">
+            </div>
+            <div class="search-toggle-btn" id="searchToggleBtn">
+                <i class="fas fa-search" id="searchIcon"></i>
+            </div>
+        </div>
+
+        <ul class="suggestions-list" id="suggestionsBox"></ul>
+    </header>
+
+    <main class="main-content" id="mainContentArea">
+        
+        <div class="slider-wrapper">
+            <div class="slider-track">
+                <div class="slide">
+                    <img src="https://images.unsplash.com/photo-1639762681485-074b7f4ec651?q=80&w=800&auto=format&fit=crop" alt="Banner 1">
+                    <div class="slide-content">
+                        <div class="app-network" style="color:#fff; background:var(--ios-blue)">Zero Investment</div>
+                        <div class="slide-title">Build Bot For Free</div>
+                        <div style="font-size: 11px; color:#f2f2f7">Share 30% of Ad Revenue</div>
+                        <button class="slide-btn" onclick="triggerHaptic(); window.location.href='details.html?id=free_setup_bot'">Claim Now</button>
+                    </div>
+                </div>
+                <div class="slide">
+                    <img src="https://images.unsplash.com/photo-1621416894569-0f39ed31d247?q=80&w=800&auto=format&fit=crop" alt="Banner 2">
+                    <div class="slide-content">
+                        <div class="app-network" style="color:#fff; background:#ff2d55">Trending Now</div>
+                        <div class="slide-title">Telegram Mini Apps</div>
+                        <button class="slide-btn" onclick="triggerHaptic(); window.location.href='trending.html'">View Projects</button>
+                    </div>
+                </div>
+                <div class="slide">
+                    <img src="https://images.unsplash.com/photo-1642104704074-907c0698cbd9?q=80&w=800&auto=format&fit=crop" alt="Banner 3">
+                    <div class="slide-content">
+                        <div class="app-network" style="color:#fff; background:#ff9800">Community</div>
+                        <div class="slide-title">Join Our Channel</div>
+                        <button class="slide-btn" onclick="triggerHaptic(); window.Telegram.WebApp.openTelegramLink('https://t.me/nahid_trix_channel')">Join Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dynamic-grid" id="appGrid">
+            </div>
+        
+        <div id="scrollLoader"><i class="fas fa-spinner fa-spin"></i> Fetching more...</div>
+        
+    </main>
+
+    <div class="auth-overlay" id="authOverlay">
+        <div class="auth-modal">
+            <div class="auth-icon"><i class="fas fa-lock"></i></div>
+            <div class="auth-title">Login Required</div>
+            <div class="auth-desc">You need to log in or create an account to access this feature.</div>
+            <div class="auth-btn-group">
+                <button class="auth-btn btn-cancel" onclick="closeAuthModal()">Cancel</button>
+                <button class="auth-btn btn-login" onclick="triggerHaptic(); window.location.href='auth.html'">Login Now</button>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-link active">
+            <i class="fas fa-layer-group"></i>
+            <span>Apps</span>
+        </a>
+        <a href="feed.html" class="nav-link">
+            <i class="fas fa-stream"></i>
+            <span>Feed</span>
+        </a>
+        <a href="trending.html" class="nav-link">
+            <i class="fas fa-fire"></i>
+            <span>Trending</span>
+        </a>
+        <a href="orders.html" class="nav-link" onclick="checkAuthAccess(event, 'orders.html')">
+            <i class="fas fa-wallet"></i>
+            <span>Wallet</span>
+        </a>
+        <a href="profile.html" class="nav-link" onclick="checkAuthAccess(event, 'profile.html')">
+            <i class="fas fa-user-circle"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <script>
+        const tg = window.Telegram?.WebApp;
+        if(tg) tg.expand();
+
+        const mainHeader = document.getElementById('mainHeader');
+        const searchToggleBtn = document.getElementById('searchToggleBtn');
+        const searchIcon = document.getElementById('searchIcon');
+        const searchInputWrapper = document.getElementById('searchInputWrapper');
+        const searchInput = document.getElementById('searchInput');
+        const suggestionsBox = document.getElementById('suggestionsBox');
+
+        let isSearchOpen = false;
+
+        function triggerHaptic() {
+            if (navigator.vibrate) navigator.vibrate(50);
+            if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+        }
+
+        // --- AUTH CHECKER LOGIC ---
+        function showAuthModal() {
+            triggerHaptic();
+            const overlay = document.getElementById('authOverlay');
+            overlay.classList.add('show');
+        }
+
+        function closeAuthModal() {
+            triggerHaptic();
+            const overlay = document.getElementById('authOverlay');
+            overlay.classList.remove('show');
+        }
+
+        function checkAuthAccess(event, targetUrl) {
+            event.preventDefault(); // Stop the link from opening immediately
+            const isLoggedIn = localStorage.getItem('nahidStore_isLoggedIn') === 'true';
+            
+            if (isLoggedIn) {
+                window.location.href = targetUrl; // If logged in, go to the page
+            } else {
+                showAuthModal(); // If not logged in, show the pop-up
+            }
+        }
+        // --------------------------
+
+        function toggleSearch() {
+            triggerHaptic();
+            isSearchOpen = !isSearchOpen;
+            if (isSearchOpen) {
+                mainHeader.classList.add('search-active');
+                searchInputWrapper.classList.add('active');
+                searchToggleBtn.classList.add('active');
+                searchIcon.className = 'fas fa-times'; 
+                setTimeout(() => searchInput.focus(), 300);
+            } else {
+                closeSearch();
+            }
+        }
+
+        function closeSearch() {
+            mainHeader.classList.remove('search-active');
+            searchInputWrapper.classList.remove('active');
+            searchToggleBtn.classList.remove('active');
+            searchIcon.className = 'fas fa-search'; 
+            searchInput.value = '';
+            suggestionsBox.style.display = 'none';
+            searchInput.blur();
+            isSearchOpen = false;
+        }
+
+        searchToggleBtn.addEventListener('click', toggleSearch);
+        document.addEventListener('click', function(event) {
+            if (isSearchOpen && !mainHeader.contains(event.target) && !suggestionsBox.contains(event.target)) {
+                closeSearch();
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.app-card') || e.target.closest('.nav-link') || e.target.closest('.slide-btn')) {
+                triggerHaptic();
+            }
+        });
+
+        // Search Logic using Global Data
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            suggestionsBox.innerHTML = ''; 
+
+            if (query.length > 0 && window.botDatabase) {
+                const results = window.botDatabase.filter(bot => bot.name.toLowerCase().includes(query));
+                
+                if (results.length > 0) {
+                    suggestionsBox.style.display = 'block';
+                    const headerLi = document.createElement('div');
+                    headerLi.className = 'ai-header';
+                    headerLi.innerHTML = `<i class="fas fa-robot"></i> I found ${results.length} result(s)`;
+                    suggestionsBox.appendChild(headerLi);
+
+                    results.forEach(bot => {
+                        const li = document.createElement('li');
+                        const regex = new RegExp(`(${query})`, "gi");
+                        const highlightedName = bot.name.replace(regex, "<span class='highlight'>$1</span>");
+
+                        li.innerHTML = `<i class="fas fa-bolt"></i> ${highlightedName}`;
+                        li.addEventListener('click', () => {
+                            triggerHaptic();
+                            window.location.href = `details.html?id=${bot.id}`; 
+                        });
+                        suggestionsBox.appendChild(li);
+                    });
+                } else {
+                    suggestionsBox.style.display = 'block';
+                    suggestionsBox.innerHTML = `<div class="ai-header" style="color:var(--text-muted)"><i class="fas fa-search-minus"></i> No matching apps found</div>`;
+                }
+            } else {
+                suggestionsBox.style.display = 'none';
+            }
+        });
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAsP3AubiZpmvCRPngDePdvvQMiDTELCII",
+            authDomain: "apple-bot-sell.firebaseapp.com",
+            projectId: "apple-bot-sell",
+            storageBucket: "apple-bot-sell.firebasestorage.app",
+            messagingSenderId: "84956813839",
+            appId: "1:84956813839:web:5c2451f102a2291eafe17a",
+            measurementId: "G-DJW9L11S0B"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // --- SUPER ALGORITHM STATE ---
+        let allApps = []; 
+        let currentIndex = 0; 
+        const ITEMS_PER_SCROLL = 6; 
+        let isFetching = false;
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function renderAppsChunk() {
+            const appGrid = document.getElementById('appGrid');
+            const scrollLoader = document.getElementById('scrollLoader');
+
+            const nextBatch = allApps.slice(currentIndex, currentIndex + ITEMS_PER_SCROLL);
+            
+            if (nextBatch.length === 0) {
+                scrollLoader.style.display = 'none';
+                return;
+            }
+
+            nextBatch.forEach(data => {
+                const isFullWidth = data.isFullWidth ? 'full-width' : '';
+                const customNetworkStyle = data.isFullWidth ? 'style="color:#ff2d55; background:rgba(255,45,85,0.1)"' : '';
+                const customNameStyle = data.isFullWidth ? 'style="font-size: 15px;"' : '';
+                const customPriceStyle = data.isFullWidth ? 'style="font-size: 15px;"' : '';
+                const customBtnStyle = data.isFullWidth ? 'style="background: #ff2d55;"' : '';
+                const btnText = data.btnText ? data.btnText : (data.isFullWidth ? 'BUY CODE' : 'GET');
+
+                // Clicking on app card takes user to details directly (No Auth Block Here)
+                const appHTML = `
+                    <a href="details.html?id=${data.id}" class="app-card ${isFullWidth}">
+                        <img src="${data.image || 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=400&auto=format&fit=crop'}" class="frame-img" alt="${data.name}">
+                        <div class="app-info">
+                            <div class="app-network" ${customNetworkStyle}>${data.network || 'Unknown Network'}</div>
+                            <div class="app-name" ${customNameStyle}>${data.name || 'Unnamed App'}</div>
+                            <div class="bottom-row">
+                                <span class="price-tag" ${customPriceStyle}>${data.price || '$0.00'}</span>
+                                <span class="buy-btn" ${customBtnStyle}>${btnText}</span>
+                            </div>
+                        </div>
+                    </a>
+                `;
+                appGrid.insertAdjacentHTML('beforeend', appHTML);
+            });
+
+            currentIndex += ITEMS_PER_SCROLL;
+            
+            if (currentIndex < allApps.length) {
+                scrollLoader.style.display = 'block';
+            } else {
+                scrollLoader.style.display = 'none';
+            }
+        }
+
+        async function fetchAppsBackground() {
+            if (isFetching) return;
+            isFetching = true;
+            try {
+                const querySnapshot = await getDocs(collection(db, "apps"));
+                let fetchedApps = [];
+                
+                querySnapshot.forEach((doc) => {
+                    fetchedApps.push({ id: doc.id, ...doc.data() });
+                });
+
+                localStorage.setItem('nahid_trix_apps_cache', JSON.stringify(fetchedApps));
+                localStorage.setItem('nahid_trix_last_fetch', Date.now().toString());
+
+                window.botDatabase = fetchedApps.map(app => ({ id: app.id, name: app.name }));
+
+                if (allApps.length === 0) {
+                    allApps = shuffleArray(fetchedApps);
+                    renderAppsChunk();
+                }
+
+            } catch (error) {
+                console.error("Background Fetch Error: ", error);
+            } finally {
+                isFetching = false;
+            }
+        }
+
+        function initStore() {
+            const cachedData = localStorage.getItem('nahid_trix_apps_cache');
+            const lastFetch = localStorage.getItem('nahid_trix_last_fetch');
+            const currentTime = Date.now();
+
+            if (cachedData) {
+                let parsedApps = JSON.parse(cachedData);
+                window.botDatabase = parsedApps.map(app => ({ id: app.id, name: app.name }));
+                
+                allApps = shuffleArray(parsedApps); 
+                document.getElementById('appGrid').innerHTML = ''; 
+                renderAppsChunk();
+            } else {
+                document.getElementById('appGrid').innerHTML = '<div class="loading-text"><i class="fas fa-spinner fa-spin"></i> Initializing System...</div>';
+            }
+
+            if (!cachedData || !lastFetch || (currentTime - parseInt(lastFetch)) > 300000) {
+                fetchAppsBackground();
+            }
+
+            setInterval(fetchAppsBackground, 300000); 
+        }
+
+        window.addEventListener('scroll', () => {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 200) {
+                if (currentIndex < allApps.length) {
+                    renderAppsChunk(); 
+                }
+            }
+        });
+
+        initStore();
+    </script>
+</body>
+</html>

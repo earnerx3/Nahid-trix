@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Feed | NAHID TRIX</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* === iOS LIGHT THEME === */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bg-main: #f2f2f7;          
+            --bg-card: #ffffff;          
+            --text-main: #1c1c1e;        
+            --text-muted: #8e8e93;       
+            
+            --color-nahid-1: #ffb300;    
+            --color-nahid-2: #ff9800;    
+            --color-trix: #00bcd4;       
+            --color-pink: #ff2d55;       
+            --ios-blue: #007aff;         
+            --ios-red: #ff3b30;
+            --ios-green: #34c759;
+            --ios-orange: #ff9500;
+            
+            --border-color: #e5e5ea;     
+            --shadow-soft: 0 4px 14px rgba(0,0,0,0.06);
+            --shadow-strong: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            padding-bottom: 85px; 
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased; 
+        }
+
+        /* ====== HEADER ====== */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 18px; 
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 0.5px solid var(--border-color);
+            height: 45px; 
+            transition: top 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        
+        header.hidden { top: -55px; }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 17px; 
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px; 
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .logo-img {
+            width: 26px; 
+            height: 26px; 
+            border-radius: 8px; 
+            object-fit: cover;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .logo .nahid {
+            background: linear-gradient(to right, #ff9800, #ff5722);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .logo .trix { color: var(--text-main); }
+        .logo .trix span { color: var(--color-trix); }
+
+        /* ====== SMART SEARCH CONTAINER ====== */
+        .search-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            position: relative;
+            flex-grow: 1; 
+        }
+
+        .search-input-wrapper {
+            width: 0; 
+            opacity: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            background: #e3e3e8; 
+            border-radius: 10px;
+            height: 34px;
+            transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+            position: absolute;
+            right: 35px; 
+        }
+
+        .search-input-wrapper.active {
+            width: calc(100vw - 80px); 
+            max-width: 400px;
+            opacity: 1;
+            padding: 0 10px;
+        }
+
+        .search-input-wrapper input {
+            width: 100%;
+            padding: 0 8px;
+            border: none;
+            background: transparent;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            outline: none;
+            color: var(--text-main);
+        }
+
+        .search-input-wrapper input::placeholder { color: var(--text-muted); font-weight: 400; }
+
+        .search-toggle-btn {
+            font-size: 16px;
+            color: var(--ios-blue);
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 1001;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+        
+        .search-toggle-btn:active { transform: scale(0.85); }
+        .search-toggle-btn.active { color: var(--ios-red); transform: rotate(90deg); }
+
+        header.search-active .logo { opacity: 0; transform: translateX(-20px); pointer-events: none; }
+
+        /* ====== CREATE POST SECTION ====== */
+        .create-post-container {
+            background: var(--bg-card);
+            padding: 12px 15px; /* Reduced Padding */
+            margin-bottom: 8px; /* Reduced Margin */
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Reduced Gap */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+            border-bottom: 0.5px solid var(--border-color);
+            cursor: pointer;
+        }
+
+        .create-post-container img {
+            width: 40px; /* Smaller Avatar */
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--border-color);
+        }
+
+        .create-post-input {
+            flex-grow: 1;
+            background: #f0f2f5; 
+            padding: 10px 18px; /* Tighter input */
+            border-radius: 30px; 
+            color: #65676b;
+            font-size: 13.5px;
+            transition: background 0.2s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .create-post-container:active .create-post-input { background: #e4e6e9; }
+
+        .create-post-icon-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 36px; /* Sleeker Icon Button */
+            height: 36px;
+            border-radius: 50%;
+            background: #e8f5e9;
+            color: var(--ios-green);
+            font-size: 18px;
+            transition: transform 0.2s;
+        }
+        .create-post-container:active .create-post-icon-btn { transform: scale(0.9); }
+
+        /* ====== FEED POST DESIGN (Facebook Compact Style) ====== */
+        .feed-container {
+            padding: 0;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .feed-post {
+            background: var(--bg-card);
+            padding: 12px 15px; /* Reduced Space (Compact) */
+            margin-bottom: 8px; /* Less space between posts */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+            border-bottom: 0.5px solid var(--border-color);
+            animation: fadeIn 0.4s ease;
+            transition: background 0.3s;
+        }
+        
+        .feed-post.highlight { background: rgba(0, 122, 255, 0.05); }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px; /* Tighter margin */
+        }
+
+        .post-author {
+            display: flex;
+            align-items: center;
+            gap: 8px; /* Tighter gap */
+            cursor: pointer;
+        }
+
+        .post-author img {
+            width: 40px; /* Reduced Avatar Size */
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--border-color);
+        }
+
+        .author-info { display: flex; flex-direction: column; }
+        .author-name { font-size: 14.5px; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 4px; }
+        .verified-badge { color: #0088cc; font-size: 12px; margin-top: 2px;} 
+        .author-meta { font-size: 12px; color: var(--text-muted); }
+
+        .post-options { color: var(--text-muted); cursor: pointer; padding: 2px 5px; font-size: 16px; }
+
+        /* TEXT TRUNCATION (Smart Algorithm) */
+        .post-text-wrapper { margin-bottom: 8px; /* Tighter Margin */ }
+        .post-text {
+            font-size: 14px; /* Reduced Font Size */
+            line-height: 1.4; /* Tighter line height */
+            color: var(--text-main);
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            transition: all 0.3s ease;
+        }
+        .post-text.clamp-image {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .post-text.clamp-text {
+            display: -webkit-box;
+            -webkit-line-clamp: 7;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .see-more-btn {
+            color: var(--ios-blue);
+            font-size: 13.5px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 2px;
+            display: none;
+        }
+        .see-more-btn:active { opacity: 0.7; }
+        
+        .hashtag { color: var(--ios-blue); cursor: pointer; font-weight: 600; }
+        .post-link { color: var(--ios-blue); text-decoration: none; word-break: break-all; }
+        .post-link:hover { text-decoration: underline; }
+
+        /* DOUBLE TAP TO LIKE WRAPPER (Compact Image) */
+        .post-image-wrapper {
+            position: relative;
+            width: 100%;
+            border-radius: 8px; /* Sharper radius */
+            margin-bottom: 8px; /* Tighter Margin */
+            overflow: hidden;
+            background: var(--bg-main); 
+        }
+        
+        .post-attached-image {
+            width: 100%;
+            height: auto; 
+            max-height: 500px; /* Reduced Max Height */
+            object-fit: cover;
+            display: block;
+        }
+
+        .heart-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 80px;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        @keyframes popHeart {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
+        .heart-overlay.animate { animation: popHeart 0.8s ease-out forwards; }
+
+        /* Post Stats */
+        .post-stats {
+            display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted);
+            padding-bottom: 8px; border-bottom: 1px solid var(--border-color); margin-bottom: 4px; /* Tighter Margin/Padding */
+        }
+
+        /* Post Action Buttons (Sleek & Compact Icons Only) */
+        .post-actions { display: flex; justify-content: space-around; align-items: center; padding-top: 0px; }
+        .action-btn {
+            display: flex; align-items: center; gap: 6px;
+            color: var(--text-muted); font-size: 18px; /* Smaller Icons */
+            cursor: pointer;
+            padding: 6px 10px; /* Much tighter hit area padding */
+            border-radius: 20px; transition: 0.2s;
+        }
+        .action-btn span { font-size: 13px; font-weight: 600; margin-top: 2px;} /* Smaller Numbers */
+        .action-btn i { transition: transform 0.2s; }
+        .action-btn:active { background: var(--bg-main); transform: scale(0.9); }
+        
+        .action-btn.liked { color: var(--ios-red); }
+        .action-btn.liked i { font-weight: 900; } 
+
+        /* ====== HORIZONTAL APP SLIDER ====== */
+        .suggested-section { background: var(--bg-card); padding: 15px 0 15px 15px; margin-bottom: 8px; border-bottom: 0.5px solid var(--border-color); box-shadow: 0 1px 2px rgba(0,0,0,0.02);}
+        .suggested-header { font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; padding-right: 15px;}
+        .suggested-header span { color: var(--text-muted); font-size: 11px; font-weight: 500; margin-left: auto; background: var(--bg-main); padding: 2px 8px; border-radius: 10px;}
+        .app-slider { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 5px; padding-right: 15px; }
+        .app-slider::-webkit-scrollbar { display: none; }
+        .app-slider-card { flex: 0 0 220px; scroll-snap-align: start; border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; background: var(--bg-main); text-decoration: none; color: inherit; display: block; transition: transform 0.2s;}
+        .app-slider-card:active { transform: scale(0.98); }
+        .app-slider-img { width: 100%; height: 110px; object-fit: cover; background: #e5e5ea; }
+        .app-slider-info { padding: 10px; }
+        .app-slider-title { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px;}
+        .app-slider-cat { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+        .app-slider-bottom { display: flex; justify-content: space-between; align-items: center; }
+        .app-slider-price { font-size: 12px; font-weight: 800; color: var(--ios-blue); }
+        .app-slider-btn { background: var(--ios-blue); color: #fff; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 10px; }
+
+        /* ====== SKELETON LOADER ====== */
+        .infinite-loader { padding: 0; display: none; } 
+        .skeleton {
+            background: #e0e0e0;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .skeleton-post { background: var(--bg-card); padding: 12px 15px; margin-bottom: 8px; border-bottom: 0.5px solid var(--border-color); }
+        .skeleton-avatar { width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; }
+        .skeleton-text { height: 12px; margin-bottom: 6px; width: 100%; }
+        .skeleton-img { height: 200px; width: 100%; border-radius: 8px; margin-top: 10px; margin-bottom: 10px; }
+
+        /* ====== BOTTOM SHEET (POP-UP) STYLES ====== */
+        .sheet-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .sheet-overlay.active { opacity: 1; pointer-events: auto; }
+        .bottom-sheet { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-card); border-radius: 20px 20px 0 0; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); z-index: 2001; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 -10px 40px rgba(0,0,0,0.1); }
+        .bottom-sheet.active { transform: translateY(0); }
+        .sheet-handle { width: 40px; height: 5px; background: #d1d1d6; border-radius: 5px; margin: 10px auto 15px auto; }
+        .sheet-header { text-align: center; font-size: 16px; font-weight: 700; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 10px; }
+
+        /* Share & Report Sheet */
+        .share-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding: 20px; }
+        .share-item { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: 0.2s; }
+        .share-item:active { transform: scale(0.9); }
+        .share-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 22px; color: #fff; }
+        .share-text { font-size: 11px; font-weight: 500; color: var(--text-main); text-align: center; }
+
+        /* Comment Sheet */
+        .comment-list { padding: 10px 20px; overflow-y: auto; flex-grow: 1; padding-bottom: 80px; }
+        .comment-item { display: flex; gap: 10px; margin-bottom: 15px; animation: fadeIn 0.3s ease;}
+        .comment-avatar { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; }
+        .comment-content { background: var(--bg-main); padding: 10px 12px; border-radius: 15px; border-top-left-radius: 5px; flex-grow: 1; }
+        .comment-name { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+        .comment-text { font-size: 13px; color: #3a3a3c; line-height: 1.4; }
+        .comment-actions { display: flex; gap: 15px; margin-top: 5px; margin-left: 45px; font-size: 11px; font-weight: 600; color: var(--text-muted); }
+        .comment-action { cursor: pointer; }
+        .comment-action.liked { color: var(--ios-red); }
+
+        .comment-input-area {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            background: var(--bg-card); border-top: 1px solid var(--border-color);
+            padding: 10px 15px; padding-bottom: calc(10px + env(safe-area-inset-bottom));
+            display: flex; gap: 10px; align-items: center;
+        }
+        .comment-input {
+            flex-grow: 1; background: var(--bg-main); border: none; padding: 12px 15px;
+            border-radius: 20px; font-family: 'Poppins'; font-size: 14px; outline: none;
+        }
+        .send-comment-btn { color: var(--ios-blue); font-size: 24px; cursor: pointer; padding: 5px; transition: 0.2s; }
+        .send-comment-btn:active { transform: scale(0.9) rotate(15deg); }
+
+        /* Custom Alert Notification */
+        #customAlert { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 350px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); padding: 15px 20px; border-radius: 18px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-strong); z-index: 99999; transition: 0.5s; border-left: 5px solid var(--ios-green); }
+        #customAlert.show { top: 20px; }
+        #alertMsg { font-size: 13px; font-weight: 500; color: var(--text-main); }
+
+        /* Search Active Filter Indicator */
+        .active-filter-bar { background: rgba(0, 122, 255, 0.1); color: var(--ios-blue); padding: 10px 15px; font-size: 13px; font-weight: 600; display: none; align-items: center; justify-content: space-between; border-bottom: 0.5px solid var(--border-color); }
+        .clear-filter-btn { background: #fff; padding: 4px 8px; border-radius: 10px; font-size: 11px; cursor: pointer; border: 1px solid var(--ios-blue); }
+        .clear-filter-btn:active { transform: scale(0.95); }
+
+        /* ====== BOTTOM NAVIGATION ====== */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-top: 0.5px solid var(--border-color);
+            display: flex; justify-content: space-around; padding: 10px 0 20px 0; z-index: 1000;
+        }
+        .nav-link { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: var(--text-muted); font-size: 9.5px; font-weight: 500; gap: 4px; }
+        .nav-link i { font-size: 18px; } 
+        .nav-link.active { color: var(--ios-blue); }
+
+    </style>
+</head>
+<body>
+
+    <div id="customAlert">
+        <i class="fas fa-check-circle" id="alertIcon" style="color:var(--ios-green); font-size: 20px;"></i>
+        <div id="alertMsg"></div>
+    </div>
+
+    <header id="mainHeader">
+        <a href="index.html" class="logo">
+            <img src="https://ui-avatars.com/api/?name=NT&background=ff9800&color=fff" alt="Logo" class="logo-img">
+            <span class="nahid">NAHID</span> <span class="trix">TRIX</span>
+        </a>
+        
+        <div class="search-container">
+            <div class="search-input-wrapper" id="searchInputWrapper">
+                <input type="text" id="searchInput" placeholder="Search or tag..." autocomplete="off">
+            </div>
+            <div class="search-toggle-btn" id="searchToggleBtn">
+                <i class="fas fa-search" id="searchIcon"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="active-filter-bar" id="activeFilterBar">
+        <span><i class="fas fa-hashtag"></i> Showing results for: <span id="filterKeyword"></span></span>
+        <div class="clear-filter-btn" onclick="clearSearchFilter()">Clear</div>
+    </div>
+
+    <main class="feed-container">
+        
+        <div class="create-post-container" id="createPostSection" onclick="if(checkAuthForAction()) window.location.href='post.html';">
+            <img src="https://ui-avatars.com/api/?name=U&background=007aff&color=fff" id="currUserAvatar" alt="User Avatar">
+            <div class="create-post-input" id="createPostText">
+                What's on your mind?
+            </div>
+            <div class="create-post-icon-btn"><i class="fas fa-image"></i></div>
+        </div>
+
+        <div id="dynamicFeed">
+            </div>
+        
+        <div class="infinite-loader" id="infiniteLoader">
+            <div class="skeleton-post">
+                <div style="display:flex; gap: 10px; margin-bottom:12px;">
+                    <div class="skeleton skeleton-avatar"></div>
+                    <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
+                        <div class="skeleton skeleton-text" style="width: 40%; margin-bottom: 6px;"></div>
+                        <div class="skeleton skeleton-text" style="width: 25%; margin-bottom: 0;"></div>
+                    </div>
+                </div>
+                <div class="skeleton skeleton-text"></div>
+                <div class="skeleton skeleton-text" style="width: 80%;"></div>
+                <div class="skeleton skeleton-img"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <div class="sheet-overlay" id="sheetOverlay" onclick="closeAllSheets()"></div>
+
+    <div class="bottom-sheet" id="shareSheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-header">Share & Options</div>
+        <div class="share-grid">
+            <div class="share-item" onclick="triggerHaptic(); closeAllSheets();">
+                <div class="share-icon" style="background: #0088cc;"><i class="fab fa-telegram-plane"></i></div>
+                <div class="share-text">Telegram</div>
+            </div>
+            <div class="share-item" onclick="triggerHaptic(); closeAllSheets();">
+                <div class="share-icon" style="background: #25D366;"><i class="fab fa-whatsapp"></i></div>
+                <div class="share-text">WhatsApp</div>
+            </div>
+            <div class="share-item" onclick="triggerHaptic(); alert('Link Copied!'); closeAllSheets();">
+                <div class="share-icon" style="background: var(--text-muted);"><i class="fas fa-link"></i></div>
+                <div class="share-text">Copy Link</div>
+            </div>
+            <div class="share-item" onclick="reportPost()">
+                <div class="share-icon" style="background: var(--ios-red);"><i class="fas fa-flag"></i></div>
+                <div class="share-text">Report</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-sheet" id="commentSheet" style="height: 75vh;">
+        <div class="sheet-handle"></div>
+        <div class="sheet-header">Comments</div>
+        <div class="comment-list" id="commentList">
+            <div style="text-align:center; padding:20px; color:var(--text-muted);"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+        </div>
+        <div class="comment-input-area">
+            <input type="text" class="comment-input" id="newCommentInput" placeholder="Write a comment...">
+            <i class="fas fa-paper-plane send-comment-btn" onclick="postComment()"></i>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-link"><i class="fas fa-layer-group"></i><span>Apps</span></a>
+        <a href="feed.html" class="nav-link active"><i class="fas fa-stream"></i><span>Feed</span></a>
+        <a href="trending.html" class="nav-link"><i class="fas fa-fire"></i><span>Trending</span></a>
+        <a href="orders.html" class="nav-link"><i class="fas fa-wallet"></i><span>Wallet</span></a>
+        <a href="profile.html" class="nav-link"><i class="fas fa-user-circle"></i><span>Profile</span></a>
+    </nav>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, orderBy, limit, startAfter, doc, increment, updateDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAsP3AubiZpmvCRPngDePdvvQMiDTELCII",
+            authDomain: "apple-bot-sell.firebaseapp.com",
+            projectId: "apple-bot-sell",
+            storageBucket: "apple-bot-sell.firebasestorage.app",
+            messagingSenderId: "84956813839",
+            appId: "1:84956813839:web:5c2451f102a2291eafe17a"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // --- Telegram & Haptics ---
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        window.triggerHaptic = function() {
+            if (navigator.vibrate) navigator.vibrate(40); 
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light'); 
+        }
+
+        // --- Alert System ---
+        window.showAlert = function(msg, type="success") {
+            const alertBox = document.getElementById('customAlert');
+            const icon = document.getElementById('alertIcon');
+            document.getElementById('alertMsg').innerText = msg;
+            
+            if(type === "error") {
+                alertBox.style.borderLeft = "5px solid var(--ios-red)";
+                icon.className = "fas fa-exclamation-circle";
+                icon.style.color = "var(--ios-red)";
+            } else {
+                alertBox.style.borderLeft = "5px solid var(--ios-green)";
+                icon.className = "fas fa-check-circle";
+                icon.style.color = "var(--ios-green)";
+            }
+
+            alertBox.classList.add('show');
+            setTimeout(() => alertBox.classList.remove('show'), 3500);
+        }
+
+        // --- Auth Check System ---
+        window.checkAuthForAction = function() {
+            if (localStorage.getItem('nahidStore_isLoggedIn') !== 'true') {
+                triggerHaptic();
+                showAlert("Please login to perform this action.", "error");
+                return false;
+            }
+            return true;
+        }
+
+        // --- User Avatar & Name Setup ---
+        const tgUser = tg.initDataUnsafe?.user;
+        let displayName = "Guest"; 
+        let userAvatar = "https://ui-avatars.com/api/?name=G&background=8e8e93&color=fff";
+        let userTgId = null;
+
+        if (tgUser && localStorage.getItem('nahidStore_isLoggedIn') === 'true') {
+            const firstName = tgUser.first_name || "";
+            const lastName = tgUser.last_name || "";
+            const fullName = `${firstName} ${lastName}`.trim();
+
+            if (fullName.length <= 16) displayName = fullName;
+            else if (firstName.length <= 16) displayName = firstName;
+            else displayName = firstName.substring(0, 15) + '...';
+
+            userTgId = tgUser.id;
+            const avatarImg = document.getElementById('currUserAvatar');
+            if (tgUser.photo_url) {
+                userAvatar = tgUser.photo_url;
+            } else {
+                userAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=007aff&color=fff`;
+            }
+            avatarImg.src = userAvatar;
+            document.getElementById('createPostText').innerText = `What's on your mind, ${displayName}?`;
+        }
+
+        let lastScrollY = window.scrollY;
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+            if (currentScrollY > lastScrollY && currentScrollY > 60) document.getElementById('mainHeader').classList.add('hidden'); 
+            else document.getElementById('mainHeader').classList.remove('hidden'); 
+            lastScrollY = currentScrollY;
+        });
+
+        // --- Smart Hashtag Search Logic ---
+        const mainHeader = document.getElementById('mainHeader');
+        const searchToggleBtn = document.getElementById('searchToggleBtn');
+        const searchIcon = document.getElementById('searchIcon');
+        const searchInputWrapper = document.getElementById('searchInputWrapper');
+        const searchInput = document.getElementById('searchInput');
+
+        let isSearchOpen = false;
+        let currentSearchQuery = "";
+        let searchTimeout = null;
+        
+        window.toggleSearch = function(forceOpen = false) {
+            triggerHaptic();
+            isSearchOpen = forceOpen || !isSearchOpen;
+            if (isSearchOpen) {
+                mainHeader.classList.add('search-active');
+                searchInputWrapper.classList.add('active');
+                searchToggleBtn.classList.add('active');
+                searchIcon.className = 'fas fa-times'; 
+                setTimeout(() => searchInput.focus(), 300);
+            } else {
+                closeSearch();
+            }
+        }
+
+        function closeSearch() {
+            mainHeader.classList.remove('search-active');
+            searchInputWrapper.classList.remove('active');
+            searchToggleBtn.classList.remove('active');
+            searchIcon.className = 'fas fa-search'; 
+            searchInput.value = '';
+            searchInput.blur();
+            isSearchOpen = false;
+            
+            // If we are clearing a search query by closing the search box, reset the feed
+            if(currentSearchQuery !== "") {
+                clearSearchFilter();
+            }
+        }
+        
+        searchToggleBtn.addEventListener('click', () => toggleSearch(false));
+
+        // Live Feed Filtering Logic
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const query = e.target.value.trim().replace('#', '').toLowerCase();
+                if(query.length > 0) {
+                    currentSearchQuery = query;
+                    document.getElementById('filterKeyword').innerText = query;
+                    document.getElementById('activeFilterBar').style.display = 'flex';
+                    document.getElementById('createPostSection').style.display = 'none'; // Hide create post while filtering
+                    resetAndFetchFeed();
+                } else if (currentSearchQuery !== "") {
+                    clearSearchFilter();
+                }
+            }, 600); // 600ms debounce
+        });
+
+        window.clearSearchFilter = function() {
+            triggerHaptic();
+            currentSearchQuery = "";
+            searchInput.value = "";
+            document.getElementById('activeFilterBar').style.display = 'none';
+            document.getElementById('createPostSection').style.display = 'flex';
+            
+            // Remove search param from URL if exists to clear the state purely
+            const url = new URL(window.location);
+            url.searchParams.delete('search');
+            window.history.pushState({}, '', url);
+
+            resetAndFetchFeed();
+        }
+
+        function resetAndFetchFeed() {
+            feedContainer.innerHTML = '';
+            lastVisibleDoc = null;
+            hasMorePosts = true;
+            seenPostIds.clear();
+            postCounter = 0;
+            currentAppIndex = 0;
+            fetchPosts(true);
+        }
+
+        // --- Bottom Sheets ---
+        const overlay = document.getElementById('sheetOverlay');
+        window.openSheet = function(sheetId) { triggerHaptic(); overlay.classList.add('active'); document.getElementById(sheetId).classList.add('active'); }
+        window.closeAllSheets = function() { overlay.classList.remove('active'); document.querySelectorAll('.bottom-sheet').forEach(sheet => { sheet.classList.remove('active'); }); }
+
+        window.toggleCommentLike = function(el) {
+            triggerHaptic();
+            if(el.classList.contains('liked')) { el.classList.remove('liked'); el.innerText = "Like"; } 
+            else { el.classList.add('liked'); el.innerText = "Liked"; }
+        }
+
+        let currentSharePostId = null;
+        window.openShareOptions = function(postId) {
+            currentSharePostId = postId;
+            openSheet('shareSheet');
+        }
+
+        window.reportPost = function() {
+            if(!checkAuthForAction()) return;
+            triggerHaptic();
+            showAlert("Report submitted successfully!", "success");
+            closeAllSheets();
+        }
+
+        // --- Telegram Bot Notifications ---
+        async function sendTgNotification(targetTgId, type, postId) {
+            if(!targetTgId || targetTgId === "undefined") return;
+            const botToken = "7851282160:AAEhW0xMLy_gKnII0WJYnxAqIh3QA5RrN40"; 
+            const appLink = `https://t.me/nahid_trix_bot/app?startapp=post_${postId}`;
+            
+            let message = "";
+            let btnText = "💬 View Post";
+
+            if(type === 'comment') message = `💬 <b>${displayName}</b> commented on your post.`;
+            else if(type === 'like') message = `❤️ <b>${displayName}</b> liked your post.`;
+            else if(type === 'warning') {
+                message = `🚨 <b>WARNING:</b> Your comment violated guidelines and was blocked. Profanity is strictly prohibited.`;
+                btnText = "Read Rules";
+            }
+
+            try {
+                await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        chat_id: targetTgId, text: message, parse_mode: 'HTML',
+                        reply_markup: { inline_keyboard: [[{ text: btnText, url: appLink }]] }
+                    })
+                });
+            } catch(e) {}
+        }
+
+        // --- Profanity Check ---
+        const badWords = ["fuck", "bitch", "gali", "scam", "spam", "chud", "magi", "bokachoda", "bal", "shit"]; 
+        function isClean(text) { return !badWords.some(word => text.toLowerCase().includes(word)); }
+
+        // --- Dynamic Comment System ---
+        let currentPostIdForComment = null;
+        let currentPostAuthorTgId = null;
+
+        window.openDynamicCommentSheet = async function(postId, authorTgId) {
+            if(!checkAuthForAction()) return;
+            currentPostIdForComment = postId;
+            currentPostAuthorTgId = authorTgId;
+            openSheet('commentSheet');
+            
+            const list = document.getElementById('commentList');
+            list.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);"><i class="fas fa-spinner fa-spin"></i> Loading...</div>`;
+            
+            try {
+                const q = query(collection(db, "posts", postId, "comments"), orderBy("createdAt", "asc"));
+                const snap = await getDocs(q);
+                list.innerHTML = "";
+                
+                if(snap.empty) {
+                    list.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted); font-size:13px;">No comments yet. Be the first!</div>`;
+                    return;
+                }
+
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    let commentDate = data.createdAt ? (typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate() : new Date(data.createdAt)) : new Date();
+                    const timeStr = timeAgo(commentDate);
+
+                    list.innerHTML += `
+                        <div class="comment-item">
+                            <img src="${data.avatar}" class="comment-avatar">
+                            <div style="flex-grow:1">
+                                <div class="comment-content">
+                                    <div class="comment-name">${data.name}</div>
+                                    <div class="comment-text">${data.text}</div>
+                                </div>
+                                <div class="comment-actions">
+                                    <span class="comment-action" onclick="toggleCommentLike(this)">Like</span>
+                                    <span>${timeStr}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                list.scrollTop = list.scrollHeight;
+            } catch(e) { list.innerHTML = `<div style="text-align:center; color:var(--ios-red);">Failed to load comments</div>`; }
+        }
+
+        window.postComment = async function() {
+            if(!checkAuthForAction() || !currentPostIdForComment) return;
+            triggerHaptic();
+            const input = document.getElementById('newCommentInput');
+            const text = input.value.trim();
+            if(text === "") return;
+
+            if(!isClean(text)) {
+                showAlert("Your comment contains restricted words and was blocked.", "error");
+                sendTgNotification(userTgId, 'warning', currentPostIdForComment); 
+                input.value = "";
+                return;
+            }
+
+            const list = document.getElementById('commentList');
+            if(list.innerText.includes("No comments")) list.innerHTML = "";
+            list.insertAdjacentHTML('beforeend', `
+                <div class="comment-item">
+                    <img src="${userAvatar}" class="comment-avatar">
+                    <div style="flex-grow:1">
+                        <div class="comment-content">
+                            <div class="comment-name">You</div>
+                            <div class="comment-text">${text}</div>
+                        </div>
+                        <div class="comment-actions">
+                            <span class="comment-action" onclick="toggleCommentLike(this)">Like</span>
+                            <span>Just now</span>
+                        </div>
+                    </div>
+                </div>
+            `);
+            input.value = "";
+            list.scrollTop = list.scrollHeight; 
+
+            try {
+                await addDoc(collection(db, "posts", currentPostIdForComment, "comments"), {
+                    name: displayName, avatar: userAvatar, tgId: userTgId, text: text, createdAt: serverTimestamp()
+                });
+                
+                await updateDoc(doc(db, "posts", currentPostIdForComment), { comments: increment(1) });
+                
+                const countSpan = document.querySelector(`#post_${currentPostIdForComment} .comment-count`);
+                if(countSpan) countSpan.innerText = parseInt(countSpan.innerText || 0) + 1;
+
+                if(currentPostAuthorTgId && currentPostAuthorTgId !== userTgId) {
+                    sendTgNotification(currentPostAuthorTgId, 'comment', currentPostIdForComment);
+                }
+
+            } catch(e) { console.error("Error posting comment", e); }
+        }
+
+        // --- Format Helpers ---
+        function formatPostText(text) {
+            if(!text) return "";
+            let formatted = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="post-link" onclick="event.stopPropagation();">$1</a>');
+            // Hashtag Routing Update
+            formatted = formatted.replace(/#(\w+)/g, '<span class="hashtag" onclick="event.stopPropagation(); window.location.href=\'feed.html?search=$1\'">#$1</span>');
+            return formatted;
+        }
+
+        function checkTextTruncation() {
+            document.querySelectorAll('.post-text-wrapper').forEach(wrapper => {
+                const textEl = wrapper.querySelector('.post-text');
+                const btn = wrapper.querySelector('.see-more-btn');
+                if(textEl.scrollHeight > textEl.clientHeight) {
+                    btn.style.display = 'inline-block';
+                }
+            });
+        }
+
+        window.expandText = function(btn) {
+            triggerHaptic();
+            const textDiv = btn.previousElementSibling;
+            if (textDiv.classList.contains('clamp-image') || textDiv.classList.contains('clamp-text')) {
+                textDiv.classList.remove('clamp-image', 'clamp-text');
+                btn.innerText = "See less";
+            } else {
+                if (textDiv.dataset.hasImage === "true") textDiv.classList.add('clamp-image');
+                else textDiv.classList.add('clamp-text');
+                btn.innerText = "See more";
+                textDiv.scrollIntoView({behavior: "smooth", block: "nearest"});
+            }
+        }
+
+        function timeAgo(date) {
+            if(!date) return "Just now";
+            const seconds = Math.floor((new Date() - date) / 1000);
+            let interval = seconds / 31536000;
+            if (interval > 1) return Math.floor(interval) + "y";
+            interval = seconds / 2592000;
+            if (interval > 1) return Math.floor(interval) + "mo";
+            interval = seconds / 86400;
+            if (interval > 1) return Math.floor(interval) + "d";
+            interval = seconds / 3600;
+            if (interval > 1) return Math.floor(interval) + "h";
+            interval = seconds / 60;
+            if (interval > 1) return Math.floor(interval) + "m";
+            return Math.floor(seconds) + "s";
+        }
+
+        // ==========================================
+        //  FEED SYSTEM & PROJECT ADS ALGORITHM
+        // ==========================================
+
+        let lastVisibleDoc = null;
+        let isFetching = false;
+        let hasMorePosts = true;
+        let postCounter = 0; 
+        let storeApps = []; 
+        let currentAppIndex = 0;
+        
+        const seenPostIds = new Set();
+        const feedContainer = document.getElementById('dynamicFeed');
+        const loader = document.getElementById('infiniteLoader');
+
+        async function fetchStoreApps() {
+            try {
+                const q = query(collection(db, "apps"), orderBy("createdAt", "desc"), limit(20));
+                const snap = await getDocs(q);
+                let apps = [];
+                snap.forEach(doc => { apps.push({ id: doc.id, ...doc.data() }); });
+                storeApps = apps.sort(() => Math.random() - 0.5);
+            } catch(e) { console.error("Error fetching apps", e); }
+        }
+
+        async function fetchPosts(isInitial = false) {
+            if(isFetching || !hasMorePosts) return;
+            isFetching = true;
+            loader.style.display = 'block';
+
+            try {
+                let q;
+                // Increase fetch limit if filtering
+                let fetchLimit = currentSearchQuery !== "" ? 30 : 6; 
+
+                if(isInitial) {
+                    q = query(collection(db, "posts"), orderBy("createdAt", "desc"), limit(fetchLimit));
+                } else {
+                    q = query(collection(db, "posts"), orderBy("createdAt", "desc"), startAfter(lastVisibleDoc), limit(fetchLimit));
+                }
+
+                const snapshot = await getDocs(q);
+                
+                if(snapshot.empty) {
+                    hasMorePosts = false;
+                    loader.style.display = 'none';
+                    if(feedContainer.innerHTML === "") {
+                        feedContainer.innerHTML = `<div style="text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 14px;"><i class="fas fa-search-minus" style="font-size:30px; margin-bottom:10px;"></i><br>No posts found for this keyword.</div>`;
+                    } else {
+                        feedContainer.insertAdjacentHTML('beforeend', `<div style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 14px;"><i class="fas fa-check-circle"></i> You've caught up on everything.</div>`);
+                    }
+                    return;
+                }
+
+                lastVisibleDoc = snapshot.docs[snapshot.docs.length - 1];
+
+                const fetchedPosts = [];
+                snapshot.forEach(doc => {
+                    if (!seenPostIds.has(doc.id)) { 
+                        let data = doc.data();
+                        
+                        // Local Filter Array Algorithm
+                        if(currentSearchQuery !== "") {
+                            let textContent = (data.content || "").toLowerCase();
+                            let authorName = (data.authorName || "").toLowerCase();
+                            
+                            if(textContent.includes(currentSearchQuery) || authorName.includes(currentSearchQuery)) {
+                                seenPostIds.add(doc.id);
+                                fetchedPosts.push({ id: doc.id, ...data });
+                            }
+                        } else {
+                            seenPostIds.add(doc.id);
+                            fetchedPosts.push({ id: doc.id, ...data });
+                        }
+                    }
+                });
+
+                // Cache only if it's initial load AND we are not searching
+                if(isInitial && currentSearchQuery === "") {
+                    localStorage.setItem('nahid_feed_cache', JSON.stringify(fetchedPosts));
+                }
+
+                renderPostsArray(fetchedPosts);
+                setTimeout(checkTextTruncation, 100);
+
+            } catch (error) {
+                console.error("Error fetching posts:", error);
+            } finally {
+                isFetching = false;
+            }
+        }
+
+        function renderPostsArray(postsArr) {
+            let batchHTML = ""; 
+
+            postsArr.forEach(post => {
+                postCounter++;
+                
+                // Only show App Ads if we are NOT searching
+                if (currentSearchQuery === "" && postCounter % 4 === 0 && storeApps.length > currentAppIndex) {
+                    batchHTML += buildAppSliderHtml();
+                }
+
+                const rawText = post.content || "";
+                const hasImage = !!post.image;
+                let clampClass = hasImage ? 'clamp-image' : 'clamp-text';
+
+                // ============ Time Fix (NaN handling) ============
+                let postDate = new Date();
+                if (post.createdAt) {
+                    if (typeof post.createdAt.toDate === 'function') {
+                        postDate = post.createdAt.toDate(); 
+                    } else if (post.createdAt.seconds) {
+                        postDate = new Date(post.createdAt.seconds * 1000); 
+                    } else {
+                        postDate = new Date(post.createdAt); 
+                    }
+                }
+                if (isNaN(postDate.getTime())) postDate = new Date();
+                const timeStr = timeAgo(postDate);
+                // =================================================
+
+                const verifiedHtml = `<i class="fab fa-telegram verified-badge"></i>`;
+
+                let mediaHtml = '';
+                if(hasImage) {
+                    mediaHtml = `
+                        <div class="post-image-wrapper" ondblclick="handleDoubleTap('${post.id}', '${post.authorTgId || ""}', this)">
+                            <i class="fas fa-heart heart-overlay"></i>
+                            <img src="${post.image}" class="post-attached-image" loading="lazy">
+                        </div>
+                    `;
+                }
+
+                batchHTML += `
+                    <div class="feed-post" id="post_${post.id}">
+                        <div class="post-header">
+                            <div class="post-author">
+                                <img src="${post.authorAvatar || 'https://ui-avatars.com/api/?name=U&background=007aff&color=fff'}" loading="lazy">
+                                <div class="author-info">
+                                    <span class="author-name">${post.authorName || 'Anonymous'} ${verifiedHtml}</span>
+                                    <span class="author-meta">${timeStr}</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-ellipsis-h post-options" onclick="showAlert('Report feature coming soon!')"></i>
+                        </div>
+
+                        <div class="post-text-wrapper">
+                            <div class="post-text ${clampClass}" data-has-image="${hasImage}">${formatPostText(rawText)}</div>
+                            <div class="see-more-btn" onclick="expandText(this)">See more</div>
+                        </div>
+                        
+                        ${mediaHtml}
+
+                        <div class="post-stats">
+                            <span><i class="fas fa-eye"></i> ${post.views || Math.floor(Math.random()*500 + 50)} Views</span>
+                            <span>${post.comments || 0} Comments</span>
+                        </div>
+
+                        <div class="post-actions">
+                            <div class="action-btn like-btn-element" onclick="toggleLike('${post.id}', this, '${post.authorTgId || ""}')">
+                                <i class="far fa-heart"></i> <span class="like-count">${post.likes || 0}</span>
+                            </div>
+                            <div class="action-btn" onclick="openDynamicCommentSheet('${post.id}', '${post.authorTgId || ""}')">
+                                <i class="far fa-comment"></i> <span class="comment-count">${post.comments || 0}</span>
+                            </div>
+                            <div class="action-btn" onclick="openShareOptions('${post.id}')">
+                                <i class="far fa-paper-plane"></i>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            feedContainer.insertAdjacentHTML('beforeend', batchHTML);
+        }
+
+        function buildAppSliderHtml() {
+            let sliderCardsHtml = '';
+            
+            for(let i=0; i<3; i++) {
+                if(currentAppIndex >= storeApps.length) break;
+                const appData = storeApps[currentAppIndex];
+                
+                sliderCardsHtml += `
+                    <a href="details.html?id=${appData.id}" class="app-slider-card">
+                        <img src="${appData.image || 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80'}" class="app-slider-img" loading="lazy">
+                        <div class="app-slider-info">
+                            <div class="app-slider-title">${appData.name}</div>
+                            <div class="app-slider-cat">${appData.network || 'Bot'}</div>
+                            <div class="app-slider-bottom">
+                                <span class="app-slider-price">${appData.price || 'Free'}</span>
+                                <span class="app-slider-btn">GET</span>
+                            </div>
+                        </div>
+                    </a>
+                `;
+                currentAppIndex++;
+            }
+
+            if(sliderCardsHtml !== '') {
+                return `
+                    <div class="suggested-section">
+                        <div class="suggested-header">
+                            <i class="fas fa-bolt" style="color:var(--ios-orange)"></i> Suggested for you
+                            <span>Sponsored</span>
+                        </div>
+                        <div class="app-slider">
+                            ${sliderCardsHtml}
+                        </div>
+                    </div>
+                `;
+            }
+            return "";
+        }
+
+        // --- Optimized Like System ---
+        let pendingLikeSyncs = {}; 
+        let syncTimeout = null;
+
+        window.toggleLike = function(postId, element, authorTgId) {
+            if(!checkAuthForAction()) return;
+            triggerHaptic();
+            const icon = element.querySelector('i');
+            const countSpan = element.querySelector('.like-count');
+            let currentCount = parseInt(countSpan.innerText);
+            if(isNaN(currentCount)) currentCount = 0;
+
+            let change = 0;
+
+            if (element.classList.contains('liked')) {
+                element.classList.remove('liked');
+                icon.className = 'far fa-heart'; 
+                countSpan.innerText = currentCount - 1;
+                change = -1;
+            } else {
+                element.classList.add('liked');
+                icon.className = 'fas fa-heart'; 
+                countSpan.innerText = currentCount + 1;
+                change = 1;
+
+                if(authorTgId && authorTgId !== userTgId) {
+                    sendTgNotification(authorTgId, 'like', postId);
+                }
+            }
+
+            pendingLikeSyncs[postId] = (pendingLikeSyncs[postId] || 0) + change;
+            clearTimeout(syncTimeout);
+            syncTimeout = setTimeout(() => syncLikesToDatabase(), 3000);
+        }
+
+        window.handleDoubleTap = function(postId, authorTgId, imageWrapperElement) {
+            if(!checkAuthForAction()) return;
+            triggerHaptic();
+            const postElement = document.getElementById(`post_${postId}`);
+            const likeBtn = postElement.querySelector('.like-btn-element');
+            const heartOverlay = imageWrapperElement.querySelector('.heart-overlay');
+
+            heartOverlay.classList.remove('animate');
+            void heartOverlay.offsetWidth; 
+            heartOverlay.classList.add('animate');
+
+            if (!likeBtn.classList.contains('liked')) {
+                window.toggleLike(postId, likeBtn, authorTgId);
+            }
+        }
+
+        async function syncLikesToDatabase() {
+            const updates = { ...pendingLikeSyncs };
+            pendingLikeSyncs = {}; 
+
+            for (const [postId, changeValue] of Object.entries(updates)) {
+                if (changeValue !== 0) {
+                    try {
+                        const postRef = doc(db, "posts", postId);
+                        await updateDoc(postRef, { likes: increment(changeValue) });
+                    } catch(e) { console.error(`Failed to sync like for post ${postId}:`, e); }
+                }
+            }
+        }
+
+        // --- Deep Linking Auto-Scroll ---
+        function handleDeepLink() {
+            const startParam = tg.initDataUnsafe?.start_param;
+            if(startParam && startParam.startsWith('post_')) {
+                const targetPostId = startParam.split('post_')[1];
+                
+                setTimeout(() => {
+                    const postEl = document.getElementById(`post_${targetPostId}`);
+                    if(postEl) {
+                        postEl.scrollIntoView({behavior: 'smooth', block: 'center'});
+                        postEl.classList.add('highlight');
+                        setTimeout(() => postEl.classList.remove('highlight'), 2000);
+                        if(checkAuthForAction()) openDynamicCommentSheet(targetPostId, null);
+                    }
+                }, 1500);
+            }
+        }
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '150px', 
+            threshold: 0.1
+        };
+
+        const scrollObserver = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting && hasMorePosts && !isFetching) {
+                fetchPosts(false);
+            }
+        }, observerOptions);
+
+        async function init() {
+            await fetchStoreApps(); 
+            
+            // Check for Hashtag URL Params first
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchParam = urlParams.get('search');
+            
+            if(searchParam) {
+                toggleSearch(true);
+                searchInput.value = '#' + searchParam;
+                currentSearchQuery = searchParam.toLowerCase();
+                document.getElementById('filterKeyword').innerText = currentSearchQuery;
+                document.getElementById('activeFilterBar').style.display = 'flex';
+                document.getElementById('createPostSection').style.display = 'none';
+                await fetchPosts(true); 
+            } else {
+                const cached = localStorage.getItem('nahid_feed_cache');
+                if(cached) {
+                    feedContainer.innerHTML = ''; 
+                    postCounter = 0;
+                    currentAppIndex = 0;
+                    renderPostsArray(JSON.parse(cached));
+                }
+                await fetchPosts(true); 
+                handleDeepLink();
+            }
+            
+            scrollObserver.observe(loader);
+        }
+
+        init();
+
+    </script>
+</body>
+</html>

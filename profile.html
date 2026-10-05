@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Profile | NAHID TRIX</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* === iOS LIGHT THEME === */
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+        :root {
+            --bg-main: #f2f2f7;          
+            --bg-card: #ffffff;          
+            --text-main: #1c1c1e;        
+            --text-muted: #8e8e93;       
+            
+            --color-nahid-1: #ffb300;    
+            --color-nahid-2: #ff9800;    
+            --color-trix: #00bcd4;       
+            --color-pink: #ff2d55;       
+            --ios-blue: #007aff;         
+            --ios-green: #34c759;
+            --ios-red: #ff3b30;
+            --ios-orange: #ff9500;
+            --ios-purple: #af52de;
+            
+            --border-color: #e5e5ea;     
+            --shadow-soft: 0 4px 14px rgba(0,0,0,0.06);
+            --shadow-strong: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            padding-bottom: 85px; 
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased; 
+        }
+
+        /* ====== HEADER (EXACTLY LIKE INDEX.HTML) ====== */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 18px; 
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 0.5px solid var(--border-color);
+            height: 40px; /* FIXED HEIGHT LIKE INDEX */
+            transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 17px; 
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px; 
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .logo-img { width: 26px; height: 26px; border-radius: 8px; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .logo .nahid { background: linear-gradient(to right, #ff9800, #ff5722); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .logo .trix { color: var(--text-main); }
+        .logo .trix span { color: var(--color-trix); }
+
+        /* ====== SMART SEARCH CONTAINER ====== */
+        .search-container { display: flex; align-items: center; justify-content: flex-end; position: relative; flex-grow: 1; }
+        .search-input-wrapper {
+            width: 0; opacity: 0; overflow: hidden; display: flex; align-items: center;
+            background: #e3e3e8; border-radius: 10px; height: 34px;
+            transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+            position: absolute; right: 35px; 
+        }
+        .search-input-wrapper.active { width: calc(100vw - 80px); max-width: 400px; opacity: 1; padding: 0 10px; }
+        .search-input-wrapper input { width: 100%; padding: 0 8px; border: none; background: transparent; font-family: 'Poppins', sans-serif; font-size: 14px; outline: none; color: var(--text-main); }
+        .search-input-wrapper input::placeholder { color: var(--text-muted); font-weight: 400; }
+        .search-toggle-btn { font-size: 16px; color: var(--ios-blue); width: 30px; height: 30px; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 1001; transition: 0.3s ease; }
+        .search-toggle-btn:active { transform: scale(0.85); }
+        .search-toggle-btn.active { color: var(--ios-red); transform: rotate(90deg); }
+        header.search-active .logo { opacity: 0; transform: translateX(-20px); pointer-events: none; }
+
+        .suggestions-list {
+            display: none; position: absolute; top: 50px; right: 18px; width: calc(100vw - 36px); max-width: 400px;
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            box-shadow: var(--shadow-strong); list-style: none; padding: 10px 0; margin: 0; max-height: 300px;
+            overflow-y: auto; border-radius: 16px; border: 0.5px solid var(--border-color); z-index: 1000;
+            animation: fadeInDrop 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        @keyframes fadeInDrop { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .suggestions-list .ai-header { font-size: 11px; font-weight: 600; color: var(--ios-blue); padding: 5px 20px 10px 20px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px; }
+        .suggestions-list li { padding: 12px 20px; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 12px; color: var(--text-main); transition: background 0.2s; }
+        .suggestions-list li:active { background: #f2f2f7; }
+        .suggestions-list li i { color: var(--text-muted); font-size: 12px; }
+        .suggestions-list li .highlight { font-weight: 700; color: var(--ios-blue); }
+
+        /* ====== MAIN CONTENT ====== */
+        .main-content { padding: 20px 18px; max-width: 800px; margin: 0 auto; }
+
+        /* ====== USER PROFILE CARD ====== */
+        .profile-card {
+            background: var(--bg-card); border-radius: 20px; padding: 20px; display: flex; align-items: center;
+            gap: 15px; box-shadow: var(--shadow-soft); margin-bottom: 20px; transition: transform 0.2s;
+        }
+        .profile-card:active { transform: scale(0.98); }
+
+        .avatar { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--ios-blue); padding: 2px; }
+        .user-info { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
+        .user-name { font-size: 18px; font-weight: 800; margin-bottom: 2px; color: var(--text-main); display:flex; align-items:center; gap:5px;}
+        .user-name i {color: var(--ios-blue); font-size: 14px;}
+        .user-handle { font-size: 13px; color: var(--ios-blue); font-weight: 600; margin-bottom: 2px;}
+        .user-id { font-size: 11px; color: var(--text-muted); font-weight: 500;}
+
+        .edit-btn {
+            background: rgba(0, 122, 255, 0.1); color: var(--ios-blue); border: none; width: 35px; height: 35px;
+            border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 14px;
+            cursor: pointer; transition: 0.2s; flex-shrink: 0;
+        }
+        .edit-btn:active { transform: scale(0.9); }
+
+        /* ====== QUICK STATS ====== */
+        .stats-row { display: flex; gap: 10px; margin-bottom: 20px; }
+        .stat-box { flex: 1; background: var(--bg-card); padding: 15px 5px; border-radius: 16px; text-align: center; box-shadow: var(--shadow-soft); transition: transform 0.2s; }
+        .stat-box:active { transform: scale(0.96); }
+        .stat-val { font-size: 20px; font-weight: 800; color: var(--text-main); margin-bottom: 2px; }
+        .stat-label { font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
+
+        /* ====== COUPON SECTION ====== */
+        .coupon-card { background: var(--bg-card); border-radius: 16px; padding: 15px; margin-bottom: 25px; box-shadow: var(--shadow-soft); width: 100%; box-sizing: border-box; }
+        .coupon-header { font-size: 13px; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; color: var(--text-main); }
+        .coupon-header i { color: var(--color-nahid-2); font-size: 16px; }
+        .coupon-input-group { display: flex; gap: 8px; width: 100%; box-sizing: border-box; }
+        .coupon-input-group input { flex-grow: 1; min-width: 0; padding: 10px 12px; border: 0.5px solid var(--border-color); border-radius: 10px; font-family: 'Poppins'; font-size: 13px; outline: none; color: var(--text-main); background: var(--bg-main); transition: 0.2s; box-sizing: border-box; }
+        .coupon-input-group input:focus { border-color: var(--ios-blue); background: #fff;}
+        .coupon-input-group button { background: var(--text-main); color: #fff; border: none; padding: 10px 16px; border-radius: 10px; font-weight: 600; font-family: 'Poppins'; font-size: 13px; cursor: pointer; transition: 0.2s; white-space: nowrap; box-sizing: border-box; flex-shrink: 0; }
+        .coupon-input-group button:active { transform: scale(0.92); }
+
+        /* ====== iOS LIST GROUPS (Settings) ====== */
+        .list-group { background: var(--bg-card); border-radius: 16px; overflow: hidden; margin-bottom: 20px; box-shadow: var(--shadow-soft); }
+        .list-item { display: flex; align-items: center; padding: 14px 18px; text-decoration: none; color: var(--text-main); background: var(--bg-card); border-bottom: 0.5px solid var(--border-color); transition: background 0.2s; cursor: pointer; }
+        .list-item:active { background: #f9f9f9; }
+        .list-group .list-item:last-child { border-bottom: none; } 
+
+        .item-icon { width: 30px; height: 30px; border-radius: 8px; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 14px; margin-right: 15px; }
+        .item-text { flex-grow: 1; font-size: 14.5px; font-weight: 500; }
+        .item-arrow { color: #c7c7cc; font-size: 14px; }
+        .item-badge { background: var(--ios-red); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 10px; margin-right: 10px; }
+
+        /* iOS Toggle Switch */
+        .toggle-switch { width: 46px; height: 26px; background: #e5e5ea; border-radius: 15px; position: relative; transition: 0.3s; margin-right: 5px;}
+        .toggle-switch.on { background: var(--ios-green); }
+        .toggle-knob { width: 22px; height: 22px; background: #fff; border-radius: 50%; position: absolute; top: 2px; left: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.3s; }
+        .toggle-switch.on .toggle-knob { left: 22px; }
+
+        .bg-black { background: #000000; }
+        .bg-blue { background: var(--ios-blue); }
+        .bg-orange { background: var(--ios-orange); }
+        .bg-green { background: var(--ios-green); }
+        .bg-purple { background: var(--ios-purple); }
+        .bg-gray { background: #8e8e93; }
+        .bg-red { background: var(--ios-red); }
+        .bg-gradient { background: linear-gradient(135deg, #00bcd4, #007aff); } 
+
+        /* ====== LOGOUT BUTTON ====== */
+        .logout-btn { width: 100%; background: var(--bg-card); color: var(--ios-red); border: none; padding: 15px; border-radius: 16px; font-size: 15px; font-weight: 600; box-shadow: var(--shadow-soft); cursor: pointer; text-align: center; transition: transform 0.2s; margin-bottom: 20px; font-family: 'Poppins'; }
+        .logout-btn:active { transform: scale(0.97); background: #fdfdfd;}
+
+        /* ====== EDIT PROFILE MODAL ====== */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2000; opacity: 0; pointer-events: none; transition: 0.3s ease; display: flex; justify-content: center; align-items: flex-end; }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .modal-content { background: var(--bg-card); width: 100%; border-radius: 20px 20px 0 0; padding: 25px 20px 40px; transform: translateY(100%); transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1); }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        
+        .modal-header { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 20px; }
+        .modal-input { width: 100%; padding: 14px; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; font-family: 'Poppins'; font-size: 14px; margin-bottom: 15px; outline: none; transition: 0.2s;}
+        .modal-input:focus { border-color: var(--ios-blue); background: #fff; }
+        
+        .modal-actions { display: flex; gap: 10px; margin-top: 10px; }
+        .modal-btn { flex: 1; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 600; border: none; font-family: 'Poppins'; cursor: pointer; transition: 0.2s;}
+        .btn-cancel { background: var(--bg-main); color: var(--text-main); }
+        .btn-save { background: var(--ios-blue); color: #fff; }
+        .modal-btn:active { transform: scale(0.96); }
+
+        /* ====== BOTTOM NAVIGATION ====== */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border-top: 0.5px solid var(--border-color); display: flex; justify-content: space-around;
+            padding: 10px 0 20px 0; z-index: 1000;
+        }
+        .nav-link { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: var(--text-muted); font-size: 9.5px; font-weight: 500; gap: 4px; }
+        .nav-link i { font-size: 18px; } 
+        .nav-link.active { color: var(--ios-blue); }
+
+    </style>
+</head>
+<body>
+
+    <header id="mainHeader">
+        <a href="index.html" class="logo">
+            <img src="https://ui-avatars.com/api/?name=NT&background=ff9800&color=fff" alt="Logo" class="logo-img">
+            <span class="nahid">NAHID</span> <span class="trix">TRIX</span>
+        </a>
+        
+        <div class="search-container">
+            <div class="search-input-wrapper" id="searchInputWrapper">
+                <input type="text" id="searchInput" placeholder="Search bots, scripts..." autocomplete="off">
+            </div>
+            <div class="search-toggle-btn" id="searchToggleBtn">
+                <i class="fas fa-search" id="searchIcon"></i>
+            </div>
+        </div>
+
+        <ul class="suggestions-list" id="suggestionsBox"></ul>
+    </header>
+
+    <main class="main-content">
+        
+        <div class="profile-card">
+            <img src="https://ui-avatars.com/api/?name=User&background=007aff&color=fff" class="avatar" id="userAvatar" alt="User">
+            <div class="user-info">
+                <div class="user-name" id="userName">Loading... <i class="fas fa-check-circle" style="display:none;" id="verifiedBadge"></i></div>
+                <div class="user-handle" id="userHandle">@loading</div>
+                <div class="user-id" id="userTgId">ID: Loading...</div>
+            </div>
+            <button class="edit-btn" onclick="openEditModal()"><i class="fas fa-pen"></i></button>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-box">
+                <div class="stat-val" id="statOrders"><i class="fas fa-spinner fa-spin" style="font-size: 14px;"></i></div>
+                <div class="stat-label">Total Orders</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-val" style="color: var(--ios-green)" id="statRevenue"><i class="fas fa-spinner fa-spin" style="font-size: 14px;"></i></div>
+                <div class="stat-label">Ad Revenue</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-val" style="color: var(--ios-purple)" id="statCoupons"><i class="fas fa-spinner fa-spin" style="font-size: 14px;"></i></div>
+                <div class="stat-label">Coupons Used</div>
+            </div>
+        </div>
+
+        <div class="coupon-card">
+            <div class="coupon-header"><i class="fas fa-ticket-alt"></i> Have a Promo Code?</div>
+            <div class="coupon-input-group">
+                <input type="text" id="couponInput" placeholder="Enter code for bonus...">
+                <button onclick="applyCoupon()">Apply</button>
+            </div>
+        </div>
+
+        <div class="list-group" id="adminMenuGroup" style="display: none; border: 1px solid var(--color-nahid-1);">
+            <a href="admin.html" class="list-item" onclick="triggerHaptic()">
+                <div class="item-icon bg-black"><i class="fas fa-user-shield"></i></div>
+                <div class="item-text" style="font-weight: 700;">Admin Dashboard</div>
+                <div class="item-badge" id="pendingBadge" style="background: var(--ios-orange); display: none;">0 Pending</div>
+                <div class="item-arrow"><i class="fas fa-chevron-right"></i></div>
+            </a>
+        </div>
+
+        <div class="list-group">
+            <a href="orders.html" class="list-item" onclick="triggerHaptic()">
+                <div class="item-icon bg-blue"><i class="fas fa-box"></i></div>
+                <div class="item-text">My Projects & Wallet</div>
+                <div class="item-arrow"><i class="fas fa-chevron-right"></i></div>
+            </a>
+            <div class="list-item" onclick="triggerHaptic(); alert('No special events available right now. Check back later!');">
+                <div class="item-icon bg-orange"><i class="fas fa-star"></i></div>
+                <div class="item-text">Events & Rewards</div>
+                <div class="item-badge" style="background: var(--ios-orange);">EVENTS</div>
+                <div class="item-arrow"><i class="fas fa-chevron-right"></i></div>
+            </a>
+            <a href="ai-assistant.html" class="list-item" onclick="triggerHaptic()">
+                <div class="item-icon bg-gradient"><i class="fas fa-robot"></i></div>
+                <div class="item-text">AI Assistant</div>
+                <div class="item-badge" style="background: var(--ios-red);">NEW</div>
+                <div class="item-arrow"><i class="fas fa-chevron-right"></i></div>
+            </a>
+            <div class="list-item" onclick="triggerHaptic(); alert('Connect your Binance or bKash account feature coming soon!');">
+                <div class="item-icon bg-green"><i class="fas fa-credit-card"></i></div>
+                <div class="item-text">Payment Methods</div>
+                <div class="item-arrow"><i class="fas fa-chevron-right"></i></div>
+            </div>
+        </div>
+
+        <div class="list-group">
+            <div class="list-item" onclick="toggleNotifications()">
+                <div class="item-icon bg-red"><i class="fas fa-bell"></i></div>
+                <div class="item-text">Notifications</div>
+                <div class="toggle-switch on" id="notifToggle"><div class="toggle-knob"></div></div>
+            </div>
+
+            <a href="https://t.me/nahid_trix_bot" target="_blank" class="list-item" onclick="triggerHaptic()">
+                <div class="item-icon bg-purple"><i class="fas fa-headset"></i></div>
+                <div class="item-text">Contact Admin (Nahid)</div>
+                <div class="item-arrow"><i class="fas fa-chevron-right"></i></div>
+            </a>
+            <div class="list-item" onclick="triggerHaptic(); alert('Privacy Policy: All your Telegram Data and Database entries are fully secured and encrypted.');">
+                <div class="item-icon bg-gray"><i class="fas fa-shield-alt"></i></div>
+                <div class="item-text">Privacy Policy</div>
+                <div class="item-arrow"><i class="fas fa-chevron-right"></i></div>
+            </div>
+        </div>
+
+        <button class="logout-btn" onclick="confirmLogout()">Log Out</button>
+
+    </main>
+
+    <div class="modal-overlay" id="editProfileModal">
+        <div class="modal-content">
+            <div class="modal-header">Edit Profile</div>
+            <input type="text" id="editNameInput" class="modal-input" placeholder="Your Full Name">
+            <input type="text" id="editHandleInput" class="modal-input" placeholder="@your_username">
+            <div class="modal-actions">
+                <button class="modal-btn btn-cancel" onclick="closeEditModal()">Cancel</button>
+                <button class="modal-btn btn-save" onclick="saveProfile()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-link">
+            <i class="fas fa-layer-group"></i>
+            <span>Apps</span>
+        </a>
+        <a href="feed.html" class="nav-link">
+            <i class="fas fa-stream"></i>
+            <span>Feed</span>
+        </a>
+        <a href="trending.html" class="nav-link">
+            <i class="fas fa-fire"></i>
+            <span>Trending</span>
+        </a>
+        <a href="orders.html" class="nav-link">
+            <i class="fas fa-wallet"></i>
+            <span>Wallet</span>
+        </a>
+        <a href="profile.html" class="nav-link active">
+            <i class="fas fa-user-circle"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <script>
+        // --- Telegram Web App Init & Haptic ---
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        window.triggerHaptic = function() {
+            if (navigator.vibrate) navigator.vibrate(40);
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+        }
+
+        // --- Notifications Toggle Logic ---
+        function toggleNotifications() {
+            window.triggerHaptic();
+            const toggle = document.getElementById('notifToggle');
+            if(toggle.classList.contains('on')) {
+                toggle.classList.remove('on');
+            } else {
+                toggle.classList.add('on');
+            }
+        }
+
+        // --- Smart Search Logic (Restored) ---
+        const mainHeader = document.getElementById('mainHeader');
+        const searchToggleBtn = document.getElementById('searchToggleBtn');
+        const searchIcon = document.getElementById('searchIcon');
+        const searchInputWrapper = document.getElementById('searchInputWrapper');
+        const searchInput = document.getElementById('searchInput');
+        const suggestionsBox = document.getElementById('suggestionsBox');
+
+        let isSearchOpen = false;
+        window.botDatabase = []; 
+
+        function toggleSearch() {
+            window.triggerHaptic();
+            isSearchOpen = !isSearchOpen;
+            if (isSearchOpen) {
+                mainHeader.classList.add('search-active');
+                searchInputWrapper.classList.add('active');
+                searchToggleBtn.classList.add('active');
+                searchIcon.className = 'fas fa-times'; 
+                setTimeout(() => searchInput.focus(), 300);
+            } else {
+                closeSearch();
+            }
+        }
+
+        function closeSearch() {
+            mainHeader.classList.remove('search-active');
+            searchInputWrapper.classList.remove('active');
+            searchToggleBtn.classList.remove('active');
+            searchIcon.className = 'fas fa-search'; 
+            searchInput.value = '';
+            suggestionsBox.style.display = 'none';
+            searchInput.blur();
+            isSearchOpen = false;
+        }
+
+        searchToggleBtn.addEventListener('click', toggleSearch);
+
+        document.addEventListener('click', function(event) {
+            if (isSearchOpen && !mainHeader.contains(event.target) && !suggestionsBox.contains(event.target)) {
+                window.triggerHaptic(); 
+                closeSearch();
+            }
+        });
+
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            suggestionsBox.innerHTML = ''; 
+
+            if (query.length > 0) {
+                const results = window.botDatabase.filter(bot => bot.name.toLowerCase().includes(query));
+                
+                if (results.length > 0) {
+                    suggestionsBox.style.display = 'block';
+                    
+                    const headerLi = document.createElement('div');
+                    headerLi.className = 'ai-header';
+                    headerLi.innerHTML = `<i class="fas fa-robot"></i> I found ${results.length} result(s)`;
+                    suggestionsBox.appendChild(headerLi);
+
+                    results.forEach(bot => {
+                        const li = document.createElement('li');
+                        const regex = new RegExp(`(${query})`, "gi");
+                        const highlightedName = bot.name.replace(regex, "<span class='highlight'>$1</span>");
+
+                        li.innerHTML = `<i class="fas fa-bolt"></i> ${highlightedName}`;
+                        
+                        li.addEventListener('click', () => {
+                            window.triggerHaptic();
+                            window.location.href = `details.html?id=${bot.id}`; 
+                        });
+                        suggestionsBox.appendChild(li);
+                    });
+                } else {
+                    suggestionsBox.style.display = 'block';
+                    suggestionsBox.innerHTML = `<div class="ai-header" style="color:var(--text-muted)"><i class="fas fa-search-minus"></i> No matching apps found</div>`;
+                }
+            } else {
+                suggestionsBox.style.display = 'none';
+            }
+        });
+
+        function applyCoupon() {
+            window.triggerHaptic();
+            const couponInput = document.getElementById('couponInput');
+            const code = couponInput.value.trim().toUpperCase();
+
+            if(code === "") {
+                alert("Please enter a coupon code first.");
+                return;
+            }
+
+            if(code === "NAHID2026" || code === "MEGA50") {
+                alert("🎉 Success! You got a discount on your next order.");
+                couponInput.value = "";
+            } else {
+                alert("❌ Invalid or expired coupon code.");
+            }
+        }
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, getDoc, setDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAsP3AubiZpmvCRPngDePdvvQMiDTELCII",
+            authDomain: "apple-bot-sell.firebaseapp.com",
+            projectId: "apple-bot-sell",
+            storageBucket: "apple-bot-sell.firebasestorage.app",
+            messagingSenderId: "84956813839",
+            appId: "1:84956813839:web:5c2451f102a2291eafe17a",
+            measurementId: "G-DJW9L11S0B"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        
+        // --- Telegram Native Data Integration ---
+        const tgApi = window.Telegram.WebApp;
+        const tgUser = tgApi.initDataUnsafe?.user;
+
+        let currentUserData = null;
+
+        // --- Authentication & Profile Loading ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const docRef = doc(db, "users", user.uid);
+                try {
+                    const docSnap = await getDoc(docRef);
+                    let dbName = null;
+                    let dbHandle = null;
+
+                    if (docSnap.exists()) {
+                        currentUserData = docSnap.data();
+                        dbName = currentUserData.name;
+                        dbHandle = currentUserData.tgUsername ? `@${currentUserData.tgUsername.replace('@', '')}` : null;
+                    }
+
+                    let finalName = dbName;
+                    let finalHandle = dbHandle;
+                    let finalAvatar = null;
+                    let finalTgId = "ID: Not linked";
+
+                    if (tgUser) {
+                        finalName = `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim();
+                        finalHandle = tgUser.username ? `@${tgUser.username}` : `No Username`;
+                        finalTgId = `ID: ${tgUser.id}`;
+                        finalAvatar = tgUser.photo_url || null; 
+
+                        setDoc(docRef, {
+                            name: finalName,
+                            tgUsername: finalHandle.replace('@', ''),
+                            tgId: tgUser.id
+                        }, { merge: true }).catch(e => console.log("Silent DB update failed"));
+                    } else {
+                        if (!finalName) finalName = user.email ? user.email.split('@')[0] : "Verified User";
+                        if (!finalHandle) finalHandle = user.email || "@user";
+                        if (currentUserData && currentUserData.tgId) finalTgId = `ID: ${currentUserData.tgId}`;
+                    }
+
+                    updateProfileUI(finalName, finalHandle, finalTgId, finalAvatar);
+                    loadDynamicUserStats(user.uid, currentUserData);
+
+                    // ==========================================
+                    //  ADMIN PANEL LOGIC
+                    // ==========================================
+                    if (user.email === "nahid.xsr@gmail.com" || user.email === "mdnahid.xsr@gmail.com") {
+                        document.getElementById('adminMenuGroup').style.display = 'block';
+                        
+                        try {
+                            const pendingQuery = query(collection(db, "pending_projects"), where("status", "==", "pending"));
+                            const pendingSnap = await getDocs(pendingQuery);
+                            const count = pendingSnap.size;
+                            
+                            if (count > 0) {
+                                const badge = document.getElementById('pendingBadge');
+                                badge.innerText = `${count} Pending`;
+                                badge.style.display = 'inline-block';
+                            }
+                        } catch(e) { console.error("Error fetching pending count"); }
+                    }
+
+                } catch (error) {
+                    console.error("Error fetching user data:", error);
+                    updateProfileUI("Error Loading", "@error", "ID: Error", null);
+                }
+            } else {
+                window.location.replace("auth.html");
+            }
+        });
+
+        function updateProfileUI(name, handle, tgIdStr, customAvatar) {
+            document.getElementById('userName').innerHTML = `${name} <i class="fas fa-check-circle" style="color:var(--ios-blue); font-size:14px;"></i>`;
+            document.getElementById('userHandle').innerText = handle;
+            document.getElementById('userTgId').innerText = tgIdStr;
+            
+            let avatarSrc = customAvatar;
+            if(!avatarSrc) {
+                avatarSrc = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=007aff&color=fff&size=150`;
+            }
+            document.getElementById('userAvatar').src = avatarSrc;
+        }
+
+        // --- FETCH DYNAMIC STATS (Orders, Revenue, Coupons) ---
+        async function loadDynamicUserStats(uid, userData) {
+            let orderCount = 0;
+            let couponCount = 0;
+            
+            try {
+                const q = query(collection(db, "orders"), where("uid", "==", uid));
+                const querySnapshot = await getDocs(q);
+                
+                orderCount = querySnapshot.size;
+                
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (data.couponApplied && data.couponApplied !== "None") {
+                        couponCount++;
+                    }
+                });
+                
+                // Update Order & Coupon Stats
+                document.getElementById('statOrders').innerText = orderCount;
+                document.getElementById('statCoupons').innerText = couponCount;
+
+                // Update Revenue Stats from User Profile Balance
+                let totalBalance = 0;
+                if(userData && userData.balance) {
+                    totalBalance = parseFloat(userData.balance);
+                }
+                document.getElementById('statRevenue').innerText = "$" + totalBalance.toFixed(2);
+
+            } catch(e) {
+                document.getElementById('statOrders').innerText = "0";
+                document.getElementById('statCoupons').innerText = "0";
+                document.getElementById('statRevenue').innerText = "$0.00";
+            }
+        }
+
+        const modal = document.getElementById('editProfileModal');
+
+        window.openEditModal = function() {
+            if (window.triggerHaptic) window.triggerHaptic();
+            
+            let currentName = document.getElementById('userName').innerText.trim();
+            let currentHandle = document.getElementById('userHandle').innerText.trim();
+            
+            document.getElementById('editNameInput').value = currentName === "Guest User" ? "" : currentName;
+            document.getElementById('editHandleInput').value = currentHandle === "@not_connected" ? "" : currentHandle;
+            
+            modal.classList.add('active');
+        };
+
+        window.closeEditModal = function() {
+            if (window.triggerHaptic) window.triggerHaptic();
+            modal.classList.remove('active');
+        };
+
+        modal.addEventListener('click', (e) => {
+            if(e.target === modal) window.closeEditModal();
+        });
+
+        window.saveProfile = async function() {
+            if (window.triggerHaptic) window.triggerHaptic();
+            const nameVal = document.getElementById('editNameInput').value.trim();
+            let handleVal = document.getElementById('editHandleInput').value.trim();
+
+            if(nameVal === "") {
+                alert("Name cannot be empty!");
+                return;
+            }
+            if(handleVal !== "" && !handleVal.startsWith('@')) {
+                handleVal = "@" + handleVal; 
+            }
+
+            const user = auth.currentUser;
+            if(user) {
+                const saveBtn = document.querySelector('.btn-save');
+                const originalText = saveBtn.innerText;
+                saveBtn.innerText = "Saving...";
+                saveBtn.disabled = true;
+
+                try {
+                    await setDoc(doc(db, "users", user.uid), {
+                        name: nameVal,
+                        tgUsername: handleVal.replace('@', '') 
+                    }, { merge: true });
+                    
+                    const avatarUrl = tgApi.initDataUnsafe?.user?.photo_url || null;
+                    const tgIdStr = document.getElementById('userTgId').innerText;
+                    updateProfileUI(nameVal, handleVal || "No Username", tgIdStr, avatarUrl);
+                    
+                    window.closeEditModal();
+                } catch (error) {
+                    console.error("Error updating profile: ", error);
+                    alert("Failed to save changes. Please try again.");
+                } finally {
+                    saveBtn.innerText = originalText;
+                    saveBtn.disabled = false;
+                }
+            }
+        };
+
+        window.confirmLogout = function() {
+            if (window.triggerHaptic) window.triggerHaptic();
+            if(confirm("Are you sure you want to log out?")) {
+                signOut(auth).then(() => {
+                    localStorage.removeItem('nahidStore_isLoggedIn');
+                    localStorage.removeItem('nahidStore_uid');
+                    window.location.replace("auth.html");
+                }).catch((error) => {
+                    console.error("Logout error: ", error);
+                });
+            }
+        };
+
+        async function loadSearchData() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "apps"));
+                querySnapshot.forEach((doc) => {
+                    if(window.botDatabase) {
+                        window.botDatabase.push({ id: doc.id, name: doc.data().name });
+                    }
+                });
+            } catch (error) {
+                console.error("Error loading search data: ", error);
+            }
+        }
+        
+        loadSearchData();
+    </script>
+</body>
+</html>
