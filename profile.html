@@ -42,7 +42,7 @@
             -webkit-font-smoothing: antialiased; 
         }
 
-        /* ====== HEADER (EXACTLY LIKE INDEX.HTML) ====== */
+        /* ====== HEADER ====== */
         header {
             display: flex;
             justify-content: space-between;
@@ -55,7 +55,7 @@
             top: 0;
             z-index: 1000;
             border-bottom: 0.5px solid var(--border-color);
-            height: 40px; /* FIXED HEIGHT LIKE INDEX */
+            height: 45px; 
             transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
@@ -109,24 +109,23 @@
         /* ====== MAIN CONTENT ====== */
         .main-content { padding: 20px 18px; max-width: 800px; margin: 0 auto; }
 
-        /* ====== USER PROFILE CARD ====== */
+        /* ====== USER PROFILE CARD (iOS Style) ====== */
         .profile-card {
             background: var(--bg-card); border-radius: 20px; padding: 20px; display: flex; align-items: center;
             gap: 15px; box-shadow: var(--shadow-soft); margin-bottom: 20px; transition: transform 0.2s;
         }
         .profile-card:active { transform: scale(0.98); }
 
-        .avatar { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--ios-blue); padding: 2px; }
+        .avatar { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-color); padding: 2px; }
         .user-info { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
-        .user-name { font-size: 18px; font-weight: 800; margin-bottom: 2px; color: var(--text-main); display:flex; align-items:center; gap:5px;}
+        .user-name { font-size: 18px; font-weight: 700; margin-bottom: 2px; color: var(--text-main); display:flex; align-items:center; gap:5px;}
         .user-name i {color: var(--ios-blue); font-size: 14px;}
-        .user-handle { font-size: 13px; color: var(--ios-blue); font-weight: 600; margin-bottom: 2px;}
-        .user-id { font-size: 11px; color: var(--text-muted); font-weight: 500;}
+        .user-id { font-size: 13px; color: var(--text-muted); }
 
         .edit-btn {
             background: rgba(0, 122, 255, 0.1); color: var(--ios-blue); border: none; width: 35px; height: 35px;
             border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 14px;
-            cursor: pointer; transition: 0.2s; flex-shrink: 0;
+            cursor: pointer; transition: 0.2s;
         }
         .edit-btn:active { transform: scale(0.9); }
 
@@ -134,8 +133,8 @@
         .stats-row { display: flex; gap: 10px; margin-bottom: 20px; }
         .stat-box { flex: 1; background: var(--bg-card); padding: 15px 5px; border-radius: 16px; text-align: center; box-shadow: var(--shadow-soft); transition: transform 0.2s; }
         .stat-box:active { transform: scale(0.96); }
-        .stat-val { font-size: 20px; font-weight: 800; color: var(--text-main); margin-bottom: 2px; }
-        .stat-label { font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
+        .stat-val { font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 2px; }
+        .stat-label { font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
 
         /* ====== COUPON SECTION ====== */
         .coupon-card { background: var(--bg-card); border-radius: 16px; padding: 15px; margin-bottom: 25px; box-shadow: var(--shadow-soft); width: 100%; box-sizing: border-box; }
@@ -164,7 +163,6 @@
         .toggle-knob { width: 22px; height: 22px; background: #fff; border-radius: 50%; position: absolute; top: 2px; left: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.3s; }
         .toggle-switch.on .toggle-knob { left: 22px; }
 
-        .bg-black { background: #000000; }
         .bg-blue { background: var(--ios-blue); }
         .bg-orange { background: var(--ios-orange); }
         .bg-green { background: var(--ios-green); }
@@ -177,7 +175,7 @@
         .logout-btn { width: 100%; background: var(--bg-card); color: var(--ios-red); border: none; padding: 15px; border-radius: 16px; font-size: 15px; font-weight: 600; box-shadow: var(--shadow-soft); cursor: pointer; text-align: center; transition: transform 0.2s; margin-bottom: 20px; font-family: 'Poppins'; }
         .logout-btn:active { transform: scale(0.97); background: #fdfdfd;}
 
-        /* ====== EDIT PROFILE MODAL ====== */
+        /* ====== EDIT PROFILE MODAL (iOS Style Sheet) ====== */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2000; opacity: 0; pointer-events: none; transition: 0.3s ease; display: flex; justify-content: center; align-items: flex-end; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         
@@ -193,6 +191,7 @@
         .btn-cancel { background: var(--bg-main); color: var(--text-main); }
         .btn-save { background: var(--ios-blue); color: #fff; }
         .modal-btn:active { transform: scale(0.96); }
+
 
         /* ====== BOTTOM NAVIGATION ====== */
         .bottom-nav {
@@ -232,25 +231,24 @@
         <div class="profile-card">
             <img src="https://ui-avatars.com/api/?name=User&background=007aff&color=fff" class="avatar" id="userAvatar" alt="User">
             <div class="user-info">
-                <div class="user-name" id="userName">Loading... <i class="fas fa-check-circle" style="display:none;" id="verifiedBadge"></i></div>
-                <div class="user-handle" id="userHandle">@loading</div>
-                <div class="user-id" id="userTgId">ID: Loading...</div>
+                <div class="user-name" id="userName">Loading...</div>
+                <div class="user-id" id="userId">@loading</div>
             </div>
             <button class="edit-btn" onclick="openEditModal()"><i class="fas fa-pen"></i></button>
         </div>
 
         <div class="stats-row">
             <div class="stat-box">
-                <div class="stat-val" id="statOrders"><i class="fas fa-spinner fa-spin" style="font-size: 14px;"></i></div>
-                <div class="stat-label">Total Orders</div>
+                <div class="stat-val" id="totalBots">0</div>
+                <div class="stat-label">Bots Bought</div>
             </div>
             <div class="stat-box">
-                <div class="stat-val" style="color: var(--ios-green)" id="statRevenue"><i class="fas fa-spinner fa-spin" style="font-size: 14px;"></i></div>
+                <div class="stat-val" style="color: var(--ios-green)" id="totalRevenue">$0.00</div>
                 <div class="stat-label">Ad Revenue</div>
             </div>
             <div class="stat-box">
-                <div class="stat-val" style="color: var(--ios-purple)" id="statCoupons"><i class="fas fa-spinner fa-spin" style="font-size: 14px;"></i></div>
-                <div class="stat-label">Coupons Used</div>
+                <div class="stat-val" style="color: var(--ios-orange)" id="userDiscount">0%</div>
+                <div class="stat-label">Discount</div>
             </div>
         </div>
 
@@ -262,31 +260,16 @@
             </div>
         </div>
 
-        <div class="list-group" id="adminMenuGroup" style="display: none; border: 1px solid var(--color-nahid-1);">
-            <a href="admin.html" class="list-item" onclick="triggerHaptic()">
-                <div class="item-icon bg-black"><i class="fas fa-user-shield"></i></div>
-                <div class="item-text" style="font-weight: 700;">Admin Dashboard</div>
-                <div class="item-badge" id="pendingBadge" style="background: var(--ios-orange); display: none;">0 Pending</div>
-                <div class="item-arrow"><i class="fas fa-chevron-right"></i></div>
-            </a>
-        </div>
-
         <div class="list-group">
             <a href="orders.html" class="list-item" onclick="triggerHaptic()">
                 <div class="item-icon bg-blue"><i class="fas fa-box"></i></div>
-                <div class="item-text">My Projects & Wallet</div>
-                <div class="item-arrow"><i class="fas fa-chevron-right"></i></div>
-            </a>
-            <div class="list-item" onclick="triggerHaptic(); alert('No special events available right now. Check back later!');">
-                <div class="item-icon bg-orange"><i class="fas fa-star"></i></div>
-                <div class="item-text">Events & Rewards</div>
-                <div class="item-badge" style="background: var(--ios-orange);">EVENTS</div>
+                <div class="item-text">My Projects</div>
                 <div class="item-arrow"><i class="fas fa-chevron-right"></i></div>
             </a>
             <a href="ai-assistant.html" class="list-item" onclick="triggerHaptic()">
                 <div class="item-icon bg-gradient"><i class="fas fa-robot"></i></div>
                 <div class="item-text">AI Assistant</div>
-                <div class="item-badge" style="background: var(--ios-red);">NEW</div>
+                <div class="item-badge">NEW</div>
                 <div class="item-arrow"><i class="fas fa-chevron-right"></i></div>
             </a>
             <div class="list-item" onclick="triggerHaptic(); alert('Connect your Binance or bKash account feature coming soon!');">
@@ -303,12 +286,12 @@
                 <div class="toggle-switch on" id="notifToggle"><div class="toggle-knob"></div></div>
             </div>
 
-            <a href="https://t.me/nahid_trix_bot" target="_blank" class="list-item" onclick="triggerHaptic()">
+            <a href="https://t.me/YourTelegramUsername" target="_blank" class="list-item" onclick="triggerHaptic()">
                 <div class="item-icon bg-purple"><i class="fas fa-headset"></i></div>
                 <div class="item-text">Contact Admin (Nahid)</div>
                 <div class="item-arrow"><i class="fas fa-chevron-right"></i></div>
             </a>
-            <div class="list-item" onclick="triggerHaptic(); alert('Privacy Policy: All your Telegram Data and Database entries are fully secured and encrypted.');">
+            <div class="list-item" onclick="triggerHaptic(); alert('Privacy Policy: We do not share your data with anyone.');">
                 <div class="item-icon bg-gray"><i class="fas fa-shield-alt"></i></div>
                 <div class="item-text">Privacy Policy</div>
                 <div class="item-arrow"><i class="fas fa-chevron-right"></i></div>
@@ -359,6 +342,7 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
+        // Making it globally accessible for our module script below
         window.triggerHaptic = function() {
             if (navigator.vibrate) navigator.vibrate(40);
             if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
@@ -375,7 +359,7 @@
             }
         }
 
-        // --- Smart Search Logic (Restored) ---
+        // --- Smart Search Logic ---
         const mainHeader = document.getElementById('mainHeader');
         const searchToggleBtn = document.getElementById('searchToggleBtn');
         const searchIcon = document.getElementById('searchIcon');
@@ -384,7 +368,7 @@
         const suggestionsBox = document.getElementById('suggestionsBox');
 
         let isSearchOpen = false;
-        window.botDatabase = []; 
+        window.botDatabase = []; // Populated by Firebase in module script
 
         function toggleSearch() {
             window.triggerHaptic();
@@ -420,6 +404,7 @@
             }
         });
 
+        // Search Algorithm
         searchInput.addEventListener('input', function() {
             const query = this.value.toLowerCase().trim();
             suggestionsBox.innerHTML = ''; 
@@ -457,6 +442,7 @@
             }
         });
 
+        // --- Coupon Logic ---
         function applyCoupon() {
             window.triggerHaptic();
             const couponInput = document.getElementById('couponInput');
@@ -467,9 +453,10 @@
                 return;
             }
 
-            if(code === "NAHID2026" || code === "MEGA50") {
-                alert("🎉 Success! You got a discount on your next order.");
+            if(code === "NAHID2026") {
+                alert("🎉 Success! You got a 10% Extra Discount on your next order.");
                 couponInput.value = "";
+                document.getElementById('userDiscount').innerText = "10%";
             } else {
                 alert("❌ Invalid or expired coupon code.");
             }
@@ -478,7 +465,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, getDocs, doc, getDoc, setDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
         const firebaseConfig = {
@@ -495,7 +482,7 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
         
-        // --- Telegram Native Data Integration ---
+        // Telegram user fetch from global API
         const tgApi = window.Telegram.WebApp;
         const tgUser = tgApi.initDataUnsafe?.user;
 
@@ -516,114 +503,62 @@
                         dbHandle = currentUserData.tgUsername ? `@${currentUserData.tgUsername.replace('@', '')}` : null;
                     }
 
+                    // TG Data integration & Fallback
                     let finalName = dbName;
                     let finalHandle = dbHandle;
                     let finalAvatar = null;
-                    let finalTgId = "ID: Not linked";
 
                     if (tgUser) {
-                        finalName = `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim();
-                        finalHandle = tgUser.username ? `@${tgUser.username}` : `No Username`;
-                        finalTgId = `ID: ${tgUser.id}`;
-                        finalAvatar = tgUser.photo_url || null; 
+                        if (!finalName) finalName = `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim();
+                        if (!finalHandle) finalHandle = tgUser.username ? `@${tgUser.username}` : `ID: ${tgUser.id}`;
+                        finalAvatar = tgUser.photo_url || null; // Telegram DP
 
-                        setDoc(docRef, {
-                            name: finalName,
-                            tgUsername: finalHandle.replace('@', ''),
-                            tgId: tgUser.id
-                        }, { merge: true }).catch(e => console.log("Silent DB update failed"));
+                        // Auto-save TG data to Firebase if it was missing
+                        if (!dbName || !dbHandle) {
+                            setDoc(docRef, {
+                                name: finalName,
+                                tgUsername: finalHandle ? finalHandle.replace('@', '') : '',
+                                tgId: tgUser.id
+                            }, { merge: true }).catch(e => console.log("Silent DB update failed:", e));
+                        }
                     } else {
-                        if (!finalName) finalName = user.email ? user.email.split('@')[0] : "Verified User";
+                        // If completely outside Telegram & no DB data
+                        if (!finalName) finalName = user.email ? user.email.split('@')[0] : "User";
                         if (!finalHandle) finalHandle = user.email || "@user";
-                        if (currentUserData && currentUserData.tgId) finalTgId = `ID: ${currentUserData.tgId}`;
                     }
 
-                    updateProfileUI(finalName, finalHandle, finalTgId, finalAvatar);
-                    loadDynamicUserStats(user.uid, currentUserData);
-
-                    // ==========================================
-                    //  ADMIN PANEL LOGIC
-                    // ==========================================
-                    if (user.email === "nahid.xsr@gmail.com" || user.email === "mdnahid.xsr@gmail.com") {
-                        document.getElementById('adminMenuGroup').style.display = 'block';
-                        
-                        try {
-                            const pendingQuery = query(collection(db, "pending_projects"), where("status", "==", "pending"));
-                            const pendingSnap = await getDocs(pendingQuery);
-                            const count = pendingSnap.size;
-                            
-                            if (count > 0) {
-                                const badge = document.getElementById('pendingBadge');
-                                badge.innerText = `${count} Pending`;
-                                badge.style.display = 'inline-block';
-                            }
-                        } catch(e) { console.error("Error fetching pending count"); }
-                    }
+                    updateProfileUI(finalName, finalHandle, finalAvatar);
 
                 } catch (error) {
                     console.error("Error fetching user data:", error);
-                    updateProfileUI("Error Loading", "@error", "ID: Error", null);
+                    updateProfileUI("Error Loading", "@error", null);
                 }
             } else {
                 window.location.replace("auth.html");
             }
         });
 
-        function updateProfileUI(name, handle, tgIdStr, customAvatar) {
-            document.getElementById('userName').innerHTML = `${name} <i class="fas fa-check-circle" style="color:var(--ios-blue); font-size:14px;"></i>`;
-            document.getElementById('userHandle').innerText = handle;
-            document.getElementById('userTgId').innerText = tgIdStr;
+        // Function to update UI dynamically
+        function updateProfileUI(name, handle, customAvatar) {
+            document.getElementById('userName').innerHTML = `${name} <i class="fas fa-check-circle"></i>`;
+            document.getElementById('userId').innerText = handle;
             
+            // Generate Avatar if customAvatar is not available
             let avatarSrc = customAvatar;
             if(!avatarSrc) {
-                avatarSrc = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=007aff&color=fff&size=150`;
+                avatarSrc = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=007aff&color=fff`;
             }
             document.getElementById('userAvatar').src = avatarSrc;
         }
 
-        // --- FETCH DYNAMIC STATS (Orders, Revenue, Coupons) ---
-        async function loadDynamicUserStats(uid, userData) {
-            let orderCount = 0;
-            let couponCount = 0;
-            
-            try {
-                const q = query(collection(db, "orders"), where("uid", "==", uid));
-                const querySnapshot = await getDocs(q);
-                
-                orderCount = querySnapshot.size;
-                
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    if (data.couponApplied && data.couponApplied !== "None") {
-                        couponCount++;
-                    }
-                });
-                
-                // Update Order & Coupon Stats
-                document.getElementById('statOrders').innerText = orderCount;
-                document.getElementById('statCoupons').innerText = couponCount;
-
-                // Update Revenue Stats from User Profile Balance
-                let totalBalance = 0;
-                if(userData && userData.balance) {
-                    totalBalance = parseFloat(userData.balance);
-                }
-                document.getElementById('statRevenue').innerText = "$" + totalBalance.toFixed(2);
-
-            } catch(e) {
-                document.getElementById('statOrders').innerText = "0";
-                document.getElementById('statCoupons').innerText = "0";
-                document.getElementById('statRevenue').innerText = "$0.00";
-            }
-        }
-
+        // --- Edit Modal Functions (Exposed to window) ---
         const modal = document.getElementById('editProfileModal');
 
         window.openEditModal = function() {
             if (window.triggerHaptic) window.triggerHaptic();
             
-            let currentName = document.getElementById('userName').innerText.trim();
-            let currentHandle = document.getElementById('userHandle').innerText.trim();
+            let currentName = document.getElementById('userName').textContent.trim();
+            let currentHandle = document.getElementById('userId').innerText.trim();
             
             document.getElementById('editNameInput').value = currentName === "Guest User" ? "" : currentName;
             document.getElementById('editHandleInput').value = currentHandle === "@not_connected" ? "" : currentHandle;
@@ -661,14 +596,15 @@
                 saveBtn.disabled = true;
 
                 try {
+                    // Force Save to Database
                     await setDoc(doc(db, "users", user.uid), {
                         name: nameVal,
                         tgUsername: handleVal.replace('@', '') 
                     }, { merge: true });
                     
+                    // Update UI using same telegram avatar if existed
                     const avatarUrl = tgApi.initDataUnsafe?.user?.photo_url || null;
-                    const tgIdStr = document.getElementById('userTgId').innerText;
-                    updateProfileUI(nameVal, handleVal || "No Username", tgIdStr, avatarUrl);
+                    updateProfileUI(nameVal, handleVal, avatarUrl);
                     
                     window.closeEditModal();
                 } catch (error) {
@@ -681,6 +617,7 @@
             }
         };
 
+        // --- Logout Function ---
         window.confirmLogout = function() {
             if (window.triggerHaptic) window.triggerHaptic();
             if(confirm("Are you sure you want to log out?")) {
@@ -694,6 +631,7 @@
             }
         };
 
+        // --- Load Search Data ---
         async function loadSearchData() {
             try {
                 const querySnapshot = await getDocs(collection(db, "apps"));
