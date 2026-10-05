@@ -159,18 +159,18 @@
         /* ====== CREATE POST SECTION ====== */
         .create-post-container {
             background: var(--bg-card);
-            padding: 12px 15px; /* Reduced Padding */
-            margin-bottom: 8px; /* Reduced Margin */
+            padding: 12px 15px; 
+            margin-bottom: 8px; 
             display: flex;
             align-items: center;
-            gap: 10px; /* Reduced Gap */
+            gap: 10px; 
             box-shadow: 0 1px 2px rgba(0,0,0,0.02);
             border-bottom: 0.5px solid var(--border-color);
             cursor: pointer;
         }
 
         .create-post-container img {
-            width: 40px; /* Smaller Avatar */
+            width: 40px; 
             height: 40px;
             border-radius: 50%;
             object-fit: cover;
@@ -180,7 +180,7 @@
         .create-post-input {
             flex-grow: 1;
             background: #f0f2f5; 
-            padding: 10px 18px; /* Tighter input */
+            padding: 10px 18px; 
             border-radius: 30px; 
             color: #65676b;
             font-size: 13.5px;
@@ -195,7 +195,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 36px; /* Sleeker Icon Button */
+            width: 36px; 
             height: 36px;
             border-radius: 50%;
             background: #e8f5e9;
@@ -214,8 +214,8 @@
 
         .feed-post {
             background: var(--bg-card);
-            padding: 12px 15px; /* Reduced Space (Compact) */
-            margin-bottom: 8px; /* Less space between posts */
+            padding: 12px 15px; 
+            margin-bottom: 8px; 
             box-shadow: 0 1px 2px rgba(0,0,0,0.02);
             border-bottom: 0.5px solid var(--border-color);
             animation: fadeIn 0.4s ease;
@@ -228,18 +228,18 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 8px; /* Tighter margin */
+            margin-bottom: 8px; 
         }
 
         .post-author {
             display: flex;
             align-items: center;
-            gap: 8px; /* Tighter gap */
+            gap: 8px; 
             cursor: pointer;
         }
 
         .post-author img {
-            width: 40px; /* Reduced Avatar Size */
+            width: 40px; 
             height: 40px;
             border-radius: 50%;
             object-fit: cover;
@@ -254,10 +254,10 @@
         .post-options { color: var(--text-muted); cursor: pointer; padding: 2px 5px; font-size: 16px; }
 
         /* TEXT TRUNCATION (Smart Algorithm) */
-        .post-text-wrapper { margin-bottom: 8px; /* Tighter Margin */ }
+        .post-text-wrapper { margin-bottom: 8px; }
         .post-text {
-            font-size: 14px; /* Reduced Font Size */
-            line-height: 1.4; /* Tighter line height */
+            font-size: 14px; 
+            line-height: 1.4; 
             color: var(--text-main);
             word-wrap: break-word;
             white-space: pre-wrap;
@@ -294,8 +294,8 @@
         .post-image-wrapper {
             position: relative;
             width: 100%;
-            border-radius: 8px; /* Sharper radius */
-            margin-bottom: 8px; /* Tighter Margin */
+            border-radius: 8px; 
+            margin-bottom: 8px; 
             overflow: hidden;
             background: var(--bg-main); 
         }
@@ -303,7 +303,7 @@
         .post-attached-image {
             width: 100%;
             height: auto; 
-            max-height: 500px; /* Reduced Max Height */
+            max-height: 500px; 
             object-fit: cover;
             display: block;
         }
@@ -331,19 +331,19 @@
         /* Post Stats */
         .post-stats {
             display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted);
-            padding-bottom: 8px; border-bottom: 1px solid var(--border-color); margin-bottom: 4px; /* Tighter Margin/Padding */
+            padding-bottom: 8px; border-bottom: 1px solid var(--border-color); margin-bottom: 4px; 
         }
 
         /* Post Action Buttons (Sleek & Compact Icons Only) */
         .post-actions { display: flex; justify-content: space-around; align-items: center; padding-top: 0px; }
         .action-btn {
             display: flex; align-items: center; gap: 6px;
-            color: var(--text-muted); font-size: 18px; /* Smaller Icons */
+            color: var(--text-muted); font-size: 18px; 
             cursor: pointer;
-            padding: 6px 10px; /* Much tighter hit area padding */
+            padding: 6px 10px; 
             border-radius: 20px; transition: 0.2s;
         }
-        .action-btn span { font-size: 13px; font-weight: 600; margin-top: 2px;} /* Smaller Numbers */
+        .action-btn span { font-size: 13px; font-weight: 600; margin-top: 2px;} 
         .action-btn i { transition: transform 0.2s; }
         .action-btn:active { background: var(--bg-main); transform: scale(0.9); }
         
@@ -547,7 +547,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, orderBy, limit, startAfter, doc, increment, updateDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, query, orderBy, limit, startAfter, doc, increment, updateDoc, addDoc, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAsP3AubiZpmvCRPngDePdvvQMiDTELCII",
@@ -668,7 +668,6 @@
             searchInput.blur();
             isSearchOpen = false;
             
-            // If we are clearing a search query by closing the search box, reset the feed
             if(currentSearchQuery !== "") {
                 clearSearchFilter();
             }
@@ -676,7 +675,6 @@
         
         searchToggleBtn.addEventListener('click', () => toggleSearch(false));
 
-        // Live Feed Filtering Logic
         searchInput.addEventListener('input', (e) => {
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(() => {
@@ -685,12 +683,12 @@
                     currentSearchQuery = query;
                     document.getElementById('filterKeyword').innerText = query;
                     document.getElementById('activeFilterBar').style.display = 'flex';
-                    document.getElementById('createPostSection').style.display = 'none'; // Hide create post while filtering
+                    document.getElementById('createPostSection').style.display = 'none'; 
                     resetAndFetchFeed();
                 } else if (currentSearchQuery !== "") {
                     clearSearchFilter();
                 }
-            }, 600); // 600ms debounce
+            }, 600); 
         });
 
         window.clearSearchFilter = function() {
@@ -700,7 +698,6 @@
             document.getElementById('activeFilterBar').style.display = 'none';
             document.getElementById('createPostSection').style.display = 'flex';
             
-            // Remove search param from URL if exists to clear the state purely
             const url = new URL(window.location);
             url.searchParams.delete('search');
             window.history.pushState({}, '', url);
@@ -730,31 +727,54 @@
         }
 
         let currentSharePostId = null;
-        window.openShareOptions = function(postId) {
+        let currentShareAuthorTgId = null;
+        window.openShareOptions = function(postId, authorTgId) {
             currentSharePostId = postId;
+            currentShareAuthorTgId = authorTgId;
             openSheet('shareSheet');
         }
 
         window.reportPost = function() {
             if(!checkAuthForAction()) return;
             triggerHaptic();
-            showAlert("Report submitted successfully!", "success");
+            sendTgNotification(currentShareAuthorTgId, 'report', currentSharePostId);
+            showAlert("Report submitted successfully! The user has been warned.", "success");
             closeAllSheets();
         }
 
-        // --- Telegram Bot Notifications ---
+        // --- Telegram Bot Notifications (Upgraded) ---
         async function sendTgNotification(targetTgId, type, postId) {
             if(!targetTgId || targetTgId === "undefined") return;
-            const botToken = "7851282160:AAEhW0xMLy_gKnII0WJYnxAqIh3QA5RrN40"; 
-            const appLink = `https://t.me/nahid_trix_bot/app?startapp=post_${postId}`;
+            
+            let botToken = "";
+            try {
+                const tokenSnap = await getDoc(doc(db, "admin_config", "telegram"));
+                if(tokenSnap.exists()) {
+                    botToken = tokenSnap.data().botToken;
+                }
+            } catch(e) { console.error("Could not fetch bot token"); }
+
+            if(!botToken) return;
             
             let message = "";
-            let btnText = "💬 View Post";
+            let btnText = "👀 View Post";
+            let appLink = `https://t.me/nahid_trix_bot/app?startapp=post_${postId}`;
 
-            if(type === 'comment') message = `💬 <b>${displayName}</b> commented on your post.`;
-            else if(type === 'like') message = `❤️ <b>${displayName}</b> liked your post.`;
+            if(type === 'comment') {
+                message = `💬 <b>New Comment!</b>\n\n👤 <b>${displayName}</b> has just commented on your post.\n\n👇 Click the button below to view and reply!`;
+                btnText = "💬 View Comment";
+                appLink = `https://t.me/nahid_trix_bot/app?startapp=comment_${postId}`;
+            }
+            else if(type === 'like') {
+                message = `❤️ <b>New Like!</b>\n\n👤 <b>${displayName}</b> liked your post.\n\n🔥 Keep up the good work!`;
+                btnText = "❤️ View Post";
+            }
+            else if(type === 'report') {
+                message = `🚨 <b>Post Alert!</b>\n\n⚠️ Someone has reported your post. Please ensure your content follows our community guidelines.\n\n👀 Review your post below:`;
+                btnText = "🚨 Review Post";
+            }
             else if(type === 'warning') {
-                message = `🚨 <b>WARNING:</b> Your comment violated guidelines and was blocked. Profanity is strictly prohibited.`;
+                message = `🚫 <b>Comment Blocked!</b>\n\n⚠️ Your comment contained restricted words and was blocked. Profanity is strictly prohibited.\n\n📜 Please read the community rules.`;
                 btnText = "Read Rules";
             }
 
@@ -763,11 +783,13 @@
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
-                        chat_id: targetTgId, text: message, parse_mode: 'HTML',
+                        chat_id: targetTgId, 
+                        text: message, 
+                        parse_mode: 'HTML',
                         reply_markup: { inline_keyboard: [[{ text: btnText, url: appLink }]] }
                     })
                 });
-            } catch(e) {}
+            } catch(e) { console.error("Notification Error", e); }
         }
 
         // --- Profanity Check ---
@@ -873,11 +895,9 @@
             } catch(e) { console.error("Error posting comment", e); }
         }
 
-        // --- Format Helpers ---
         function formatPostText(text) {
             if(!text) return "";
             let formatted = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="post-link" onclick="event.stopPropagation();">$1</a>');
-            // Hashtag Routing Update
             formatted = formatted.replace(/#(\w+)/g, '<span class="hashtag" onclick="event.stopPropagation(); window.location.href=\'feed.html?search=$1\'">#$1</span>');
             return formatted;
         }
@@ -922,10 +942,6 @@
             return Math.floor(seconds) + "s";
         }
 
-        // ==========================================
-        //  FEED SYSTEM & PROJECT ADS ALGORITHM
-        // ==========================================
-
         let lastVisibleDoc = null;
         let isFetching = false;
         let hasMorePosts = true;
@@ -954,7 +970,6 @@
 
             try {
                 let q;
-                // Increase fetch limit if filtering
                 let fetchLimit = currentSearchQuery !== "" ? 30 : 6; 
 
                 if(isInitial) {
@@ -983,7 +998,6 @@
                     if (!seenPostIds.has(doc.id)) { 
                         let data = doc.data();
                         
-                        // Local Filter Array Algorithm
                         if(currentSearchQuery !== "") {
                             let textContent = (data.content || "").toLowerCase();
                             let authorName = (data.authorName || "").toLowerCase();
@@ -999,7 +1013,6 @@
                     }
                 });
 
-                // Cache only if it's initial load AND we are not searching
                 if(isInitial && currentSearchQuery === "") {
                     localStorage.setItem('nahid_feed_cache', JSON.stringify(fetchedPosts));
                 }
@@ -1020,7 +1033,6 @@
             postsArr.forEach(post => {
                 postCounter++;
                 
-                // Only show App Ads if we are NOT searching
                 if (currentSearchQuery === "" && postCounter % 4 === 0 && storeApps.length > currentAppIndex) {
                     batchHTML += buildAppSliderHtml();
                 }
@@ -1029,7 +1041,6 @@
                 const hasImage = !!post.image;
                 let clampClass = hasImage ? 'clamp-image' : 'clamp-text';
 
-                // ============ Time Fix (NaN handling) ============
                 let postDate = new Date();
                 if (post.createdAt) {
                     if (typeof post.createdAt.toDate === 'function') {
@@ -1042,7 +1053,6 @@
                 }
                 if (isNaN(postDate.getTime())) postDate = new Date();
                 const timeStr = timeAgo(postDate);
-                // =================================================
 
                 const verifiedHtml = `<i class="fab fa-telegram verified-badge"></i>`;
 
@@ -1088,7 +1098,7 @@
                             <div class="action-btn" onclick="openDynamicCommentSheet('${post.id}', '${post.authorTgId || ""}')">
                                 <i class="far fa-comment"></i> <span class="comment-count">${post.comments || 0}</span>
                             </div>
-                            <div class="action-btn" onclick="openShareOptions('${post.id}')">
+                            <div class="action-btn" onclick="openShareOptions('${post.id}', '${post.authorTgId || ""}')">
                                 <i class="far fa-paper-plane"></i>
                             </div>
                         </div>
@@ -1138,7 +1148,6 @@
             return "";
         }
 
-        // --- Optimized Like System ---
         let pendingLikeSyncs = {}; 
         let syncTimeout = null;
 
@@ -1203,21 +1212,36 @@
             }
         }
 
-        // --- Deep Linking Auto-Scroll ---
+        // --- Deep Linking Auto-Scroll (Upgraded for Comments) ---
         function handleDeepLink() {
             const startParam = tg.initDataUnsafe?.start_param;
-            if(startParam && startParam.startsWith('post_')) {
-                const targetPostId = startParam.split('post_')[1];
+            if(startParam) {
+                let targetPostId = null;
+                let openComment = false;
+
+                // Check if it's a normal post link or a comment link
+                if (startParam.startsWith('post_')) {
+                    targetPostId = startParam.split('post_')[1];
+                } else if (startParam.startsWith('comment_')) {
+                    targetPostId = startParam.split('comment_')[1];
+                    openComment = true;
+                }
                 
-                setTimeout(() => {
-                    const postEl = document.getElementById(`post_${targetPostId}`);
-                    if(postEl) {
-                        postEl.scrollIntoView({behavior: 'smooth', block: 'center'});
-                        postEl.classList.add('highlight');
-                        setTimeout(() => postEl.classList.remove('highlight'), 2000);
-                        if(checkAuthForAction()) openDynamicCommentSheet(targetPostId, null);
-                    }
-                }, 1500);
+                if(targetPostId) {
+                    setTimeout(() => {
+                        const postEl = document.getElementById(`post_${targetPostId}`);
+                        if(postEl) {
+                            postEl.scrollIntoView({behavior: 'smooth', block: 'center'});
+                            postEl.classList.add('highlight');
+                            setTimeout(() => postEl.classList.remove('highlight'), 2000);
+                            
+                            // Automatically open comment sheet if it was a comment notification
+                            if(openComment && checkAuthForAction()) {
+                                openDynamicCommentSheet(targetPostId, null);
+                            }
+                        }
+                    }, 1500);
+                }
             }
         }
 
@@ -1236,7 +1260,6 @@
         async function init() {
             await fetchStoreApps(); 
             
-            // Check for Hashtag URL Params first
             const urlParams = new URLSearchParams(window.location.search);
             const searchParam = urlParams.get('search');
             
