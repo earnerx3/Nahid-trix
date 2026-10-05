@@ -21,6 +21,7 @@
             --color-trix: #00bcd4;       
             --color-pink: #ff2d55;       
             --ios-blue: #007aff;         
+            --ios-red: #ff3b30;
             
             --border-color: #e5e5ea;     
             --shadow-soft: 0 4px 14px rgba(0,0,0,0.06);
@@ -80,8 +81,13 @@
             -webkit-text-fill-color: transparent;
         }
         
-        .logo .trix { color: var(--text-main); }
-        .logo .trix span { color: var(--color-trix); }
+        .logo .trix {
+            color: var(--text-main);
+        }
+        
+        .logo .trix span {
+            color: var(--color-trix);
+        }
 
         /* ====== SMART SEARCH CONTAINER ====== */
         .search-container {
@@ -147,7 +153,7 @@
         }
 
         .search-toggle-btn.active {
-            color: var(--ios-red, #ff3b30); 
+            color: var(--ios-red); 
             transform: rotate(90deg); 
         }
 
@@ -157,60 +163,78 @@
             pointer-events: none;
         }
 
-        /* Suggestions Box */
-        .suggestions-list {
-            display: none;
-            position: absolute;
-            top: 50px;
-            right: 18px;
-            width: calc(100vw - 36px);
-            max-width: 400px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-            list-style: none;
-            padding: 10px 0;
-            margin: 0;
-            max-height: 300px;
-            overflow-y: auto;
-            border-radius: 16px;
-            border: 0.5px solid var(--border-color);
-            z-index: 1000;
-            animation: fadeInDrop 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-
-        @keyframes fadeInDrop {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .suggestions-list .ai-header {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--ios-blue);
-            padding: 5px 20px 10px 20px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: flex;
+        /* ====== WELCOME BONUS UI ====== */
+        .welcome-banner {
+            background: linear-gradient(90deg, #ff2d55, #ff9500);
+            color: #fff;
+            padding: 12px 18px;
+            display: none; 
             align-items: center;
-            gap: 6px;
-        }
-
-        .suggestions-list li {
-            padding: 12px 20px;
-            font-size: 14px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: var(--text-main);
-            transition: background 0.2s;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(255, 45, 85, 0.2);
+            margin-bottom: 15px;
+            border-radius: 12px;
         }
         
-        .suggestions-list li:hover { background: rgba(0,0,0,0.03); }
-        .suggestions-list li i { color: var(--text-muted); font-size: 12px; }
-        .suggestions-list li .highlight { font-weight: 700; color: var(--ios-blue); }
+        .wb-text {
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+        
+        .wb-timer {
+            background: rgba(0,0,0,0.2);
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            white-space: nowrap;
+        }
+
+        .welcome-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            z-index: 10000; display: none; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .welcome-overlay.show { display: flex; opacity: 1; }
+        
+        .welcome-modal {
+            background: var(--bg-card); width: 85%; max-width: 340px; border-radius: 24px; padding: 30px 20px;
+            text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden;
+        }
+        .welcome-overlay.show .welcome-modal { transform: scale(1); }
+        
+        .confetti-bg {
+            position: absolute; top: -50px; left: 0; width: 100%; height: 150px;
+            background: radial-gradient(circle, rgba(255,45,85,0.1) 0%, transparent 70%); pointer-events: none;
+        }
+        .welcome-icon {
+            width: 70px; height: 70px; background: linear-gradient(135deg, #ff2d55, #ff9500); color: #fff;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px;
+            margin: 0 auto 15px; box-shadow: 0 10px 20px rgba(255,45,85,0.3); z-index: 1; position: relative;
+        }
+        .welcome-title { font-size: 20px; font-weight: 800; color: var(--text-main); margin-bottom: 8px; }
+        .welcome-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+        .welcome-code-box {
+            background: #f2f2f7; border: 1.5px dashed var(--ios-blue); padding: 12px; border-radius: 12px;
+            font-size: 16px; font-weight: 800; color: var(--ios-blue); letter-spacing: 1px; margin-bottom: 20px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .welcome-btn {
+            width: 100%; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer;
+            border: none; background: var(--ios-blue); color: #fff; box-shadow: 0 8px 15px rgba(0, 122, 255, 0.2); transition: 0.2s;
+        }
+        .welcome-btn:active { transform: scale(0.96); }
+        .welcome-close {
+            position: absolute; top: 15px; right: 15px; width: 30px; height: 30px; background: #f2f2f7;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; z-index: 5;
+        }
 
         /* ====== MAIN CONTENT & GRID ====== */
         .main-content {
@@ -227,6 +251,7 @@
             position: relative;
             margin-bottom: 25px;
             box-shadow: var(--shadow-soft);
+            transition: opacity 0.3s ease, height 0.3s ease;
         }
 
         .slider-track {
@@ -257,7 +282,12 @@
             color: #fff; 
         }
 
-        .slide-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+        .slide-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
         .slide-btn {
             background: rgba(255,255,255,0.2);
             backdrop-filter: blur(10px);
@@ -284,9 +314,12 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
+            align-items: stretch;
         }
 
-        .full-width { grid-column: span 2; }
+        .full-width {
+            grid-column: span 2;
+        }
 
         .app-card {
             background: var(--bg-card);
@@ -298,58 +331,131 @@
             flex-direction: column;
             box-shadow: var(--shadow-soft);
             transition: transform 0.2s;
+            height: 100%; 
         }
         
-        .app-card:active { transform: scale(0.96); }
+        .app-card:active {
+            transform: scale(0.96);
+        }
+
+        /* Image & Rating Overlay */
+        .frame-img-wrapper {
+            position: relative;
+            width: 100%;
+            margin-bottom: 8px;
+        }
 
         .frame-img {
             width: 100%;
             aspect-ratio: 9 / 13;
             border-radius: 12px;
             object-fit: cover;
-            margin-bottom: 10px;
+            display: block;
             background: #e5e5ea;
         }
 
-        .full-width .frame-img { aspect-ratio: 16 / 7; }
+        .full-width .frame-img {
+            aspect-ratio: 16 / 7;
+        }
 
-        .app-info { display: flex; flex-direction: column; gap: 4px; }
+        .rating-badge {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            color: #ffcc00; 
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 6px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            z-index: 2;
+        }
 
+        .app-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex-grow: 1; 
+        }
+
+        /* Multiple Networks Container */
+        .networks-wrapper {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+
+        .app-network { 
+            font-size: 9px; 
+            padding: 3px 6px;
+            border-radius: 5px;
+            font-weight: 600;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        /* 2-line Title strictly enforced */
         .app-name { 
             font-size: 13px; 
             font-weight: 600; 
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
             color: var(--text-main);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal;
+            line-height: 1.4;
+            margin-bottom: 6px;
+            height: 36px; 
         }
-        
-        .app-network { 
-            font-size: 10px; 
-            color: var(--ios-blue); 
-            background: rgba(0, 122, 255, 0.1);
-            padding: 3px 6px;
-            border-radius: 6px;
-            width: max-content;
-            font-weight: 500;
+
+        .full-width .app-name {
+            height: auto;
+            -webkit-line-clamp: 1;
         }
 
         .bottom-row {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-top: 5px;
+            align-items: flex-end;
+            margin-top: auto; 
+        }
+
+        /* Price & Discount Box */
+        .price-box {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .discount-tag {
+            font-size: 9px;
+            color: var(--ios-red);
+            font-weight: 700;
+            background: rgba(255, 59, 48, 0.1);
+            padding: 2px 4px;
+            border-radius: 4px;
+            width: max-content;
+            margin-bottom: 2px;
         }
 
         .price-tag {
-            font-size: 13px;
-            font-weight: 700;
+            font-size: 14px;
+            font-weight: 800;
             color: var(--text-main);
+            line-height: 1;
         }
 
         .buy-btn {
             font-size: 11px;
-            padding: 5px 12px;
+            padding: 6px 14px;
             border-radius: 15px;
             background: var(--ios-blue);
             color: #fff;
@@ -371,6 +477,38 @@
             color: var(--text-muted);
             font-size: 13px;
             display: none;
+        }
+
+        /* ====== EMPTY SEARCH STATE ====== */
+        .empty-search-state {
+            grid-column: span 2;
+            text-align: center;
+            padding: 60px 20px;
+            animation: fadeInDrop 0.3s ease;
+        }
+        
+        .empty-search-state i {
+            font-size: 45px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        .empty-search-state .title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 5px;
+        }
+        
+        .empty-search-state .desc {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        @keyframes fadeInDrop {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* ====== BOTTOM NAVIGATION ====== */
@@ -400,46 +538,113 @@
             gap: 4px; 
         }
 
-        .nav-link i { font-size: 18px; } 
-        .nav-link.active { color: var(--ios-blue); }
+        .nav-link i {
+            font-size: 18px;
+        } 
+        
+        .nav-link.active {
+            color: var(--ios-blue);
+        }
 
         /* ====== AUTH POPUP MODAL ====== */
         .auth-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.4); backdrop-filter: blur(8px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
-            z-index: 9999; display: none; align-items: center; justify-content: center;
-            opacity: 0; transition: opacity 0.3s ease;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
-        .auth-overlay.show { display: flex; opacity: 1; }
+        
+        .auth-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
         
         .auth-modal {
-            background: var(--bg-card); width: 85%; max-width: 340px;
-            border-radius: 24px; padding: 30px 20px 20px; text-align: center;
+            background: var(--bg-card);
+            width: 85%;
+            max-width: 340px;
+            border-radius: 24px;
+            padding: 30px 20px 20px;
+            text-align: center;
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .auth-overlay.show .auth-modal { transform: scale(1); }
+        
+        .auth-overlay.show .auth-modal {
+            transform: scale(1);
+        }
         
         .auth-icon {
-            width: 60px; height: 60px; background: rgba(0, 122, 255, 0.1);
-            color: var(--ios-blue); border-radius: 50%; display: flex;
-            align-items: center; justify-content: center; font-size: 28px;
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 122, 255, 0.1);
+            color: var(--ios-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
             margin: 0 auto 15px;
         }
         
-        .auth-title { font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
-        .auth-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 25px; line-height: 1.4; }
-        .auth-btn-group { display: flex; gap: 10px; }
+        .auth-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+        
+        .auth-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+        
+        .auth-btn-group {
+            display: flex;
+            gap: 10px;
+        }
         
         .auth-btn {
-            flex: 1; padding: 12px; border-radius: 14px; font-size: 14px; font-weight: 600;
-            cursor: pointer; border: none; transition: 0.2s;
+            flex: 1;
+            padding: 12px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
         }
-        .btn-cancel { background: #f2f2f7; color: var(--text-main); }
-        .btn-cancel:active { background: #e5e5ea; }
-        .btn-login { background: var(--ios-blue); color: #fff; }
-        .btn-login:active { transform: scale(0.96); }
+        
+        .btn-cancel {
+            background: #f2f2f7;
+            color: var(--text-main);
+        }
+        
+        .btn-cancel:active {
+            background: #e5e5ea;
+        }
+        
+        .btn-login {
+            background: var(--ios-blue);
+            color: #fff;
+        }
+        
+        .btn-login:active {
+            transform: scale(0.96);
+        }
     </style>
 </head>
 <body>
@@ -452,19 +657,22 @@
         
         <div class="search-container">
             <div class="search-input-wrapper" id="searchInputWrapper">
-                <input type="text" id="searchInput" placeholder="Ask me about apps..." autocomplete="off">
+                <input type="text" id="searchInput" placeholder="Search by name, network..." autocomplete="off">
             </div>
             <div class="search-toggle-btn" id="searchToggleBtn">
                 <i class="fas fa-search" id="searchIcon"></i>
             </div>
         </div>
-
-        <ul class="suggestions-list" id="suggestionsBox"></ul>
     </header>
 
     <main class="main-content" id="mainContentArea">
         
-        <div class="slider-wrapper">
+        <div class="welcome-banner" id="welcomeBanner">
+            <div class="wb-text">🎉 10% Off (Max $10) on your 1st Order!</div>
+            <div class="wb-timer"><i class="fas fa-stopwatch"></i> <span id="welcomeTimer">0d 0h 0m 0s</span></div>
+        </div>
+
+        <div class="slider-wrapper" id="homeSlider">
             <div class="slider-track">
                 <div class="slide">
                     <img src="https://images.unsplash.com/photo-1639762681485-074b7f4ec651?q=80&w=800&auto=format&fit=crop" alt="Banner 1">
@@ -500,6 +708,18 @@
         <div id="scrollLoader"><i class="fas fa-spinner fa-spin"></i> Fetching more...</div>
         
     </main>
+
+    <div class="welcome-overlay" id="welcomeOverlay">
+        <div class="welcome-modal">
+            <div class="welcome-close" onclick="closeWelcomePopup()"><i class="fas fa-times"></i></div>
+            <div class="confetti-bg"></div>
+            <div class="welcome-icon"><i class="fas fa-gift"></i></div>
+            <div class="welcome-title">Welcome Bonus!</div>
+            <div class="welcome-desc">Claim your exclusive 10% discount (up to $10) on your first purchase. Valid for 7 days!</div>
+            <div class="welcome-code-box" id="welcomeCodeTxt">NX-GIFT-10</div>
+            <button class="welcome-btn" onclick="claimWelcomeBonus()">Copy Code & Apply</button>
+        </div>
+    </div>
 
     <div class="auth-overlay" id="authOverlay">
         <div class="auth-modal">
@@ -540,12 +760,111 @@
         const tg = window.Telegram?.WebApp;
         if(tg) tg.expand();
 
+        // === লিংকের মাধ্যমে সরাসরি ডিটেইলস পেজে যাওয়ার লজিক ===
+        const startParam = tg?.initDataUnsafe?.start_param;
+
+        if (startParam && !sessionStorage.getItem('hasRedirected')) {
+            sessionStorage.setItem('hasRedirected', 'true');
+            window.location.href = `details.html?id=${startParam}`;
+        }
+
+        // ==============================================================
+        //  💥 WELCOME BONUS ANTI-CHEAT ALGORITHM 💥
+        // ==============================================================
+        const tgUserContext = window.Telegram?.WebApp?.initDataUnsafe?.user;
+        const uniqueUserId = tgUserContext ? tgUserContext.id : 'guest_' + Math.floor(Math.random() * 1000);
+
+        function initWelcomeBonus() {
+            const welcomeKey = 'nahid_welcome_' + uniqueUserId;
+            let welcomeData = JSON.parse(localStorage.getItem(welcomeKey));
+            const now = new Date().getTime();
+            
+            // নতুন ইউজার হলে ৭ দিনের টাইমার সেট করবে
+            if (!welcomeData) {
+                const expiryTime = now + (7 * 24 * 60 * 60 * 1000); // 7 Days
+                const generatedCode = 'WELCOME-' + (tgUserContext ? String(uniqueUserId).substring(0,4) : 'NX10');
+                
+                welcomeData = { expiry: expiryTime, claimed: false, code: generatedCode };
+                localStorage.setItem(welcomeKey, JSON.stringify(welcomeData));
+                
+                // ১.৫ সেকেন্ড পর পপআপ দেখাবে
+                setTimeout(() => {
+                    document.getElementById('welcomeCodeTxt').innerText = welcomeData.code;
+                    document.getElementById('welcomeOverlay').classList.add('show');
+                    triggerHaptic();
+                }, 1500);
+            }
+            
+            // যদি মেয়াদ থাকে তবে ব্যানার দেখাবে
+            if (welcomeData && now < welcomeData.expiry) {
+                document.getElementById('welcomeBanner').style.display = 'flex';
+                startWelcomeTimer(welcomeData.expiry);
+            } else {
+                document.getElementById('welcomeBanner').style.display = 'none';
+            }
+        }
+
+        function startWelcomeTimer(expiryTime) {
+            const timerEl = document.getElementById('welcomeTimer');
+            const interval = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = expiryTime - now;
+
+                if (distance < 0) {
+                    clearInterval(interval);
+                    document.getElementById('welcomeBanner').style.display = 'none';
+                    return;
+                }
+
+                const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+                timerEl.innerText = `${d}d ${h}h ${m}m ${s}s`;
+            }, 1000);
+        }
+
+        function claimWelcomeBonus() {
+            triggerHaptic();
+            
+            // --- AUTH CHECKER (লগইন ছাড়া ক্লেইম করতে পারবে না) ---
+            const isLoggedIn = localStorage.getItem('nahidStore_isLoggedIn') === 'true';
+            if (!isLoggedIn) {
+                document.getElementById('welcomeOverlay').classList.remove('show');
+                showAuthModal(); // লগইন পপআপ দেখাবে
+                return; // এখানেই কোড থেমে যাবে
+            }
+            // --------------------------------------------------------
+
+            const welcomeKey = 'nahid_welcome_' + uniqueUserId;
+            let welcomeData = JSON.parse(localStorage.getItem(welcomeKey));
+            
+            if(welcomeData) {
+                welcomeData.claimed = true;
+                localStorage.setItem(welcomeKey, JSON.stringify(welcomeData));
+                navigator.clipboard.writeText(welcomeData.code);
+            }
+            
+            document.getElementById('welcomeOverlay').classList.remove('show');
+            if (tg && tg.showAlert) tg.showAlert("Coupon Copied! Use it on your first order. 10% Off up to $10!");
+            else alert("Coupon Copied! Apply it when you checkout.");
+        }
+
+        function closeWelcomePopup() {
+            triggerHaptic();
+            document.getElementById('welcomeOverlay').classList.remove('show');
+        }
+
+        // Call the initialzer
+        initWelcomeBonus();
+        // ==============================================================
+
         const mainHeader = document.getElementById('mainHeader');
         const searchToggleBtn = document.getElementById('searchToggleBtn');
         const searchIcon = document.getElementById('searchIcon');
         const searchInputWrapper = document.getElementById('searchInputWrapper');
         const searchInput = document.getElementById('searchInput');
-        const suggestionsBox = document.getElementById('suggestionsBox');
 
         let isSearchOpen = false;
 
@@ -568,16 +887,14 @@
         }
 
         function checkAuthAccess(event, targetUrl) {
-            event.preventDefault(); // Stop the link from opening immediately
+            event.preventDefault(); 
             const isLoggedIn = localStorage.getItem('nahidStore_isLoggedIn') === 'true';
-            
             if (isLoggedIn) {
-                window.location.href = targetUrl; // If logged in, go to the page
+                window.location.href = targetUrl; 
             } else {
-                showAuthModal(); // If not logged in, show the pop-up
+                showAuthModal(); 
             }
         }
-        // --------------------------
 
         function toggleSearch() {
             triggerHaptic();
@@ -599,14 +916,18 @@
             searchToggleBtn.classList.remove('active');
             searchIcon.className = 'fas fa-search'; 
             searchInput.value = '';
-            suggestionsBox.style.display = 'none';
             searchInput.blur();
             isSearchOpen = false;
+            
+            // Custom Event to notify the Firebase script to reset the Grid
+            document.dispatchEvent(new Event('searchClosed'));
         }
 
         searchToggleBtn.addEventListener('click', toggleSearch);
+        
+        // Header এর বাইরে ক্লিক করলে সার্চ অটো বন্ধ হবে
         document.addEventListener('click', function(event) {
-            if (isSearchOpen && !mainHeader.contains(event.target) && !suggestionsBox.contains(event.target)) {
+            if (isSearchOpen && !mainHeader.contains(event.target)) {
                 closeSearch();
             }
         });
@@ -614,42 +935,6 @@
         document.addEventListener('click', function(e) {
             if (e.target.closest('.app-card') || e.target.closest('.nav-link') || e.target.closest('.slide-btn')) {
                 triggerHaptic();
-            }
-        });
-
-        // Search Logic using Global Data
-        searchInput.addEventListener('input', function() {
-            const query = this.value.toLowerCase().trim();
-            suggestionsBox.innerHTML = ''; 
-
-            if (query.length > 0 && window.botDatabase) {
-                const results = window.botDatabase.filter(bot => bot.name.toLowerCase().includes(query));
-                
-                if (results.length > 0) {
-                    suggestionsBox.style.display = 'block';
-                    const headerLi = document.createElement('div');
-                    headerLi.className = 'ai-header';
-                    headerLi.innerHTML = `<i class="fas fa-robot"></i> I found ${results.length} result(s)`;
-                    suggestionsBox.appendChild(headerLi);
-
-                    results.forEach(bot => {
-                        const li = document.createElement('li');
-                        const regex = new RegExp(`(${query})`, "gi");
-                        const highlightedName = bot.name.replace(regex, "<span class='highlight'>$1</span>");
-
-                        li.innerHTML = `<i class="fas fa-bolt"></i> ${highlightedName}`;
-                        li.addEventListener('click', () => {
-                            triggerHaptic();
-                            window.location.href = `details.html?id=${bot.id}`; 
-                        });
-                        suggestionsBox.appendChild(li);
-                    });
-                } else {
-                    suggestionsBox.style.display = 'block';
-                    suggestionsBox.innerHTML = `<div class="ai-header" style="color:var(--text-muted)"><i class="fas fa-search-minus"></i> No matching apps found</div>`;
-                }
-            } else {
-                suggestionsBox.style.display = 'none';
             }
         });
     </script>
@@ -677,12 +962,69 @@
         const ITEMS_PER_SCROLL = 6; 
         let isFetching = false;
 
+        const tagColors = [
+            { bg: 'rgba(0, 122, 255, 0.1)', text: '#007aff' }, 
+            { bg: 'rgba(255, 149, 0, 0.1)', text: '#ff9500' }, 
+            { bg: 'rgba(52, 199, 89, 0.1)', text: '#34c759' }  
+        ];
+
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [array[i], array[j]] = [array[j], array[i]];
             }
             return array;
+        }
+
+        // --- Card Generator Function (For Both Main View & Search View) ---
+        function generateAppCardHTML(data) {
+            const isFullWidth = data.isFullWidth ? 'full-width' : '';
+            const customBtnStyle = data.isFullWidth ? 'style="background: #ff2d55;"' : '';
+            const btnText = data.btnText ? data.btnText : (data.isFullWidth ? 'BUY CODE' : 'Buy');
+
+            const rating = data.rating ? data.rating : '5.0'; 
+            const ratingHTML = `<div class="rating-badge"><i class="fas fa-star"></i> ${rating}</div>`;
+
+            const networkRaw = data.network || 'Unknown';
+            const networksArr = networkRaw.split(',').map(n => n.trim()).filter(n => n);
+            const displayNetworks = networksArr.slice(0, 2); 
+            
+            let networksHTML = '';
+            if (data.isFullWidth) {
+                 networksHTML = `<div class="app-network" style="color:#ff2d55; background:rgba(255,45,85,0.1)">${displayNetworks.join(', ')}</div>`;
+            } else {
+                displayNetworks.forEach((net, idx) => {
+                    const colorObj = tagColors[idx % tagColors.length];
+                    networksHTML += `<div class="app-network" style="color:${colorObj.text}; background:${colorObj.bg}">${net}</div>`;
+                });
+            }
+
+            let discountHTML = '';
+            if (data.discount) {
+                discountHTML = `<div class="discount-tag">-${data.discount}</div>`;
+            }
+
+            return `
+                <a href="details.html?id=${data.id}" class="app-card ${isFullWidth}">
+                    <div class="frame-img-wrapper">
+                        <img src="${data.image || 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=400&auto=format&fit=crop'}" class="frame-img" alt="${data.name}">
+                        ${ratingHTML}
+                    </div>
+                    <div class="app-info">
+                        <div class="networks-wrapper">
+                            ${networksHTML}
+                        </div>
+                        <div class="app-name">${data.name || 'Unnamed App'}</div>
+                        <div class="bottom-row">
+                            <div class="price-box">
+                                ${discountHTML}
+                                <span class="price-tag">${data.price || 'Free'}</span>
+                            </div>
+                            <span class="buy-btn" ${customBtnStyle}>${btnText}</span>
+                        </div>
+                    </div>
+                </a>
+            `;
         }
 
         function renderAppsChunk() {
@@ -697,28 +1039,7 @@
             }
 
             nextBatch.forEach(data => {
-                const isFullWidth = data.isFullWidth ? 'full-width' : '';
-                const customNetworkStyle = data.isFullWidth ? 'style="color:#ff2d55; background:rgba(255,45,85,0.1)"' : '';
-                const customNameStyle = data.isFullWidth ? 'style="font-size: 15px;"' : '';
-                const customPriceStyle = data.isFullWidth ? 'style="font-size: 15px;"' : '';
-                const customBtnStyle = data.isFullWidth ? 'style="background: #ff2d55;"' : '';
-                const btnText = data.btnText ? data.btnText : (data.isFullWidth ? 'BUY CODE' : 'GET');
-
-                // Clicking on app card takes user to details directly (No Auth Block Here)
-                const appHTML = `
-                    <a href="details.html?id=${data.id}" class="app-card ${isFullWidth}">
-                        <img src="${data.image || 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=400&auto=format&fit=crop'}" class="frame-img" alt="${data.name}">
-                        <div class="app-info">
-                            <div class="app-network" ${customNetworkStyle}>${data.network || 'Unknown Network'}</div>
-                            <div class="app-name" ${customNameStyle}>${data.name || 'Unnamed App'}</div>
-                            <div class="bottom-row">
-                                <span class="price-tag" ${customPriceStyle}>${data.price || '$0.00'}</span>
-                                <span class="buy-btn" ${customBtnStyle}>${btnText}</span>
-                            </div>
-                        </div>
-                    </a>
-                `;
-                appGrid.insertAdjacentHTML('beforeend', appHTML);
+                appGrid.insertAdjacentHTML('beforeend', generateAppCardHTML(data));
             });
 
             currentIndex += ITEMS_PER_SCROLL;
@@ -729,6 +1050,71 @@
                 scrollLoader.style.display = 'none';
             }
         }
+
+        // ==========================================
+        //  💥 LIVE GRID FILTERING ALGORITHM 💥
+        // ==========================================
+        const searchInput = document.getElementById('searchInput');
+        const appGrid = document.getElementById('appGrid');
+        const homeSlider = document.getElementById('homeSlider');
+        const welcomeBanner = document.getElementById('welcomeBanner');
+        const scrollLoader = document.getElementById('scrollLoader');
+
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            
+            if (query.length > 0) {
+                // ১. সার্চ শুরু হলে ব্যানার ও লোডার হাইড হবে, গ্রিড ক্লিয়ার হবে
+                homeSlider.style.display = 'none';
+                if(welcomeBanner.style.display !== 'none') welcomeBanner.style.display = 'none'; // Hide welcome banner in search mode
+                scrollLoader.style.display = 'none';
+                appGrid.innerHTML = ''; 
+
+                // ২. ডিপ সার্চ ফিল্টারিং
+                const results = allApps.filter(app => {
+                    const nameStr = (app.name || '').toLowerCase();
+                    const netStr = (app.network || '').toLowerCase();
+                    const priceStr = (app.price || '').toLowerCase();
+                    
+                    return nameStr.includes(query) || netStr.includes(query) || priceStr.includes(query);
+                });
+
+                // ৩. রেজাল্ট থাকলে গ্রিডে দেখাবে, না থাকলে Empty State দেখাবে
+                if (results.length > 0) {
+                    results.forEach(data => {
+                        appGrid.insertAdjacentHTML('beforeend', generateAppCardHTML(data));
+                    });
+                } else {
+                    appGrid.innerHTML = `
+                        <div class="empty-search-state">
+                            <i class="fas fa-box-open"></i>
+                            <div class="title">No Apps Found</div>
+                            <div class="desc">We couldn't find anything matching "${query}". Try different keywords!</div>
+                        </div>
+                    `;
+                }
+            } else {
+                // সার্চ বক্সে লেখা মুছে দিলে আবার ব্যানার ও আগের গ্রিড ফেরত আসবে
+                resetGrid();
+            }
+        });
+
+        // ক্রস বাটনে ক্লিক করলে বা বাইরে ক্লিক করলে গ্রিড রিসেট করার লজিক
+        document.addEventListener('searchClosed', resetGrid);
+
+        function resetGrid() {
+            homeSlider.style.display = 'block';
+            // Re-check if welcome banner should be shown
+            const welcomeKey = 'nahid_welcome_' + (window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'guest');
+            const welcomeData = JSON.parse(localStorage.getItem(welcomeKey));
+            if (welcomeData && new Date().getTime() < welcomeData.expiry) {
+                welcomeBanner.style.display = 'flex';
+            }
+            appGrid.innerHTML = '';
+            currentIndex = 0;
+            renderAppsChunk();
+        }
+        // ==========================================
 
         async function fetchAppsBackground() {
             if (isFetching) return;
@@ -743,8 +1129,6 @@
 
                 localStorage.setItem('nahid_trix_apps_cache', JSON.stringify(fetchedApps));
                 localStorage.setItem('nahid_trix_last_fetch', Date.now().toString());
-
-                window.botDatabase = fetchedApps.map(app => ({ id: app.id, name: app.name }));
 
                 if (allApps.length === 0) {
                     allApps = shuffleArray(fetchedApps);
@@ -765,8 +1149,6 @@
 
             if (cachedData) {
                 let parsedApps = JSON.parse(cachedData);
-                window.botDatabase = parsedApps.map(app => ({ id: app.id, name: app.name }));
-                
                 allApps = shuffleArray(parsedApps); 
                 document.getElementById('appGrid').innerHTML = ''; 
                 renderAppsChunk();
@@ -782,6 +1164,9 @@
         }
 
         window.addEventListener('scroll', () => {
+            // সার্চ চলাকালীন স্ক্রল করলে নতুন ডাটা লোড হওয়া বন্ধ রাখা হয়েছে
+            if (searchInput.value.trim().length > 0) return; 
+
             if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 200) {
                 if (currentIndex < allApps.length) {
                     renderAppsChunk(); 
