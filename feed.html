@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Feed | NAHID TRIX</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* === iOS LIGHT THEME === */
+        /* === X / TWITTER INSPIRED iOS LIGHT ENGINE === */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -21,25 +21,25 @@
         :root {
             --bg-main: #f2f2f7;          
             --bg-card: #ffffff;          
-            --text-main: #1c1c1e;        
-            --text-muted: #8e8e93;       
+            --bg-subtle: #f7f9f9;
+            --text-main: #0f1419;        
+            --text-muted: #536471;       
             
-            --color-nahid-1: #ffb300;    
-            --color-nahid-2: #ff9800;    
-            --color-trix: #00bcd4;       
-            --color-pink: #ff2d55;       
-            --ios-blue: #007aff;         
-            --ios-red: #ff3b30;
-            --ios-green: #34c759;
-            --ios-orange: #ff9500;
+            --twitter-blue: #1d9bf0;
+            --twitter-green: #00ba7c;
+            --twitter-red: #f91880;
+            --twitter-hover-blue: rgba(29, 155, 240, 0.08);
+            --twitter-hover-green: rgba(0, 186, 124, 0.08);
+            --twitter-hover-red: rgba(249, 24, 128, 0.08);
             
-            --border-color: #e5e5ea;     
-            --shadow-soft: 0 4px 14px rgba(0,0,0,0.06);
-            --shadow-strong: 0 10px 30px rgba(0,0,0,0.15);
+            --border-color: #eff3f4;     
+            --border-bar: #e5e5ea;
+            --shadow-soft: 0 4px 14px rgba(0,0,0,0.04);
+            --shadow-strong: 0 10px 30px rgba(0,0,0,0.12);
         }
 
         body {
-            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-main);
             color: var(--text-main);
             padding-bottom: 85px; 
@@ -47,7 +47,7 @@
             -webkit-font-smoothing: antialiased; 
         }
 
-        /* ====== HEADER ====== */
+        /* ====== HEADER (ORIGINAL ICONIC SYSTEM) ====== */
         header {
             display: flex;
             justify-content: space-between;
@@ -59,7 +59,7 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            border-bottom: 0.5px solid var(--border-color);
+            border-bottom: 0.5px solid var(--border-bar);
             height: 45px; 
             transition: top 0.3s cubic-bezier(0.25, 1, 0.5, 1);
         }
@@ -76,6 +76,7 @@
             align-items: center;
             gap: 5px; 
             transition: opacity 0.3s, transform 0.3s;
+            flex-shrink: 0;
         }
 
         .logo-img {
@@ -93,7 +94,7 @@
         }
         
         .logo .trix { color: var(--text-main); }
-        .logo .trix span { color: var(--color-trix); }
+        .logo .trix span { color: #00bcd4; }
 
         /* ====== SMART SEARCH CONTAINER ====== */
         .search-container {
@@ -140,7 +141,7 @@
 
         .search-toggle-btn {
             font-size: 16px;
-            color: var(--ios-blue);
+            color: var(--twitter-blue);
             width: 30px;
             height: 30px;
             display: flex;
@@ -149,161 +150,193 @@
             cursor: pointer;
             z-index: 1001;
             transition: transform 0.3s ease, color 0.3s ease;
+            flex-shrink: 0;
         }
         
         .search-toggle-btn:active { transform: scale(0.85); }
-        .search-toggle-btn.active { color: var(--ios-red); transform: rotate(90deg); }
+        .search-toggle-btn.active { color: #ff3b30; transform: rotate(90deg); }
 
         header.search-active .logo { opacity: 0; transform: translateX(-20px); pointer-events: none; }
 
-        /* ====== CREATE POST SECTION ====== */
-        .create-post-container {
+        /* ====== COMPOSE BAR ====== */
+        .feed-container {
+            max-width: 600px;
+            margin: 0 auto;
             background: var(--bg-card);
-            padding: 12px 15px; 
-            margin-bottom: 8px; 
+            border-left: 0.5px solid var(--border-bar);
+            border-right: 0.5px solid var(--border-bar);
+            min-height: 100vh;
+        }
+
+        .tweet-compose-bar {
             display: flex;
+            gap: 12px;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            background: #ffffff;
             align-items: center;
-            gap: 10px; 
-            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
-            border-bottom: 0.5px solid var(--border-color);
             cursor: pointer;
         }
 
-        .create-post-container img {
-            width: 40px; 
-            height: 40px;
+        .tweet-compose-bar:active { background: var(--bg-subtle); }
+
+        .compose-avatar {
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             object-fit: cover;
-            border: 1px solid var(--border-color);
+            flex-shrink: 0;
         }
 
-        .create-post-input {
+        .compose-placeholder {
             flex-grow: 1;
-            background: #f0f2f5; 
-            padding: 10px 18px; 
-            border-radius: 30px; 
-            color: #65676b;
-            font-size: 13.5px;
-            transition: background 0.2s;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.4;
+            font-weight: 400;
         }
-        .create-post-container:active .create-post-input { background: #e4e6e9; }
 
-        .create-post-icon-btn {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 36px; 
+        .compose-action-icon {
+            color: var(--twitter-blue);
+            font-size: 18px;
+            width: 36px;
             height: 36px;
             border-radius: 50%;
-            background: #e8f5e9;
-            color: var(--ios-green);
-            font-size: 18px;
-            transition: transform 0.2s;
-        }
-        .create-post-container:active .create-post-icon-btn { transform: scale(0.9); }
-
-        /* ====== FEED POST DESIGN (Facebook Compact Style) ====== */
-        .feed-container {
-            padding: 0;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .feed-post {
-            background: var(--bg-card);
-            padding: 12px 15px; 
-            margin-bottom: 8px; 
-            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
-            border-bottom: 0.5px solid var(--border-color);
-            animation: fadeIn 0.4s ease;
-            transition: background 0.3s;
-        }
-        
-        .feed-post.highlight { background: rgba(0, 122, 255, 0.05); }
-
-        .post-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 8px; 
-        }
-
-        .post-author {
             display: flex;
             align-items: center;
-            gap: 8px; 
+            justify-content: center;
+            background: rgba(29, 155, 240, 0.08);
+            flex-shrink: 0;
+        }
+
+        /* ====== POST ITEM (TWITTER FEED STYLE) ====== */
+        .tweet-post {
+            display: flex;
+            gap: 12px;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            background: #ffffff;
+            transition: background 0.15s;
+            position: relative;
             cursor: pointer;
         }
 
-        .post-author img {
-            width: 40px; 
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 1px solid var(--border-color);
+        .tweet-post:active { background: #fafafa; }
+        .tweet-post.highlight { background: rgba(29, 155, 240, 0.08) !important; }
+
+        .tweet-left-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
         }
 
-        .author-info { display: flex; flex-direction: column; }
-        .author-name { font-size: 14.5px; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 4px; }
-        .verified-badge { color: #0088cc; font-size: 12px; margin-top: 2px;} 
-        .author-meta { font-size: 12px; color: var(--text-muted); }
+        .tweet-author-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
 
-        .post-options { color: var(--text-muted); cursor: pointer; padding: 2px 5px; font-size: 16px; }
+        .tweet-body-col {
+            flex-grow: 1;
+            overflow: hidden;
+        }
 
-        /* TEXT TRUNCATION (Smart Algorithm) */
-        .post-text-wrapper { margin-bottom: 8px; }
-        .post-text {
-            font-size: 14px; 
-            line-height: 1.4; 
+        .tweet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3px;
+        }
+
+        .tweet-meta {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .tweet-name {
+            font-size: 14.5px;
+            font-weight: 700;
+            color: var(--text-main);
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        .tweet-verified-badge {
+            color: var(--twitter-blue);
+            font-size: 13px;
+            margin-left: 2px;
+            flex-shrink: 0;
+        }
+
+        .tweet-handle, .tweet-dot, .tweet-time {
+            font-size: 13px;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        .tweet-dot::before { content: "·"; font-weight: bold; }
+
+        .tweet-more-btn {
+            color: var(--text-muted);
+            font-size: 14px;
+            cursor: pointer;
+            padding: 4px;
+            flex-shrink: 0;
+        }
+
+        .tweet-content-wrapper { margin-bottom: 8px; }
+        .tweet-text {
+            font-size: 14px;
+            line-height: 1.45;
             color: var(--text-main);
             word-wrap: break-word;
             white-space: pre-wrap;
-            transition: all 0.3s ease;
         }
-        .post-text.clamp-image {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .post-text.clamp-text {
-            display: -webkit-box;
-            -webkit-line-clamp: 7;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        
-        .see-more-btn {
-            color: var(--ios-blue);
-            font-size: 13.5px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 2px;
-            display: none;
-        }
-        .see-more-btn:active { opacity: 0.7; }
-        
-        .hashtag { color: var(--ios-blue); cursor: pointer; font-weight: 600; }
-        .post-link { color: var(--ios-blue); text-decoration: none; word-break: break-all; }
-        .post-link:hover { text-decoration: underline; }
 
-        /* DOUBLE TAP TO LIKE WRAPPER (Compact Image) */
-        .post-image-wrapper {
-            position: relative;
-            width: 100%;
-            border-radius: 8px; 
-            margin-bottom: 8px; 
+        .tweet-text.clamp-text {
+            display: -webkit-box;
+            -webkit-line-clamp: 6;
+            -webkit-box-orient: vertical;
             overflow: hidden;
-            background: var(--bg-main); 
         }
-        
-        .post-attached-image {
+
+        .tweet-hashtag {
+            color: var(--twitter-blue);
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .tweet-hashtag:hover { text-decoration: underline; }
+
+        .tweet-link {
+            color: var(--twitter-blue);
+            text-decoration: none;
+            word-break: break-all;
+        }
+        .tweet-link:hover { text-decoration: underline; }
+
+        /* Media Frame */
+        .tweet-media-frame {
+            margin-top: 8px;
+            margin-bottom: 8px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            position: relative;
+            background: #f0f3f4;
+            max-height: 480px;
+        }
+
+        .tweet-media-img {
             width: 100%;
-            height: auto; 
-            max-height: 500px; 
+            height: 100%;
+            max-height: 480px;
             object-fit: cover;
             display: block;
         }
@@ -313,151 +346,491 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0);
-            color: rgba(255, 255, 255, 0.9);
+            color: var(--twitter-red);
             font-size: 80px;
             z-index: 10;
             opacity: 0;
             pointer-events: none;
-            text-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
         }
 
-        @keyframes popHeart {
+        @keyframes popHeartTw {
             0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
             50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
             100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
         }
-        .heart-overlay.animate { animation: popHeart 0.8s ease-out forwards; }
+        .heart-overlay.animate { animation: popHeartTw 0.75s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
 
-        /* Post Stats */
-        .post-stats {
-            display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted);
-            padding-bottom: 8px; border-bottom: 1px solid var(--border-color); margin-bottom: 4px; 
+        /* Action Buttons */
+        .tweet-actions-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 420px;
+            margin-top: 8px;
+            color: var(--text-muted);
         }
 
-        /* Post Action Buttons (Sleek & Compact Icons Only) */
-        .post-actions { display: flex; justify-content: space-around; align-items: center; padding-top: 0px; }
-        .action-btn {
-            display: flex; align-items: center; gap: 6px;
-            color: var(--text-muted); font-size: 18px; 
+        .tw-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
             cursor: pointer;
-            padding: 6px 10px; 
-            border-radius: 20px; transition: 0.2s;
+            font-size: 12.5px;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+            padding: 4px 6px;
+            border-radius: 20px;
         }
-        .action-btn span { font-size: 13px; font-weight: 600; margin-top: 2px;} 
-        .action-btn i { transition: transform 0.2s; }
-        .action-btn:active { background: var(--bg-main); transform: scale(0.9); }
-        
-        .action-btn.liked { color: var(--ios-red); }
-        .action-btn.liked i { font-weight: 900; } 
 
-        /* ====== HORIZONTAL APP SLIDER ====== */
-        .suggested-section { background: var(--bg-card); padding: 15px 0 15px 15px; margin-bottom: 8px; border-bottom: 0.5px solid var(--border-color); box-shadow: 0 1px 2px rgba(0,0,0,0.02);}
-        .suggested-header { font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; padding-right: 15px;}
-        .suggested-header span { color: var(--text-muted); font-size: 11px; font-weight: 500; margin-left: auto; background: var(--bg-main); padding: 2px 8px; border-radius: 10px;}
-        .app-slider { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 5px; padding-right: 15px; }
-        .app-slider::-webkit-scrollbar { display: none; }
-        .app-slider-card { flex: 0 0 220px; scroll-snap-align: start; border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; background: var(--bg-main); text-decoration: none; color: inherit; display: block; transition: transform 0.2s;}
-        .app-slider-card:active { transform: scale(0.98); }
-        .app-slider-img { width: 100%; height: 110px; object-fit: cover; background: #e5e5ea; }
-        .app-slider-info { padding: 10px; }
-        .app-slider-title { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px;}
-        .app-slider-cat { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
-        .app-slider-bottom { display: flex; justify-content: space-between; align-items: center; }
-        .app-slider-price { font-size: 12px; font-weight: 800; color: var(--ios-blue); }
-        .app-slider-btn { background: var(--ios-blue); color: #fff; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 10px; }
+        .tw-action-btn .icon-box {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .tw-action-btn.reply:active { color: var(--twitter-blue); }
+        .tw-action-btn.repost:active { color: var(--twitter-green); }
+        .tw-action-btn.like:active { color: var(--twitter-red); }
+        
+        .tw-action-btn.liked { color: var(--twitter-red); }
+        .tw-action-btn.liked .icon-box i { font-weight: 900; }
+        .tw-action-btn.reposted { color: var(--twitter-green); }
+
+        /* ====== PROMOTED APP AD ====== */
+        .promoted-app-card {
+            margin: 8px 0;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+        }
+
+        .promoted-app-img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            background: #e1e8ed;
+        }
+
+        .promoted-app-footer {
+            padding: 10px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .promoted-title { font-size: 13.5px; font-weight: 700; color: var(--text-main); }
+        .promoted-badge { font-size: 11px; color: var(--text-muted); }
+        .promoted-get-btn {
+            background: var(--twitter-blue);
+            color: #fff;
+            padding: 5px 14px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 700;
+        }
 
         /* ====== SKELETON LOADER ====== */
-        .infinite-loader { padding: 0; display: none; } 
+        .infinite-loader { display: none; } 
         .skeleton {
-            background: #e0e0e0;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(90deg, #f0f3f4 25%, #e1e8ed 50%, #f0f3f4 75%);
             background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 8px;
+            animation: shimmer 1.4s infinite;
+            border-radius: 4px;
         }
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-        .skeleton-post { background: var(--bg-card); padding: 12px 15px; margin-bottom: 8px; border-bottom: 0.5px solid var(--border-color); }
-        .skeleton-avatar { width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; }
+        .skeleton-tweet { display: flex; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border-color); }
+        .skeleton-avatar { width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0; }
         .skeleton-text { height: 12px; margin-bottom: 6px; width: 100%; }
-        .skeleton-img { height: 200px; width: 100%; border-radius: 8px; margin-top: 10px; margin-bottom: 10px; }
 
-        /* ====== BOTTOM SHEET (POP-UP) STYLES ====== */
-        .sheet-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        /* ==========================================================
+           🚀 TWITTER-LIKE DEDICATED THREAD DETAIL VIEW (FULL PAGE SPA)
+           ========================================================== */
+        #tweetDetailView {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            z-index: 5000;
+            display: none;
+            flex-direction: column;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        #tweetDetailView.active {
+            display: flex;
+            animation: slideInRight 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .detail-top-nav {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
+        }
+
+        .detail-back-btn {
+            font-size: 18px;
+            color: var(--text-main);
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        .detail-back-btn:active { background: var(--bg-subtle); }
+
+        .detail-nav-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .detail-content-box {
+            padding: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .detail-author-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .detail-author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .detail-author-names {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-author-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .detail-author-handle {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .detail-main-text {
+            font-size: 17px;
+            line-height: 1.5;
+            color: var(--text-main);
+            margin-bottom: 14px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .detail-media-frame {
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            margin-bottom: 14px;
+            cursor: pointer;
+        }
+
+        .detail-media-frame img {
+            width: 100%;
+            height: auto;
+            display: block;
+            max-height: 550px;
+            object-fit: cover;
+        }
+
+        .detail-timestamp-row {
+            font-size: 13.5px;
+            color: var(--text-muted);
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 12px;
+        }
+
+        .detail-metrics-row {
+            display: flex;
+            gap: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .detail-metrics-row b {
+            color: var(--text-main);
+        }
+
+        .detail-action-bar {
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 16px;
+        }
+
+        /* Reply List under Detail */
+        .replies-section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .detail-replies-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 80px; /* Space for reply bar */
+        }
+
+        .detail-reply-item {
+            display: flex;
+            gap: 12px;
+            padding-bottom: 14px;
+            border-bottom: 0.5px solid var(--border-color);
+        }
+
+        .detail-reply-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .detail-reply-body {
+            flex-grow: 1;
+        }
+
+        .detail-reply-meta {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+            margin-bottom: 2px;
+        }
+
+        .detail-reply-author {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .detail-reply-time {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .detail-reply-text {
+            font-size: 13.5px;
+            color: #1f2328;
+            line-height: 1.45;
+        }
+
+        /* Detail Sticky Reply Box */
+        .detail-bottom-reply-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #ffffff;
+            border-top: 1px solid var(--border-color);
+            padding: 10px 16px;
+            padding-bottom: calc(10px + env(safe-area-inset-bottom));
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 110;
+        }
+
+        .detail-reply-input {
+            flex-grow: 1;
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-color);
+            padding: 10px 16px;
+            border-radius: 24px;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            color: var(--text-main);
+        }
+
+        .detail-reply-input:focus {
+            border-color: var(--twitter-blue);
+            background: #ffffff;
+        }
+
+        .detail-reply-send-btn {
+            background: var(--twitter-blue);
+            color: #ffffff;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .detail-reply-send-btn:active { transform: scale(0.92); }
+
+        /* Fullscreen Lightbox */
+        #fullscreenLightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        #fullscreenLightbox.active { display: flex; }
+        #lightboxImg {
+            max-width: 95%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        .lightbox-close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #ffffff;
+            font-size: 24px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+        }
+
+        /* Bottom Sheets */
+        .sheet-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.45); z-index: 6000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .sheet-overlay.active { opacity: 1; pointer-events: auto; }
-        .bottom-sheet { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-card); border-radius: 20px 20px 0 0; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); z-index: 2001; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 -10px 40px rgba(0,0,0,0.1); }
+        .bottom-sheet { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-radius: 20px 20px 0 0; transform: translateY(100%); transition: transform 0.32s cubic-bezier(0.25, 1, 0.5, 1); z-index: 6001; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 -10px 40px rgba(0,0,0,0.1); }
         .bottom-sheet.active { transform: translateY(0); }
-        .sheet-handle { width: 40px; height: 5px; background: #d1d1d6; border-radius: 5px; margin: 10px auto 15px auto; }
-        .sheet-header { text-align: center; font-size: 16px; font-weight: 700; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 10px; }
+        .sheet-handle { width: 36px; height: 4px; background: #cfd9de; border-radius: 4px; margin: 10px auto; }
+        .sheet-header { text-align: center; font-size: 15px; font-weight: 700; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 6px; }
 
-        /* Share & Report Sheet */
-        .share-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding: 20px; }
-        .share-item { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: 0.2s; }
-        .share-item:active { transform: scale(0.9); }
-        .share-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 22px; color: #fff; }
-        .share-text { font-size: 11px; font-weight: 500; color: var(--text-main); text-align: center; }
+        /* Custom Alert */
+        #customAlert { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 320px; background: rgba(15, 20, 25, 0.92); backdrop-filter: blur(10px); color: #fff; padding: 12px 18px; border-radius: 14px; display: flex; align-items: center; gap: 10px; z-index: 99999; transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        #customAlert.show { top: 16px; }
+        #alertMsg { font-size: 13px; font-weight: 500; }
 
-        /* Comment Sheet */
-        .comment-list { padding: 10px 20px; overflow-y: auto; flex-grow: 1; padding-bottom: 80px; }
-        .comment-item { display: flex; gap: 10px; margin-bottom: 15px; animation: fadeIn 0.3s ease;}
-        .comment-avatar { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; }
-        .comment-content { background: var(--bg-main); padding: 10px 12px; border-radius: 15px; border-top-left-radius: 5px; flex-grow: 1; }
-        .comment-name { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
-        .comment-text { font-size: 13px; color: #3a3a3c; line-height: 1.4; }
-        .comment-actions { display: flex; gap: 15px; margin-top: 5px; margin-left: 45px; font-size: 11px; font-weight: 600; color: var(--text-muted); }
-        .comment-action { cursor: pointer; }
-        .comment-action.liked { color: var(--ios-red); }
+        .active-filter-bar { background: var(--twitter-hover-blue); color: var(--twitter-blue); padding: 8px 16px; font-size: 12.5px; font-weight: 600; display: none; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); }
+        .clear-filter-btn { background: #fff; padding: 3px 8px; border-radius: 8px; font-size: 11px; cursor: pointer; }
 
-        .comment-input-area {
-            position: absolute; bottom: 0; left: 0; width: 100%;
-            background: var(--bg-card); border-top: 1px solid var(--border-color);
-            padding: 10px 15px; padding-bottom: calc(10px + env(safe-area-inset-bottom));
-            display: flex; gap: 10px; align-items: center;
-        }
-        .comment-input {
-            flex-grow: 1; background: var(--bg-main); border: none; padding: 12px 15px;
-            border-radius: 20px; font-family: 'Poppins'; font-size: 14px; outline: none;
-        }
-        .send-comment-btn { color: var(--ios-blue); font-size: 24px; cursor: pointer; padding: 5px; transition: 0.2s; }
-        .send-comment-btn:active { transform: scale(0.9) rotate(15deg); }
-
-        /* Custom Alert Notification */
-        #customAlert { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 350px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); padding: 15px 20px; border-radius: 18px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-strong); z-index: 99999; transition: 0.5s; border-left: 5px solid var(--ios-green); }
-        #customAlert.show { top: 20px; }
-        #alertMsg { font-size: 13px; font-weight: 500; color: var(--text-main); }
-
-        /* Search Active Filter Indicator */
-        .active-filter-bar { background: rgba(0, 122, 255, 0.1); color: var(--ios-blue); padding: 10px 15px; font-size: 13px; font-weight: 600; display: none; align-items: center; justify-content: space-between; border-bottom: 0.5px solid var(--border-color); }
-        .clear-filter-btn { background: #fff; padding: 4px 8px; border-radius: 10px; font-size: 11px; cursor: pointer; border: 1px solid var(--ios-blue); }
-        .clear-filter-btn:active { transform: scale(0.95); }
-
-        /* ====== BOTTOM NAVIGATION ====== */
+        /* ====== ORIGINAL BOTTOM NAVIGATION ====== */
         .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-top: 0.5px solid var(--border-color);
-            display: flex; justify-content: space-around; padding: 10px 0 20px 0; z-index: 1000;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-top: 0.5px solid var(--border-bar);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 20px 0; 
+            z-index: 1000;
         }
-        .nav-link { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: var(--text-muted); font-size: 9.5px; font-weight: 500; gap: 4px; }
-        .nav-link i { font-size: 18px; } 
-        .nav-link.active { color: var(--ios-blue); }
+
+        .nav-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 9.5px; 
+            font-weight: 500;
+            gap: 4px; 
+            transition: color 0.2s;
+        }
+
+        .nav-link i {
+            font-size: 18px;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        } 
+        
+        .nav-link.active {
+            color: var(--twitter-blue);
+        }
 
     </style>
 </head>
 <body>
 
     <div id="customAlert">
-        <i class="fas fa-check-circle" id="alertIcon" style="color:var(--ios-green); font-size: 20px;"></i>
-        <div id="alertMsg"></div>
+        <i class="fas fa-check-circle" id="alertIcon" style="color:var(--twitter-green);"></i>
+        <div id="alertMsg">Success</div>
     </div>
 
+    <!-- MAIN HEADER -->
     <header id="mainHeader">
-        <a href="index.html" class="logo">
+        <a href="index2.html" class="logo">
             <img src="https://ui-avatars.com/api/?name=NT&background=ff9800&color=fff" alt="Logo" class="logo-img">
             <span class="nahid">NAHID</span> <span class="trix">TRIX</span>
         </a>
         
         <div class="search-container">
             <div class="search-input-wrapper" id="searchInputWrapper">
-                <input type="text" id="searchInput" placeholder="Search or tag..." autocomplete="off">
+                <input type="text" id="searchInput" placeholder="Search posts, #tags..." autocomplete="off">
             </div>
             <div class="search-toggle-btn" id="searchToggleBtn">
                 <i class="fas fa-search" id="searchIcon"></i>
@@ -466,88 +839,164 @@
     </header>
 
     <div class="active-filter-bar" id="activeFilterBar">
-        <span><i class="fas fa-hashtag"></i> Showing results for: <span id="filterKeyword"></span></span>
+        <span><i class="fas fa-hashtag"></i> Filtering: <b id="filterKeyword"></b></span>
         <div class="clear-filter-btn" onclick="clearSearchFilter()">Clear</div>
     </div>
 
+    <!-- MAIN FEED STREAM -->
     <main class="feed-container">
         
-        <div class="create-post-container" id="createPostSection" onclick="if(checkAuthForAction()) window.location.href='post.html';">
-            <img src="https://ui-avatars.com/api/?name=U&background=007aff&color=fff" id="currUserAvatar" alt="User Avatar">
-            <div class="create-post-input" id="createPostText">
-                What's on your mind?
-            </div>
-            <div class="create-post-icon-btn"><i class="fas fa-image"></i></div>
+        <!-- Compose trigger -->
+        <div class="tweet-compose-bar" id="composeBar" onclick="if(checkAuthForAction()) window.location.href='post.html';">
+            <img src="https://ui-avatars.com/api/?name=U&background=007aff&color=fff" class="compose-avatar" id="currUserAvatar" alt="User">
+            <div class="compose-placeholder" id="createPostText">What's on your mind?</div>
+            <div class="compose-action-icon"><i class="far fa-image"></i></div>
         </div>
 
-        <div id="dynamicFeed">
-            </div>
+        <!-- Feed Stream Injected Here -->
+        <div id="dynamicFeed"></div>
         
+        <!-- Skeleton Loader -->
         <div class="infinite-loader" id="infiniteLoader">
-            <div class="skeleton-post">
-                <div style="display:flex; gap: 10px; margin-bottom:12px;">
-                    <div class="skeleton skeleton-avatar"></div>
-                    <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
-                        <div class="skeleton skeleton-text" style="width: 40%; margin-bottom: 6px;"></div>
-                        <div class="skeleton skeleton-text" style="width: 25%; margin-bottom: 0;"></div>
-                    </div>
+            <div class="skeleton-tweet">
+                <div class="skeleton skeleton-avatar"></div>
+                <div style="flex-grow: 1;">
+                    <div class="skeleton skeleton-text" style="width: 40%;"></div>
+                    <div class="skeleton skeleton-text" style="width: 85%;"></div>
+                    <div class="skeleton skeleton-text" style="width: 65%;"></div>
                 </div>
-                <div class="skeleton skeleton-text"></div>
-                <div class="skeleton skeleton-text" style="width: 80%;"></div>
-                <div class="skeleton skeleton-img"></div>
             </div>
         </div>
-
     </main>
 
+    <!-- =========================================================================
+         🌟 DEDICATED X/TWITTER THREAD DETAIL VIEW (OPENS ON POST OR IMAGE CLICK)
+         ========================================================================= -->
+    <div id="tweetDetailView">
+        <div class="detail-top-nav">
+            <div class="detail-back-btn" onclick="closeTweetDetailView()"><i class="fas fa-arrow-left"></i></div>
+            <div class="detail-nav-title">Post</div>
+        </div>
+
+        <div class="detail-content-box">
+            <!-- Author Info -->
+            <div class="detail-author-row">
+                <img src="" id="dtlAvatar" class="detail-author-avatar" alt="Avatar">
+                <div class="detail-author-names">
+                    <div class="detail-author-name">
+                        <span id="dtlName">Author Name</span>
+                        <i class="fas fa-circle-check tweet-verified-badge"></i>
+                    </div>
+                    <div class="detail-author-handle" id="dtlHandle">@username</div>
+                </div>
+            </div>
+
+            <!-- Full Unclamped Text -->
+            <div class="detail-main-text" id="dtlText">Post content details...</div>
+
+            <!-- Full Width Image Frame -->
+            <div class="detail-media-frame" id="dtlMediaFrame" style="display:none;" onclick="openLightboxFromDetail()">
+                <img src="" id="dtlImage" alt="Post media">
+            </div>
+
+            <!-- Timestamp Details -->
+            <div class="detail-timestamp-row" id="dtlTimestamp">10:45 PM · Oct 8, 2026 · 1.2K Views</div>
+
+            <!-- Engagement Metrics -->
+            <div class="detail-metrics-row">
+                <span><b id="dtlRepostCount">0</b> Reposts</span>
+                <span><b id="dtlLikeCount">0</b> Likes</span>
+                <span><b id="dtlCommentCount">0</b> Replies</span>
+            </div>
+
+            <!-- Action Bar -->
+            <div class="detail-action-bar">
+                <div class="tw-action-btn reply" onclick="focusDetailReplyInput()">
+                    <div class="icon-box"><i class="far fa-comment"></i></div>
+                </div>
+                <div class="tw-action-btn repost" id="dtlRepostBtn">
+                    <div class="icon-box"><i class="fas fa-retweet"></i></div>
+                </div>
+                <div class="tw-action-btn like" id="dtlLikeBtn">
+                    <div class="icon-box"><i class="far fa-heart"></i></div>
+                </div>
+                <div class="tw-action-btn" id="dtlShareBtn">
+                    <div class="icon-box"><i class="far fa-paper-plane"></i></div>
+                </div>
+            </div>
+
+            <!-- Auto-loaded Replies List -->
+            <div class="replies-section-title"><i class="far fa-comments" style="color:var(--twitter-blue)"></i> Replies</div>
+            <div class="detail-replies-list" id="dtlRepliesList">
+                <div style="text-align:center; padding:20px; color:var(--text-muted); font-size:13px;"><i class="fas fa-spinner fa-spin"></i> Loading replies...</div>
+            </div>
+        </div>
+
+        <!-- Sticky Reply Bottom Bar -->
+        <div class="detail-bottom-reply-bar">
+            <input type="text" class="detail-reply-input" id="dtlReplyInput" placeholder="Post your reply...">
+            <button class="detail-reply-send-btn" onclick="sendDetailReply()"><i class="fas fa-arrow-up"></i></button>
+        </div>
+    </div>
+
+    <!-- FULLSCREEN LIGHTBOX FOR IMAGE ZOOM -->
+    <div id="fullscreenLightbox" onclick="closeLightbox()">
+        <div class="lightbox-close-btn"><i class="fas fa-times"></i></div>
+        <img src="" id="lightboxImg" alt="Enlarged media" onclick="event.stopPropagation()">
+    </div>
+
+    <!-- Bottom Sheets -->
     <div class="sheet-overlay" id="sheetOverlay" onclick="closeAllSheets()"></div>
 
     <div class="bottom-sheet" id="shareSheet">
         <div class="sheet-handle"></div>
         <div class="sheet-header">Share & Options</div>
-        <div class="share-grid">
-            <div class="share-item" onclick="triggerHaptic(); closeAllSheets();">
-                <div class="share-icon" style="background: #0088cc;"><i class="fab fa-telegram-plane"></i></div>
-                <div class="share-text">Telegram</div>
+        <div style="padding: 15px 20px; display: flex; flex-direction: column; gap: 10px;">
+            <div onclick="shareViaTelegram(); closeAllSheets();" style="display:flex; align-items:center; gap:12px; padding:10px; cursor:pointer;">
+                <i class="fab fa-telegram" style="color:#0088cc; font-size:20px; width:22px; text-align:center;"></i>
+                <span style="font-size:14px; font-weight:600;">Share via Telegram</span>
             </div>
-            <div class="share-item" onclick="triggerHaptic(); closeAllSheets();">
-                <div class="share-icon" style="background: #25D366;"><i class="fab fa-whatsapp"></i></div>
-                <div class="share-text">WhatsApp</div>
+            <div onclick="copyPostLink(); closeAllSheets();" style="display:flex; align-items:center; gap:12px; padding:10px; cursor:pointer;">
+                <i class="fas fa-link" style="color:var(--text-muted); font-size:18px; width:22px; text-align:center;"></i>
+                <span style="font-size:14px; font-weight:600;">Copy link to Post</span>
             </div>
-            <div class="share-item" onclick="triggerHaptic(); alert('Link Copied!'); closeAllSheets();">
-                <div class="share-icon" style="background: var(--text-muted);"><i class="fas fa-link"></i></div>
-                <div class="share-text">Copy Link</div>
-            </div>
-            <div class="share-item" onclick="reportPost()">
-                <div class="share-icon" style="background: var(--ios-red);"><i class="fas fa-flag"></i></div>
-                <div class="share-text">Report</div>
+            <div onclick="reportPost(); closeAllSheets();" style="display:flex; align-items:center; gap:12px; padding:10px; cursor:pointer; color:#f4212e;">
+                <i class="fas fa-flag" style="font-size:18px; width:22px; text-align:center;"></i>
+                <span style="font-size:14px; font-weight:600;">Report Post</span>
             </div>
         </div>
     </div>
 
-    <div class="bottom-sheet" id="commentSheet" style="height: 75vh;">
-        <div class="sheet-handle"></div>
-        <div class="sheet-header">Comments</div>
-        <div class="comment-list" id="commentList">
-            <div style="text-align:center; padding:20px; color:var(--text-muted);"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
-        </div>
-        <div class="comment-input-area">
-            <input type="text" class="comment-input" id="newCommentInput" placeholder="Write a comment...">
-            <i class="fas fa-paper-plane send-comment-btn" onclick="postComment()"></i>
-        </div>
-    </div>
-
+    <!-- ORIGINAL BOTTOM NAVIGATION -->
     <nav class="bottom-nav">
-        <a href="index.html" class="nav-link"><i class="fas fa-layer-group"></i><span>Apps</span></a>
-        <a href="feed.html" class="nav-link active"><i class="fas fa-stream"></i><span>Feed</span></a>
-        <a href="trending.html" class="nav-link"><i class="fas fa-fire"></i><span>Trending</span></a>
-        <a href="orders.html" class="nav-link"><i class="fas fa-wallet"></i><span>Wallet</span></a>
-        <a href="profile.html" class="nav-link"><i class="fas fa-user-circle"></i><span>Profile</span></a>
+        <a href="index2.html" class="nav-link">
+            <i class="fas fa-layer-group"></i>
+            <span>Apps</span>
+        </a>
+        <a href="feed2.html" class="nav-link active">
+            <i class="fas fa-stream"></i>
+            <span>Feed</span>
+        </a>
+        <a href="trending.html" class="nav-link">
+            <i class="fas fa-fire"></i>
+            <span>Trending</span>
+        </a>
+        <a href="orders.html" class="nav-link">
+            <i class="fas fa-wallet"></i>
+            <span>Wallet</span>
+        </a>
+        <a href="profile.html" class="nav-link">
+            <i class="fas fa-user-circle"></i>
+            <span>Profile</span>
+        </a>
     </nav>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, orderBy, limit, startAfter, doc, increment, updateDoc, addDoc, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { 
+            getFirestore, collection, getDocs, query, orderBy, limit, 
+            startAfter, doc, increment, updateDoc, addDoc, serverTimestamp 
+        } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAsP3AubiZpmvCRPngDePdvvQMiDTELCII",
@@ -561,80 +1010,83 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // --- Telegram & Haptics ---
-        const tg = window.Telegram.WebApp;
-        tg.expand();
+        // ============================================================
+        // 💥 BUTTER SMOOTH TELEGRAM HAPTICS ENGINE (ZERO VIBRATE GLITCH)
+        // ============================================================
+        const tg = window.Telegram?.WebApp;
+        if (tg) tg.expand();
 
-        window.triggerHaptic = function() {
-            if (navigator.vibrate) navigator.vibrate(40); 
-            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light'); 
-        }
+        window.triggerHaptic = function(type = 'light') {
+            if (tg && tg.HapticFeedback) {
+                if (type === 'success' || type === 'error') {
+                    tg.HapticFeedback.notificationOccurred(type);
+                } else {
+                    tg.HapticFeedback.impactOccurred(type); 
+                }
+            }
+        };
 
-        // --- Alert System ---
-        window.showAlert = function(msg, type="success") {
+        // Custom Toast Alert
+        window.showAlert = function(msg, isSuccess = true) {
             const alertBox = document.getElementById('customAlert');
             const icon = document.getElementById('alertIcon');
             document.getElementById('alertMsg').innerText = msg;
             
-            if(type === "error") {
-                alertBox.style.borderLeft = "5px solid var(--ios-red)";
-                icon.className = "fas fa-exclamation-circle";
-                icon.style.color = "var(--ios-red)";
-            } else {
-                alertBox.style.borderLeft = "5px solid var(--ios-green)";
-                icon.className = "fas fa-check-circle";
-                icon.style.color = "var(--ios-green)";
-            }
+            icon.className = isSuccess ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+            icon.style.color = isSuccess ? 'var(--twitter-green)' : '#f4212e';
 
             alertBox.classList.add('show');
-            setTimeout(() => alertBox.classList.remove('show'), 3500);
-        }
+            triggerHaptic(isSuccess ? 'success' : 'error');
+            setTimeout(() => alertBox.classList.remove('show'), 3000);
+        };
 
-        // --- Auth Check System ---
+        // Auth Checker (Guests can view everything, but cannot post or like)
         window.checkAuthForAction = function() {
             if (localStorage.getItem('nahidStore_isLoggedIn') !== 'true') {
-                triggerHaptic();
-                showAlert("Please login to perform this action.", "error");
+                triggerHaptic('error');
+                showAlert("Please login first to reply or like", false);
                 return false;
             }
             return true;
-        }
+        };
 
-        // --- User Avatar & Name Setup ---
-        const tgUser = tg.initDataUnsafe?.user;
-        let displayName = "Guest"; 
-        let userAvatar = "https://ui-avatars.com/api/?name=G&background=8e8e93&color=fff";
+        // User Identity Setup
+        const tgUser = tg?.initDataUnsafe?.user;
+        let displayName = "Developer";
+        let userHandle = "user";
+        let userAvatar = "https://ui-avatars.com/api/?name=U&background=007aff&color=fff";
         let userTgId = null;
 
         if (tgUser && localStorage.getItem('nahidStore_isLoggedIn') === 'true') {
             const firstName = tgUser.first_name || "";
             const lastName = tgUser.last_name || "";
-            const fullName = `${firstName} ${lastName}`.trim();
-
-            if (fullName.length <= 16) displayName = fullName;
-            else if (firstName.length <= 16) displayName = firstName;
-            else displayName = firstName.substring(0, 15) + '...';
-
+            displayName = `${firstName} ${lastName}`.trim() || "User";
+            userHandle = tgUser.username ? `@${tgUser.username}` : `@id${tgUser.id}`;
             userTgId = tgUser.id;
-            const avatarImg = document.getElementById('currUserAvatar');
+
             if (tgUser.photo_url) {
                 userAvatar = tgUser.photo_url;
             } else {
                 userAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=007aff&color=fff`;
             }
-            avatarImg.src = userAvatar;
-            document.getElementById('createPostText').innerText = `What's on your mind, ${displayName}?`;
+
+            document.getElementById('currUserAvatar').src = userAvatar;
+            document.getElementById('createPostText').innerText = `What's on your mind, ${firstName}?`;
         }
 
+        // Header Hide on Scroll
         let lastScrollY = window.scrollY;
         window.addEventListener('scroll', () => {
             const currentScrollY = window.scrollY;
-            if (currentScrollY > lastScrollY && currentScrollY > 60) document.getElementById('mainHeader').classList.add('hidden'); 
-            else document.getElementById('mainHeader').classList.remove('hidden'); 
+            if (currentScrollY > lastScrollY && currentScrollY > 70) {
+                document.getElementById('mainHeader').classList.add('hidden');
+            } else {
+                document.getElementById('mainHeader').classList.remove('hidden');
+            }
             lastScrollY = currentScrollY;
-        });
+        }, { passive: true });
 
-        // --- Smart Hashtag Search Logic ---
+        // Search Controller
         const mainHeader = document.getElementById('mainHeader');
         const searchToggleBtn = document.getElementById('searchToggleBtn');
         const searchIcon = document.getElementById('searchIcon');
@@ -644,66 +1096,63 @@
         let isSearchOpen = false;
         let currentSearchQuery = "";
         let searchTimeout = null;
-        
+
         window.toggleSearch = function(forceOpen = false) {
-            triggerHaptic();
+            triggerHaptic('light');
             isSearchOpen = forceOpen || !isSearchOpen;
             if (isSearchOpen) {
                 mainHeader.classList.add('search-active');
                 searchInputWrapper.classList.add('active');
                 searchToggleBtn.classList.add('active');
-                searchIcon.className = 'fas fa-times'; 
-                setTimeout(() => searchInput.focus(), 300);
+                searchIcon.className = 'fas fa-times';
+                setTimeout(() => searchInput.focus(), 250);
             } else {
                 closeSearch();
             }
-        }
+        };
 
         function closeSearch() {
             mainHeader.classList.remove('search-active');
             searchInputWrapper.classList.remove('active');
             searchToggleBtn.classList.remove('active');
-            searchIcon.className = 'fas fa-search'; 
+            searchIcon.className = 'fas fa-search';
             searchInput.value = '';
             searchInput.blur();
             isSearchOpen = false;
-            
-            if(currentSearchQuery !== "") {
-                clearSearchFilter();
-            }
+            if (currentSearchQuery !== "") clearSearchFilter();
         }
-        
+
         searchToggleBtn.addEventListener('click', () => toggleSearch(false));
 
         searchInput.addEventListener('input', (e) => {
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(() => {
                 const query = e.target.value.trim().replace('#', '').toLowerCase();
-                if(query.length > 0) {
+                if (query.length > 0) {
                     currentSearchQuery = query;
                     document.getElementById('filterKeyword').innerText = query;
                     document.getElementById('activeFilterBar').style.display = 'flex';
-                    document.getElementById('createPostSection').style.display = 'none'; 
+                    document.getElementById('composeBar').style.display = 'none';
                     resetAndFetchFeed();
                 } else if (currentSearchQuery !== "") {
                     clearSearchFilter();
                 }
-            }, 600); 
+            }, 350);
         });
 
         window.clearSearchFilter = function() {
-            triggerHaptic();
+            triggerHaptic('light');
             currentSearchQuery = "";
             searchInput.value = "";
             document.getElementById('activeFilterBar').style.display = 'none';
-            document.getElementById('createPostSection').style.display = 'flex';
-            
+            document.getElementById('composeBar').style.display = 'flex';
+
             const url = new URL(window.location);
             url.searchParams.delete('search');
             window.history.pushState({}, '', url);
 
             resetAndFetchFeed();
-        }
+        };
 
         function resetAndFetchFeed() {
             feedContainer.innerHTML = '';
@@ -715,579 +1164,551 @@
             fetchPosts(true);
         }
 
-        // --- Bottom Sheets ---
+        // Bottom Sheets Controller
         const overlay = document.getElementById('sheetOverlay');
-        window.openSheet = function(sheetId) { triggerHaptic(); overlay.classList.add('active'); document.getElementById(sheetId).classList.add('active'); }
-        window.closeAllSheets = function() { overlay.classList.remove('active'); document.querySelectorAll('.bottom-sheet').forEach(sheet => { sheet.classList.remove('active'); }); }
+        window.openSheet = function(id) {
+            triggerHaptic('medium');
+            overlay.classList.add('active');
+            document.getElementById(id).classList.add('active');
+        };
+        window.closeAllSheets = function() {
+            overlay.classList.remove('active');
+            document.querySelectorAll('.bottom-sheet').forEach(s => s.classList.remove('active'));
+        };
 
-        window.toggleCommentLike = function(el) {
-            triggerHaptic();
-            if(el.classList.contains('liked')) { el.classList.remove('liked'); el.innerText = "Like"; } 
-            else { el.classList.add('liked'); el.innerText = "Liked"; }
-        }
-
-        let currentSharePostId = null;
-        let currentShareAuthorTgId = null;
-        window.openShareOptions = function(postId, authorTgId) {
-            currentSharePostId = postId;
-            currentShareAuthorTgId = authorTgId;
+        let activeSharePostId = null;
+        window.openShareOptions = function(postId) {
+            activeSharePostId = postId;
             openSheet('shareSheet');
-        }
+        };
+
+        window.copyPostLink = function() {
+            triggerHaptic('light');
+            const link = `https://t.me/nahid_trix_bot/app?startapp=post_${activeSharePostId}`;
+            navigator.clipboard.writeText(link);
+            showAlert("Link copied to clipboard!");
+        };
+
+        window.shareViaTelegram = function() {
+            triggerHaptic('light');
+            const link = `https://t.me/nahid_trix_bot/app?startapp=post_${activeSharePostId}`;
+            if (tg && tg.openTelegramLink) {
+                tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent("Check out this post on NAHID TRIX!")}`);
+            }
+        };
 
         window.reportPost = function() {
-            if(!checkAuthForAction()) return;
-            triggerHaptic();
-            sendTgNotification(currentShareAuthorTgId, 'report', currentSharePostId);
-            showAlert("Report submitted successfully! The user has been warned.", "success");
-            closeAllSheets();
+            if (!checkAuthForAction()) return;
+            triggerHaptic('error');
+            showAlert("Post reported. Thanks for keeping our feed safe.");
+        };
+
+        // Text & Hash Parser
+        function formatTweetContent(text) {
+            if (!text) return "";
+            let parsed = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="tweet-link" onclick="event.stopPropagation();">$1</a>');
+            parsed = parsed.replace(/#(\w+)/g, '<span class="tweet-hashtag" onclick="event.stopPropagation(); filterByTag(\'$1\');">#$1</span>');
+            parsed = parsed.replace(/@(\w+)/g, '<span class="tweet-hashtag" style="color:var(--text-main); font-weight:700;">@$1</span>');
+            return parsed;
         }
 
-        // --- Telegram Bot Notifications (Upgraded) ---
-        async function sendTgNotification(targetTgId, type, postId) {
-            if(!targetTgId || targetTgId === "undefined") return;
-            
-            let botToken = "";
-            try {
-                const tokenSnap = await getDoc(doc(db, "admin_config", "telegram"));
-                if(tokenSnap.exists()) {
-                    botToken = tokenSnap.data().botToken;
-                }
-            } catch(e) { console.error("Could not fetch bot token"); }
+        window.filterByTag = function(tag) {
+            toggleSearch(true);
+            searchInput.value = '#' + tag;
+            currentSearchQuery = tag.toLowerCase();
+            document.getElementById('filterKeyword').innerText = currentSearchQuery;
+            document.getElementById('activeFilterBar').style.display = 'flex';
+            document.getElementById('composeBar').style.display = 'none';
+            resetAndFetchFeed();
+        };
 
-            if(!botToken) return;
-            
-            let message = "";
-            let btnText = "👀 View Post";
-            let appLink = `https://t.me/nahid_trix_bot/app?startapp=post_${postId}`;
-
-            if(type === 'comment') {
-                message = `💬 <b>New Comment!</b>\n\n👤 <b>${displayName}</b> has just commented on your post.\n\n👇 Click the button below to view and reply!`;
-                btnText = "💬 View Comment";
-                appLink = `https://t.me/nahid_trix_bot/app?startapp=comment_${postId}`;
-            }
-            else if(type === 'like') {
-                message = `❤️ <b>New Like!</b>\n\n👤 <b>${displayName}</b> liked your post.\n\n🔥 Keep up the good work!`;
-                btnText = "❤️ View Post";
-            }
-            else if(type === 'report') {
-                message = `🚨 <b>Post Alert!</b>\n\n⚠️ Someone has reported your post. Please ensure your content follows our community guidelines.\n\n👀 Review your post below:`;
-                btnText = "🚨 Review Post";
-            }
-            else if(type === 'warning') {
-                message = `🚫 <b>Comment Blocked!</b>\n\n⚠️ Your comment contained restricted words and was blocked. Profanity is strictly prohibited.\n\n📜 Please read the community rules.`;
-                btnText = "Read Rules";
-            }
-
-            try {
-                await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        chat_id: targetTgId, 
-                        text: message, 
-                        parse_mode: 'HTML',
-                        reply_markup: { inline_keyboard: [[{ text: btnText, url: appLink }]] }
-                    })
-                });
-            } catch(e) { console.error("Notification Error", e); }
+        function timeShortFormat(date) {
+            if (!date) return "now";
+            const diff = Math.floor((new Date() - date) / 1000);
+            if (diff < 60) return `${diff}s`;
+            if (diff < 3600) return `${Math.floor(diff/60)}m`;
+            if (diff < 86400) return `${Math.floor(diff/3600)}h`;
+            return `${Math.floor(diff/86400)}d`;
         }
 
-        // --- Profanity Check ---
-        const badWords = ["fuck", "bitch", "gali", "scam", "spam", "chud", "magi", "bokachoda", "bal", "shit"]; 
-        function isClean(text) { return !badWords.some(word => text.toLowerCase().includes(word)); }
+        // =========================================================================
+        //  💥 TWITTER THREAD DETAIL ENGINE (OPEN, LOAD REPLIES, REPLY, LIGHTBOX)
+        // =========================================================================
+        let currentDetailPostData = null;
+        const threadModal = document.getElementById('tweetDetailView');
 
-        // --- Dynamic Comment System ---
-        let currentPostIdForComment = null;
-        let currentPostAuthorTgId = null;
+        // Post Cache Map for Fast Thread Access
+        const postsCacheMap = new Map();
 
-        window.openDynamicCommentSheet = async function(postId, authorTgId) {
-            if(!checkAuthForAction()) return;
-            currentPostIdForComment = postId;
-            currentPostAuthorTgId = authorTgId;
-            openSheet('commentSheet');
-            
-            const list = document.getElementById('commentList');
-            list.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);"><i class="fas fa-spinner fa-spin"></i> Loading...</div>`;
-            
+        window.openTweetDetailView = function(postId) {
+            triggerHaptic('light');
+            const data = postsCacheMap.get(postId);
+            if (!data) return;
+
+            currentDetailPostData = data;
+
+            // Populate Thread Elements
+            document.getElementById('dtlAvatar').src = data.authorAvatar || 'https://ui-avatars.com/api/?name=U&background=007aff&color=fff';
+            document.getElementById('dtlName').innerText = data.authorName || 'Anonymous';
+            document.getElementById('dtlHandle').innerText = data.authorHandle ? `@${data.authorHandle.replace('@','')}` : '@user';
+            document.getElementById('dtlText').innerHTML = formatTweetContent(data.content || '');
+
+            const mediaFrame = document.getElementById('dtlMediaFrame');
+            const imgEl = document.getElementById('dtlImage');
+            if (data.image) {
+                imgEl.src = data.image;
+                mediaFrame.style.display = 'block';
+            } else {
+                mediaFrame.style.display = 'none';
+            }
+
+            // Timestamp formatting
+            let postDate = data.createdAt?.toDate ? data.createdAt.toDate() : new Date();
+            const timeOpts = { hour: 'numeric', minute: '2-digit', hour12: true };
+            const dateOpts = { month: 'short', day: 'numeric', year: 'numeric' };
+            const timeStr = `${postDate.toLocaleTimeString([], timeOpts)} · ${postDate.toLocaleDateString([], dateOpts)}`;
+            document.getElementById('dtlTimestamp').innerText = `${timeStr} · ${(data.views || 120)} Views`;
+
+            // Metrics
+            document.getElementById('dtlRepostCount').innerText = data.reposts || 0;
+            document.getElementById('dtlLikeCount').innerText = data.likes || 0;
+            document.getElementById('dtlCommentCount').innerText = data.comments || 0;
+
+            // Wire action buttons
+            const likeBtn = document.getElementById('dtlLikeBtn');
+            likeBtn.onclick = () => window.toggleTweetLike(data.id, likeBtn, data.authorTgId || "");
+
+            const repostBtn = document.getElementById('dtlRepostBtn');
+            repostBtn.onclick = () => window.triggerRepost(data.id, repostBtn);
+
+            const shareBtn = document.getElementById('dtlShareBtn');
+            shareBtn.onclick = () => window.openShareOptions(data.id);
+
+            // Fetch and render replies automatically
+            loadDetailReplies(data.id);
+
+            // Open Modal
+            threadModal.classList.add('active');
+            window.history.pushState({ tweetDetailOpen: true, postId: data.id }, '');
+        };
+
+        window.closeTweetDetailView = function() {
+            triggerHaptic('light');
+            threadModal.classList.remove('active');
+            currentDetailPostData = null;
+        };
+
+        window.addEventListener('popstate', (e) => {
+            if (threadModal.classList.contains('active')) {
+                threadModal.classList.remove('active');
+            }
+        });
+
+        // Load replies under post detail view (Accessible to ALL, even without login)
+        async function loadDetailReplies(postId) {
+            const list = document.getElementById('dtlRepliesList');
+            list.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted); font-size:13px;"><i class="fas fa-spinner fa-spin"></i> Loading replies...</div>`;
+
             try {
                 const q = query(collection(db, "posts", postId, "comments"), orderBy("createdAt", "asc"));
                 const snap = await getDocs(q);
                 list.innerHTML = "";
-                
-                if(snap.empty) {
-                    list.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted); font-size:13px;">No comments yet. Be the first!</div>`;
+
+                if (snap.empty) {
+                    list.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-muted); font-size:13.5px;">No replies yet. Be the first to share your thoughts!</div>`;
                     return;
                 }
 
-                snap.forEach(doc => {
-                    const data = doc.data();
-                    let commentDate = data.createdAt ? (typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate() : new Date(data.createdAt)) : new Date();
-                    const timeStr = timeAgo(commentDate);
-
+                snap.forEach(d => {
+                    const c = d.data();
+                    let repDate = c.createdAt?.toDate ? c.createdAt.toDate() : new Date();
                     list.innerHTML += `
-                        <div class="comment-item">
-                            <img src="${data.avatar}" class="comment-avatar">
-                            <div style="flex-grow:1">
-                                <div class="comment-content">
-                                    <div class="comment-name">${data.name}</div>
-                                    <div class="comment-text">${data.text}</div>
+                        <div class="detail-reply-item">
+                            <img src="${c.avatar || 'https://ui-avatars.com/api/?name=U'}" class="detail-reply-avatar">
+                            <div class="detail-reply-body">
+                                <div class="detail-reply-meta">
+                                    <span class="detail-reply-author">${c.name || 'User'}</span>
+                                    <span class="detail-reply-time">· ${timeShortFormat(repDate)}</span>
                                 </div>
-                                <div class="comment-actions">
-                                    <span class="comment-action" onclick="toggleCommentLike(this)">Like</span>
-                                    <span>${timeStr}</span>
-                                </div>
+                                <div class="detail-reply-text">${formatTweetContent(c.text || '')}</div>
                             </div>
                         </div>
                     `;
                 });
-                list.scrollTop = list.scrollHeight;
-            } catch(e) { list.innerHTML = `<div style="text-align:center; color:var(--ios-red);">Failed to load comments</div>`; }
+            } catch(e) {
+                list.innerHTML = `<div style="text-align:center; color:#f4212e; padding:15px;">Failed to load replies. Check connection.</div>`;
+            }
         }
 
-        window.postComment = async function() {
-            if(!checkAuthForAction() || !currentPostIdForComment) return;
-            triggerHaptic();
-            const input = document.getElementById('newCommentInput');
+        window.focusDetailReplyInput = function() {
+            if (!checkAuthForAction()) return;
+            document.getElementById('dtlReplyInput').focus();
+        };
+
+        window.sendDetailReply = async function() {
+            if (!checkAuthForAction()) return;
+            if (!currentDetailPostData) return;
+
+            triggerHaptic('light');
+            const input = document.getElementById('dtlReplyInput');
             const text = input.value.trim();
-            if(text === "") return;
+            if (!text) return;
 
-            if(!isClean(text)) {
-                showAlert("Your comment contains restricted words and was blocked.", "error");
-                sendTgNotification(userTgId, 'warning', currentPostIdForComment); 
-                input.value = "";
-                return;
-            }
+            const list = document.getElementById('dtlRepliesList');
+            if (list.innerText.includes("No replies yet")) list.innerHTML = "";
 
-            const list = document.getElementById('commentList');
-            if(list.innerText.includes("No comments")) list.innerHTML = "";
+            // Instant UI Append
             list.insertAdjacentHTML('beforeend', `
-                <div class="comment-item">
-                    <img src="${userAvatar}" class="comment-avatar">
-                    <div style="flex-grow:1">
-                        <div class="comment-content">
-                            <div class="comment-name">You</div>
-                            <div class="comment-text">${text}</div>
+                <div class="detail-reply-item">
+                    <img src="${userAvatar}" class="detail-reply-avatar">
+                    <div class="detail-reply-body">
+                        <div class="detail-reply-meta">
+                            <span class="detail-reply-author">${displayName}</span>
+                            <span class="detail-reply-time">· now</span>
                         </div>
-                        <div class="comment-actions">
-                            <span class="comment-action" onclick="toggleCommentLike(this)">Like</span>
-                            <span>Just now</span>
-                        </div>
+                        <div class="detail-reply-text">${formatTweetContent(text)}</div>
                     </div>
                 </div>
             `);
+
             input.value = "";
-            list.scrollTop = list.scrollHeight; 
+            const postId = currentDetailPostData.id;
+
+            // Update UI Counters
+            const cCount = document.getElementById('dtlCommentCount');
+            cCount.innerText = parseInt(cCount.innerText || 0) + 1;
+            const feedCountEl = document.querySelector(`#post_${postId} .comment-count`);
+            if (feedCountEl) feedCountEl.innerText = parseInt(feedCountEl.innerText || 0) + 1;
 
             try {
-                await addDoc(collection(db, "posts", currentPostIdForComment, "comments"), {
+                await addDoc(collection(db, "posts", postId, "comments"), {
                     name: displayName, avatar: userAvatar, tgId: userTgId, text: text, createdAt: serverTimestamp()
                 });
-                
-                await updateDoc(doc(db, "posts", currentPostIdForComment), { comments: increment(1) });
-                
-                const countSpan = document.querySelector(`#post_${currentPostIdForComment} .comment-count`);
-                if(countSpan) countSpan.innerText = parseInt(countSpan.innerText || 0) + 1;
-
-                if(currentPostAuthorTgId && currentPostAuthorTgId !== userTgId) {
-                    sendTgNotification(currentPostAuthorTgId, 'comment', currentPostIdForComment);
-                }
-
-            } catch(e) { console.error("Error posting comment", e); }
-        }
-
-        function formatPostText(text) {
-            if(!text) return "";
-            let formatted = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="post-link" onclick="event.stopPropagation();">$1</a>');
-            formatted = formatted.replace(/#(\w+)/g, '<span class="hashtag" onclick="event.stopPropagation(); window.location.href=\'feed.html?search=$1\'">#$1</span>');
-            return formatted;
-        }
-
-        function checkTextTruncation() {
-            document.querySelectorAll('.post-text-wrapper').forEach(wrapper => {
-                const textEl = wrapper.querySelector('.post-text');
-                const btn = wrapper.querySelector('.see-more-btn');
-                if(textEl.scrollHeight > textEl.clientHeight) {
-                    btn.style.display = 'inline-block';
-                }
-            });
-        }
-
-        window.expandText = function(btn) {
-            triggerHaptic();
-            const textDiv = btn.previousElementSibling;
-            if (textDiv.classList.contains('clamp-image') || textDiv.classList.contains('clamp-text')) {
-                textDiv.classList.remove('clamp-image', 'clamp-text');
-                btn.innerText = "See less";
-            } else {
-                if (textDiv.dataset.hasImage === "true") textDiv.classList.add('clamp-image');
-                else textDiv.classList.add('clamp-text');
-                btn.innerText = "See more";
-                textDiv.scrollIntoView({behavior: "smooth", block: "nearest"});
+                await updateDoc(doc(db, "posts", postId), { comments: increment(1) });
+            } catch(e) {
+                console.error("Reply error", e);
             }
-        }
+        };
 
-        function timeAgo(date) {
-            if(!date) return "Just now";
-            const seconds = Math.floor((new Date() - date) / 1000);
-            let interval = seconds / 31536000;
-            if (interval > 1) return Math.floor(interval) + "y";
-            interval = seconds / 2592000;
-            if (interval > 1) return Math.floor(interval) + "mo";
-            interval = seconds / 86400;
-            if (interval > 1) return Math.floor(interval) + "d";
-            interval = seconds / 3600;
-            if (interval > 1) return Math.floor(interval) + "h";
-            interval = seconds / 60;
-            if (interval > 1) return Math.floor(interval) + "m";
-            return Math.floor(seconds) + "s";
-        }
+        // Lightbox
+        window.openLightbox = function(imgSrc) {
+            triggerHaptic('medium');
+            document.getElementById('lightboxImg').src = imgSrc;
+            document.getElementById('fullscreenLightbox').classList.add('active');
+        };
 
+        window.closeLightbox = function() {
+            triggerHaptic('light');
+            document.getElementById('fullscreenLightbox').classList.remove('active');
+        };
+
+        window.openLightboxFromDetail = function() {
+            if (currentDetailPostData && currentDetailPostData.image) {
+                openLightbox(currentDetailPostData.image);
+            }
+        };
+
+        // ============================================================
+        //  💥 SUPER FEED ENGINE & SPONSORED APP AD-INJECTION 💥
+        // ============================================================
         let lastVisibleDoc = null;
         let isFetching = false;
         let hasMorePosts = true;
-        let postCounter = 0; 
-        let storeApps = []; 
+        let postCounter = 0;
+        let storeApps = [];
         let currentAppIndex = 0;
-        
+
         const seenPostIds = new Set();
         const feedContainer = document.getElementById('dynamicFeed');
         const loader = document.getElementById('infiniteLoader');
 
         async function fetchStoreApps() {
             try {
-                const q = query(collection(db, "apps"), orderBy("createdAt", "desc"), limit(20));
-                const snap = await getDocs(q);
-                let apps = [];
-                snap.forEach(doc => { apps.push({ id: doc.id, ...doc.data() }); });
-                storeApps = apps.sort(() => Math.random() - 0.5);
-            } catch(e) { console.error("Error fetching apps", e); }
+                const snap = await getDocs(query(collection(db, "apps"), orderBy("createdAt", "desc"), limit(12)));
+                storeApps = [];
+                snap.forEach(d => storeApps.push({ id: d.id, ...d.data() }));
+                storeApps.sort(() => Math.random() - 0.5);
+            } catch(e) {}
         }
 
         async function fetchPosts(isInitial = false) {
-            if(isFetching || !hasMorePosts) return;
+            if (isFetching || !hasMorePosts) return;
             isFetching = true;
             loader.style.display = 'block';
 
             try {
+                let fetchLimit = currentSearchQuery !== "" ? 25 : 8;
                 let q;
-                let fetchLimit = currentSearchQuery !== "" ? 30 : 6; 
 
-                if(isInitial) {
+                if (isInitial) {
                     q = query(collection(db, "posts"), orderBy("createdAt", "desc"), limit(fetchLimit));
                 } else {
                     q = query(collection(db, "posts"), orderBy("createdAt", "desc"), startAfter(lastVisibleDoc), limit(fetchLimit));
                 }
 
                 const snapshot = await getDocs(q);
-                
-                if(snapshot.empty) {
+
+                if (snapshot.empty) {
                     hasMorePosts = false;
                     loader.style.display = 'none';
-                    if(feedContainer.innerHTML === "") {
-                        feedContainer.innerHTML = `<div style="text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 14px;"><i class="fas fa-search-minus" style="font-size:30px; margin-bottom:10px;"></i><br>No posts found for this keyword.</div>`;
-                    } else {
-                        feedContainer.insertAdjacentHTML('beforeend', `<div style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 14px;"><i class="fas fa-check-circle"></i> You've caught up on everything.</div>`);
+                    if (feedContainer.innerHTML === "") {
+                        feedContainer.innerHTML = `<div style="text-align: center; padding: 50px 20px; color: var(--text-muted); font-size: 14px;"><i class="fas fa-search-minus" style="font-size:24px; margin-bottom:8px;"></i><br>No posts found.</div>`;
                     }
                     return;
                 }
 
                 lastVisibleDoc = snapshot.docs[snapshot.docs.length - 1];
 
-                const fetchedPosts = [];
-                snapshot.forEach(doc => {
-                    if (!seenPostIds.has(doc.id)) { 
-                        let data = doc.data();
-                        
-                        if(currentSearchQuery !== "") {
-                            let textContent = (data.content || "").toLowerCase();
-                            let authorName = (data.authorName || "").toLowerCase();
-                            
-                            if(textContent.includes(currentSearchQuery) || authorName.includes(currentSearchQuery)) {
-                                seenPostIds.add(doc.id);
-                                fetchedPosts.push({ id: doc.id, ...data });
+                const fetched = [];
+                snapshot.forEach(docSnap => {
+                    if (!seenPostIds.has(docSnap.id)) {
+                        const d = { id: docSnap.id, ...docSnap.data() };
+                        postsCacheMap.set(docSnap.id, d); // Cache for Thread
+
+                        if (currentSearchQuery !== "") {
+                            const c = (d.content || "").toLowerCase();
+                            const a = (d.authorName || "").toLowerCase();
+                            if (c.includes(currentSearchQuery) || a.includes(currentSearchQuery)) {
+                                seenPostIds.add(docSnap.id);
+                                fetched.push(d);
                             }
                         } else {
-                            seenPostIds.add(doc.id);
-                            fetchedPosts.push({ id: doc.id, ...data });
+                            seenPostIds.add(docSnap.id);
+                            fetched.push(d);
                         }
                     }
                 });
 
-                if(isInitial && currentSearchQuery === "") {
-                    localStorage.setItem('nahid_feed_cache', JSON.stringify(fetchedPosts));
+                // SMART CACHE ANALYSIS
+                if (isInitial && currentSearchQuery === "") {
+                    localStorage.setItem('nahid_feed_cache', JSON.stringify(fetched));
+                    localStorage.setItem('nahid_cache_timestamp', Date.now().toString());
                 }
 
-                renderPostsArray(fetchedPosts);
-                setTimeout(checkTextTruncation, 100);
-
-            } catch (error) {
-                console.error("Error fetching posts:", error);
+                renderTweets(fetched);
+            } catch(e) {
+                console.error("Feed error", e);
             } finally {
                 isFetching = false;
+                loader.style.display = 'none';
             }
         }
 
-        function renderPostsArray(postsArr) {
-            let batchHTML = ""; 
+        function renderTweets(arr) {
+            let html = "";
 
-            postsArr.forEach(post => {
+            arr.forEach(post => {
+                postsCacheMap.set(post.id, post); // Ensure post cache
                 postCounter++;
-                
-                if (currentSearchQuery === "" && postCounter % 4 === 0 && storeApps.length > currentAppIndex) {
-                    batchHTML += buildAppSliderHtml();
-                }
 
-                const rawText = post.content || "";
-                const hasImage = !!post.image;
-                let clampClass = hasImage ? 'clamp-image' : 'clamp-text';
-
-                let postDate = new Date();
-                if (post.createdAt) {
-                    if (typeof post.createdAt.toDate === 'function') {
-                        postDate = post.createdAt.toDate(); 
-                    } else if (post.createdAt.seconds) {
-                        postDate = new Date(post.createdAt.seconds * 1000); 
-                    } else {
-                        postDate = new Date(post.createdAt); 
-                    }
-                }
-                if (isNaN(postDate.getTime())) postDate = new Date();
-                const timeStr = timeAgo(postDate);
-
-                const verifiedHtml = `<i class="fab fa-telegram verified-badge"></i>`;
-
-                let mediaHtml = '';
-                if(hasImage) {
-                    mediaHtml = `
-                        <div class="post-image-wrapper" ondblclick="handleDoubleTap('${post.id}', '${post.authorTgId || ""}', this)">
-                            <i class="fas fa-heart heart-overlay"></i>
-                            <img src="${post.image}" class="post-attached-image" loading="lazy">
+                // Promoted App Card every 5 posts
+                if (currentSearchQuery === "" && postCounter % 5 === 0 && storeApps.length > currentAppIndex) {
+                    const app = storeApps[currentAppIndex++];
+                    html += `
+                        <div class="tweet-post" style="border-left: 3px solid var(--twitter-blue);" onclick="triggerHaptic('light'); window.location.href='details.html?id=${app.id}';">
+                            <div class="tweet-left-col">
+                                <img src="${app.image || 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80'}" class="tweet-author-avatar">
+                            </div>
+                            <div class="tweet-body-col">
+                                <div class="tweet-header">
+                                    <div class="tweet-meta">
+                                        <span class="tweet-name">${app.name}</span>
+                                        <i class="fas fa-certificate tweet-verified-badge" style="color:var(--twitter-green)"></i>
+                                        <span class="tweet-handle">@promoted</span>
+                                    </div>
+                                    <span style="font-size:11px; color:var(--text-muted);"><i class="fas fa-bolt"></i> Promoted</span>
+                                </div>
+                                <div style="font-size:13.5px; color:var(--text-main); margin-top:4px;">${app.description ? app.description.substring(0, 80) + '...' : 'Premium Telegram Mini App & Bot. Instant setup available!'}</div>
+                                <a href="details.html?id=${app.id}" class="promoted-app-card" onclick="event.stopPropagation(); triggerHaptic('light')">
+                                    <img src="${app.image}" class="promoted-app-img" loading="lazy">
+                                    <div class="promoted-app-footer">
+                                        <div>
+                                            <div class="promoted-title">${app.name}</div>
+                                            <div class="promoted-badge">${app.price || 'Free'} · ${app.network || 'Telegram'}</div>
+                                        </div>
+                                        <span class="promoted-get-btn">GET</span>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
                     `;
                 }
 
-                batchHTML += `
-                    <div class="feed-post" id="post_${post.id}">
-                        <div class="post-header">
-                            <div class="post-author">
-                                <img src="${post.authorAvatar || 'https://ui-avatars.com/api/?name=U&background=007aff&color=fff'}" loading="lazy">
-                                <div class="author-info">
-                                    <span class="author-name">${post.authorName || 'Anonymous'} ${verifiedHtml}</span>
-                                    <span class="author-meta">${timeStr}</span>
+                let postDate = post.createdAt?.toDate ? post.createdAt.toDate() : new Date();
+                const timeStr = timeShortFormat(postDate);
+                const handleStr = post.authorHandle ? `@${post.authorHandle.replace('@','')}` : `@user`;
+
+                let mediaBlock = "";
+                if (post.image) {
+                    mediaBlock = `
+                        <div class="tweet-media-frame" onclick="event.stopPropagation(); openTweetDetailView('${post.id}')" ondblclick="event.stopPropagation(); handleDoubleTap('${post.id}', '${post.authorTgId || ""}', this)">
+                            <i class="fas fa-heart heart-overlay"></i>
+                            <img src="${post.image}" class="tweet-media-img" loading="lazy">
+                        </div>
+                    `;
+                }
+
+                html += `
+                    <div class="tweet-post" id="post_${post.id}" onclick="openTweetDetailView('${post.id}')">
+                        <div class="tweet-left-col">
+                            <img src="${post.authorAvatar || 'https://ui-avatars.com/api/?name=U&background=007aff&color=fff'}" class="tweet-author-avatar" loading="lazy" onclick="event.stopPropagation(); openTweetDetailView('${post.id}')">
+                        </div>
+                        <div class="tweet-body-col">
+                            <div class="tweet-header">
+                                <div class="tweet-meta">
+                                    <span class="tweet-name">${post.authorName || 'Anonymous'}</span>
+                                    <i class="fas fa-circle-check tweet-verified-badge"></i>
+                                    <span class="tweet-handle">${handleStr}</span>
+                                    <span class="tweet-dot"></span>
+                                    <span class="tweet-time">${timeStr}</span>
                                 </div>
+                                <i class="fas fa-ellipsis tweet-more-btn" onclick="event.stopPropagation(); openShareOptions('${post.id}')"></i>
                             </div>
-                            <i class="fas fa-ellipsis-h post-options" onclick="showAlert('Report feature coming soon!')"></i>
-                        </div>
 
-                        <div class="post-text-wrapper">
-                            <div class="post-text ${clampClass}" data-has-image="${hasImage}">${formatPostText(rawText)}</div>
-                            <div class="see-more-btn" onclick="expandText(this)">See more</div>
-                        </div>
-                        
-                        ${mediaHtml}
-
-                        <div class="post-stats">
-                            <span><i class="fas fa-eye"></i> ${post.views || Math.floor(Math.random()*500 + 50)} Views</span>
-                            <span>${post.comments || 0} Comments</span>
-                        </div>
-
-                        <div class="post-actions">
-                            <div class="action-btn like-btn-element" onclick="toggleLike('${post.id}', this, '${post.authorTgId || ""}')">
-                                <i class="far fa-heart"></i> <span class="like-count">${post.likes || 0}</span>
+                            <div class="tweet-content-wrapper">
+                                <div class="tweet-text clamp-text">${formatTweetContent(post.content || '')}</div>
                             </div>
-                            <div class="action-btn" onclick="openDynamicCommentSheet('${post.id}', '${post.authorTgId || ""}')">
-                                <i class="far fa-comment"></i> <span class="comment-count">${post.comments || 0}</span>
-                            </div>
-                            <div class="action-btn" onclick="openShareOptions('${post.id}', '${post.authorTgId || ""}')">
-                                <i class="far fa-paper-plane"></i>
+
+                            ${mediaBlock}
+
+                            <!-- CRISP ACTION BUTTONS -->
+                            <div class="tweet-actions-row">
+                                <div class="tw-action-btn reply" onclick="event.stopPropagation(); openTweetDetailView('${post.id}')">
+                                    <div class="icon-box"><i class="far fa-comment"></i></div>
+                                    <span class="comment-count">${post.comments || 0}</span>
+                                </div>
+                                <div class="tw-action-btn repost" onclick="event.stopPropagation(); triggerRepost('${post.id}', this)">
+                                    <div class="icon-box"><i class="fas fa-retweet"></i></div>
+                                    <span class="repost-count">${post.reposts || 0}</span>
+                                </div>
+                                <div class="tw-action-btn like like-btn-element" onclick="event.stopPropagation(); toggleTweetLike('${post.id}', this, '${post.authorTgId || ""}')">
+                                    <div class="icon-box"><i class="far fa-heart"></i></div>
+                                    <span class="like-count">${post.likes || 0}</span>
+                                </div>
+                                <div class="tw-action-btn" onclick="event.stopPropagation(); openShareOptions('${post.id}')">
+                                    <div class="icon-box"><i class="far fa-paper-plane"></i></div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 `;
             });
 
-            feedContainer.insertAdjacentHTML('beforeend', batchHTML);
+            feedContainer.insertAdjacentHTML('beforeend', html);
         }
 
-        function buildAppSliderHtml() {
-            let sliderCardsHtml = '';
-            
-            for(let i=0; i<3; i++) {
-                if(currentAppIndex >= storeApps.length) break;
-                const appData = storeApps[currentAppIndex];
-                
-                sliderCardsHtml += `
-                    <a href="details.html?id=${appData.id}" class="app-slider-card">
-                        <img src="${appData.image || 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80'}" class="app-slider-img" loading="lazy">
-                        <div class="app-slider-info">
-                            <div class="app-slider-title">${appData.name}</div>
-                            <div class="app-slider-cat">${appData.network || 'Bot'}</div>
-                            <div class="app-slider-bottom">
-                                <span class="app-slider-price">${appData.price || 'Free'}</span>
-                                <span class="app-slider-btn">GET</span>
-                            </div>
-                        </div>
-                    </a>
-                `;
-                currentAppIndex++;
-            }
-
-            if(sliderCardsHtml !== '') {
-                return `
-                    <div class="suggested-section">
-                        <div class="suggested-header">
-                            <i class="fas fa-bolt" style="color:var(--ios-orange)"></i> Suggested for you
-                            <span>Sponsored</span>
-                        </div>
-                        <div class="app-slider">
-                            ${sliderCardsHtml}
-                        </div>
-                    </div>
-                `;
-            }
-            return "";
-        }
-
-        let pendingLikeSyncs = {}; 
+        // Like & Repost Engine with Debounce
+        let pendingLikes = {};
         let syncTimeout = null;
 
-        window.toggleLike = function(postId, element, authorTgId) {
-            if(!checkAuthForAction()) return;
-            triggerHaptic();
-            const icon = element.querySelector('i');
-            const countSpan = element.querySelector('.like-count');
-            let currentCount = parseInt(countSpan.innerText);
-            if(isNaN(currentCount)) currentCount = 0;
+        window.toggleTweetLike = function(postId, el, authorTgId) {
+            if (!checkAuthForAction()) return;
+            triggerHaptic('light');
 
+            const countEl = el.querySelector('.like-count') || document.getElementById('dtlLikeCount');
+            let current = parseInt(countEl.innerText) || 0;
             let change = 0;
 
-            if (element.classList.contains('liked')) {
-                element.classList.remove('liked');
-                icon.className = 'far fa-heart'; 
-                countSpan.innerText = currentCount - 1;
+            if (el.classList.contains('liked')) {
+                el.classList.remove('liked');
+                countEl.innerText = Math.max(0, current - 1);
                 change = -1;
             } else {
-                element.classList.add('liked');
-                icon.className = 'fas fa-heart'; 
-                countSpan.innerText = currentCount + 1;
+                el.classList.add('liked');
+                countEl.innerText = current + 1;
                 change = 1;
-
-                if(authorTgId && authorTgId !== userTgId) {
-                    sendTgNotification(authorTgId, 'like', postId);
-                }
             }
 
-            pendingLikeSyncs[postId] = (pendingLikeSyncs[postId] || 0) + change;
+            // Sync cache
+            if (postsCacheMap.has(postId)) {
+                postsCacheMap.get(postId).likes = (postsCacheMap.get(postId).likes || 0) + change;
+            }
+
+            pendingLikes[postId] = (pendingLikes[postId] || 0) + change;
             clearTimeout(syncTimeout);
-            syncTimeout = setTimeout(() => syncLikesToDatabase(), 3000);
-        }
-
-        window.handleDoubleTap = function(postId, authorTgId, imageWrapperElement) {
-            if(!checkAuthForAction()) return;
-            triggerHaptic();
-            const postElement = document.getElementById(`post_${postId}`);
-            const likeBtn = postElement.querySelector('.like-btn-element');
-            const heartOverlay = imageWrapperElement.querySelector('.heart-overlay');
-
-            heartOverlay.classList.remove('animate');
-            void heartOverlay.offsetWidth; 
-            heartOverlay.classList.add('animate');
-
-            if (!likeBtn.classList.contains('liked')) {
-                window.toggleLike(postId, likeBtn, authorTgId);
-            }
-        }
-
-        async function syncLikesToDatabase() {
-            const updates = { ...pendingLikeSyncs };
-            pendingLikeSyncs = {}; 
-
-            for (const [postId, changeValue] of Object.entries(updates)) {
-                if (changeValue !== 0) {
-                    try {
-                        const postRef = doc(db, "posts", postId);
-                        await updateDoc(postRef, { likes: increment(changeValue) });
-                    } catch(e) { console.error(`Failed to sync like for post ${postId}:`, e); }
-                }
-            }
-        }
-
-        // --- Deep Linking Auto-Scroll (Upgraded for Comments) ---
-        function handleDeepLink() {
-            const startParam = tg.initDataUnsafe?.start_param;
-            if(startParam) {
-                let targetPostId = null;
-                let openComment = false;
-
-                // Check if it's a normal post link or a comment link
-                if (startParam.startsWith('post_')) {
-                    targetPostId = startParam.split('post_')[1];
-                } else if (startParam.startsWith('comment_')) {
-                    targetPostId = startParam.split('comment_')[1];
-                    openComment = true;
-                }
-                
-                if(targetPostId) {
-                    setTimeout(() => {
-                        const postEl = document.getElementById(`post_${targetPostId}`);
-                        if(postEl) {
-                            postEl.scrollIntoView({behavior: 'smooth', block: 'center'});
-                            postEl.classList.add('highlight');
-                            setTimeout(() => postEl.classList.remove('highlight'), 2000);
-                            
-                            // Automatically open comment sheet if it was a comment notification
-                            if(openComment && checkAuthForAction()) {
-                                openDynamicCommentSheet(targetPostId, null);
-                            }
-                        }
-                    }, 1500);
-                }
-            }
-        }
-
-        const observerOptions = {
-            root: null,
-            rootMargin: '150px', 
-            threshold: 0.1
+            syncTimeout = setTimeout(syncLikesToFirebase, 2500);
         };
 
+        window.handleDoubleTap = function(postId, authorTgId, frameEl) {
+            if (!checkAuthForAction()) return;
+            triggerHaptic('medium');
+
+            const postEl = document.getElementById(`post_${postId}`);
+            const likeBtn = postEl ? postEl.querySelector('.like-btn-element') : null;
+            const heart = frameEl.querySelector('.heart-overlay');
+
+            if (heart) {
+                heart.classList.remove('animate');
+                void heart.offsetWidth;
+                heart.classList.add('animate');
+            }
+
+            if (likeBtn && !likeBtn.classList.contains('liked')) {
+                window.toggleTweetLike(postId, likeBtn, authorTgId);
+            }
+        };
+
+        async function syncLikesToFirebase() {
+            const batch = { ...pendingLikes };
+            pendingLikes = {};
+            for (const [id, val] of Object.entries(batch)) {
+                if (val !== 0) {
+                    try {
+                        await updateDoc(doc(db, "posts", id), { likes: increment(val) });
+                    } catch(e) {}
+                }
+            }
+        }
+
+        window.triggerRepost = function(postId, el) {
+            if (!checkAuthForAction()) return;
+            triggerHaptic('medium');
+            const countEl = el.querySelector('.repost-count') || document.getElementById('dtlRepostCount');
+            let count = parseInt(countEl.innerText) || 0;
+
+            if (el.classList.contains('reposted')) {
+                el.classList.remove('reposted');
+                countEl.innerText = Math.max(0, count - 1);
+            } else {
+                el.classList.add('reposted');
+                countEl.innerText = count + 1;
+                showAlert("Reposted successfully!");
+            }
+        };
+
+        // Scroll Observer
         const scrollObserver = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting && hasMorePosts && !isFetching) {
                 fetchPosts(false);
             }
-        }, observerOptions);
+        }, { rootMargin: '200px' });
 
+        // ============================================================
+        // 🚀 SELF-ANALYZING CACHE ENGINE & INIT
+        // ============================================================
         async function init() {
-            await fetchStoreApps(); 
-            
-            const urlParams = new URLSearchParams(window.location.search);
-            const searchParam = urlParams.get('search');
-            
-            if(searchParam) {
-                toggleSearch(true);
-                searchInput.value = '#' + searchParam;
-                currentSearchQuery = searchParam.toLowerCase();
-                document.getElementById('filterKeyword').innerText = currentSearchQuery;
-                document.getElementById('activeFilterBar').style.display = 'flex';
-                document.getElementById('createPostSection').style.display = 'none';
-                await fetchPosts(true); 
-            } else {
-                const cached = localStorage.getItem('nahid_feed_cache');
-                if(cached) {
-                    feedContainer.innerHTML = ''; 
-                    postCounter = 0;
-                    currentAppIndex = 0;
-                    renderPostsArray(JSON.parse(cached));
-                }
-                await fetchPosts(true); 
-                handleDeepLink();
+            await fetchStoreApps();
+
+            // Check if user just submitted a new post
+            const justPosted = sessionStorage.getItem('nahid_just_posted');
+            if (justPosted === 'true') {
+                sessionStorage.removeItem('nahid_just_posted');
+                localStorage.removeItem('nahid_feed_cache'); // Clear cache for immediate fresh fetch
             }
-            
+
+            const cached = localStorage.getItem('nahid_feed_cache');
+
+            // Instant render from cache
+            if (cached && !justPosted) {
+                renderTweets(JSON.parse(cached));
+            }
+
+            // Always sync fresh data in background
+            await fetchPosts(true);
             scrollObserver.observe(loader);
         }
 
         init();
-
     </script>
 </body>
 </html>
